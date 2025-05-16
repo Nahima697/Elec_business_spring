@@ -2,6 +2,7 @@ package com.elec_business.service;
 
 import com.elec_business.dto.RegistrationDto;
 import com.elec_business.entity.AppUser;
+import com.elec_business.mapper.UserRegistrationMapper;
 import com.elec_business.repository.AppUserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ public class UserRegistrationService {
 
     private final AppUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRegistrationMapper userRegistrationMapper;
 
     @Transactional
     public AppUser registerUser(@Valid RegistrationDto request) {
@@ -26,9 +28,7 @@ public class UserRegistrationService {
                     "Username or Email already exists");
         }
 
-        AppUser user = new AppUser();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
+        AppUser user = userRegistrationMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmailVerified(false);
 

@@ -6,6 +6,7 @@ import com.elec_business.dto.RegistrationResponseDto;
 import com.elec_business.dto.UserProfileDto;
 import com.elec_business.entity.AppUser;
 import com.elec_business.mapper.AppUserMapper;
+import com.elec_business.mapper.RegistrationResponseMapper;
 import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.UserRegistrationService;
 import jakarta.validation.Valid;
@@ -36,6 +37,7 @@ public class AuthController {
     private final EmailVerificationService emailVerificationService;
     private final AppUserMapper appUserMapper;
     private final UserRegistrationService userRegistrationService;
+    private final RegistrationResponseMapper registrationResponseMapper;
 
     @Value("${app.auth.email-verification-required:true}")
     private boolean emailVerificationRequired;
@@ -57,11 +59,7 @@ public class AuthController {
             }
 
             // 3. Création de la réponse
-            RegistrationResponseDto responseDto = new RegistrationResponseDto(
-                    registeredUser.getUsername(),
-                    registeredUser.getEmail(),
-                    emailVerificationRequired
-            );
+            RegistrationResponseDto responseDto = registrationResponseMapper.toDto(registeredUser);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 

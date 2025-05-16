@@ -5,8 +5,9 @@ import com.elec_business.entity.AppUser;
 import org.mapstruct.Mapper;
 
 
+// Transforme un Dto (input) en entité
 @Mapper(componentModel = "spring")
 public interface UserRegistrationMapper {
     AppUser toEntity(RegistrationDto dto);
-    RegistrationDto toDto(AppUser user);
+
 }
