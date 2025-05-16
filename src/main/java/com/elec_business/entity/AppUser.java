@@ -44,6 +44,13 @@ public class AppUser {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
+    @Column(name = "email_verified",nullable = false)
+    private Boolean  emailVerified=false;
+
+    @Column(name = "phone_verified")
+    private Boolean phoneVerified;
+
+
     @Column(name = "profile_picture_url", length = Integer.MAX_VALUE)
     private String profilePictureUrl;
 
@@ -56,4 +63,25 @@ public class AppUser {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Column(name = "email_verif_at")
+    private Instant emailVerifiedAt;
+
+    @Column(name = "phone_verif_at")
+    private Instant phoneVerifiedAt;
+
+    private String emailVerifCode;
+
+    private String phoneVerifCode;
+
+    @Size(max = 10)
+    @Column(name = "phone_verif_code", length = 10)
+    public String getPhoneVerifCode() {
+        return phoneVerifCode;
+    }
+
+    @Size(max = 10)
+    @Column(name = "email_verif_code", length = 10)
+    public String getEmailVerifCode() {
+        return emailVerifCode;
+    }
 }

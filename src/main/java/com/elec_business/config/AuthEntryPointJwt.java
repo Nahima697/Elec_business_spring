@@ -9,11 +9,10 @@ import java.io.IOException;
 @Component
 public class AuthEntryPointJwt  implements AuthenticationEntryPoint {
     @Override
-    public void commence(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException authException
-    ) throws IOException {
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException authException) throws IOException {
+        System.out.println("🚫 Unauthorized access intercepted by AuthEntryPointJwt: " + request.getRequestURI());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
     }
 }
