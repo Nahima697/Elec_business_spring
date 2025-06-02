@@ -9,8 +9,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -47,15 +45,6 @@ public class EmailVerificationService {
         mailSender.send(message);
     }
 
-    public void resendVerificationToken(String email) {
-        AppUser user = userRepository.findByEmail(email)
-                .filter(u -> !u.getEmailVerified())
-                .orElseThrow(() -> new ResponseStatusException(
-                        NOT_FOUND, "Email not found or already verified"));
-
-        sendVerificationToken(user.getId(), user.getEmail());
-    }
-
     @Transactional
     public AppUser verifyEmail(UUID userId, String token) {
         if (!otpService.isOtpValid(userId, token)) {
@@ -68,8 +57,8 @@ public class EmailVerificationService {
                 .orElseThrow(() ->
                         new ResponseStatusException(GONE,
                                 "User account has been deleted or deactivated"));
-
-        if (user.getEmailVerified()) {
+     boolean userEmailVerified = user.getEmailVerified();
+        if (userEmailVerified) {
             throw new ResponseStatusException(BAD_REQUEST,
                     "Email is already verified");
         }

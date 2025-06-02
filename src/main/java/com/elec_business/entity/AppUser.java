@@ -10,6 +10,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -73,15 +75,7 @@ public class AppUser {
 
     private String phoneVerifCode;
 
-    @Size(max = 10)
-    @Column(name = "phone_verif_code", length = 10)
-    public String getPhoneVerifCode() {
-        return phoneVerifCode;
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
-    @Size(max = 10)
-    @Column(name = "email_verif_code", length = 10)
-    public String getEmailVerifCode() {
-        return emailVerifCode;
-    }
 }

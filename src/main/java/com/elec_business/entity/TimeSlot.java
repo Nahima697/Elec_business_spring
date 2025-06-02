@@ -8,6 +8,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.swing.*;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
@@ -29,10 +31,32 @@ public class TimeSlot {
     @JoinColumn(name = "station_id", nullable = false)
     private ChargingStation station;
 
-/*
- TODO [Reverse Engineering] create field to map the 'availability' column
- Available actions: Define target Java type | Uncomment as is | Remove column mapping
-    @Column(name = "availability", columnDefinition = "tsrange not null")
-    private Object availability;
-*/
+    private OffsetDateTime startTime;
+
+    private OffsetDateTime endTime;
+
+    @Column(name = "availability", insertable = false, updatable = false)
+    private String availability;
+
+    private Boolean isAvailable = false;
+
+    @NotNull
+    @ColumnDefault("true")
+    @Column(name = "is_available", nullable = false)
+    public Boolean getIsAvailable() {
+        return isAvailable;
+    }
+
+    @NotNull
+    @Column(name = "end_time", nullable = false)
+    public OffsetDateTime getEndTime() {
+        return endTime;
+    }
+
+    @NotNull
+    @Column(name = "start_time", nullable = false)
+    public OffsetDateTime getStartTime() {
+        return startTime;
+    }
+
 }

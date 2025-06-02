@@ -22,7 +22,6 @@ public class OtpService {
 
         redisTemplate.opsForValue().set(
                 cacheKey, otp, Duration.ofMinutes(5));
-
         return otp;
     }
 

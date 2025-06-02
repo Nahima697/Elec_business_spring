@@ -1,5 +1,6 @@
 package com.elec_business.config;
 
+import com.elec_business.exception.EmailNotVerifiedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -7,12 +8,18 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 @Component
-public class AuthEntryPointJwt  implements AuthenticationEntryPoint {
+public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+
     @Override
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
+    public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        System.out.println("🚫 Unauthorized access intercepted by AuthEntryPointJwt: " + request.getRequestURI());
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+
+        Throwable cause = authException.getCause();
+
+        if (cause instanceof EmailNotVerifiedException) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Email not verified.");
+        } else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid username or password.");
+        }
     }
 }

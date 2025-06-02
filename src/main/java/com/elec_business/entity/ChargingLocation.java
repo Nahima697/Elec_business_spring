@@ -53,16 +53,12 @@ public class ChargingLocation {
     @Column(name = "country", nullable = false, length = 100)
     private String country;
 
-    @Column(name = "lat", precision = 9, scale = 6)
-    private BigDecimal lat;
+    private AppUser user;
 
-    @Column(name = "lng", precision = 9, scale = 6)
-    private BigDecimal lng;
-
-/*
- TODO [Reverse Engineering] create field to map the 'geom' column
- Available actions: Define target Java type | Uncomment as is | Remove column mapping
-    @Column(name = "geom", columnDefinition = "geometry")
-    private Object geom;
-*/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
+    public AppUser getUser() {
+        return user;
+    }
 }

@@ -45,11 +45,6 @@ public class ChargingStation {
     @JoinColumn(name = "type_id", nullable = false)
     private ChargingStationType type;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "group_id", nullable = false)
-    private ChargingStationGroup group;
-
     @Column(name = "power_kw", precision = 5, scale = 2)
     private BigDecimal powerKw;
 
@@ -60,5 +55,11 @@ public class ChargingStation {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @Column(name = "lat", precision = 9, scale = 6)
+    private BigDecimal lat;
+
+    @Column(name = "lng", precision = 9, scale = 6)
+    private BigDecimal lng;
 
 }

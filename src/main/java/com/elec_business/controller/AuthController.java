@@ -5,8 +5,10 @@ import com.elec_business.dto.RegistrationDto;
 import com.elec_business.dto.RegistrationResponseDto;
 import com.elec_business.dto.UserProfileDto;
 import com.elec_business.entity.AppUser;
+import com.elec_business.exception.EmailNotVerifiedException;
 import com.elec_business.mapper.AppUserMapper;
 import com.elec_business.mapper.RegistrationResponseMapper;
+import com.elec_business.repository.AppUserRepository;
 import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.UserRegistrationService;
 import jakarta.validation.Valid;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -38,6 +41,7 @@ public class AuthController {
     private final AppUserMapper appUserMapper;
     private final UserRegistrationService userRegistrationService;
     private final RegistrationResponseMapper registrationResponseMapper;
+    private final AppUserRepository appUserRepository;
 
     @Value("${app.auth.email-verification-required:true}")
     private boolean emailVerificationRequired;
@@ -60,7 +64,6 @@ public class AuthController {
 
             // 3. Création de la réponse
             RegistrationResponseDto responseDto = registrationResponseMapper.toDto(registeredUser);
-
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 
         } catch (ValidationException ve) {
@@ -83,6 +86,20 @@ public class AuthController {
         return ResponseEntity.ok(appUserMapper.toDto(verifiedUser));
     }
 
+    @PostMapping("/email/resend")
+    public ResponseEntity<?> resendEmailVerification(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        Optional<AppUser> appUser = appUserRepository.findByEmail(email);
+
+        if (appUser.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid or already verified user.");
+        }
+
+        emailVerificationService.sendVerificationToken(appUser.get().getId(), appUser.get().getEmail());
+        return ResponseEntity.ok("Verification email resent.");
+    }
+
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AppUser appUser) {
         if (appUser.getUsername() == null || appUser.getPassword() == null) {
@@ -104,9 +121,20 @@ public class AuthController {
             }
 
         } catch (AuthenticationException e) {
-            log.warn("Authentication failed for user: {}", appUser.getUsername());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
-        } catch (Exception e) {
+            Throwable cause = e.getCause();
+
+            if (cause instanceof EmailNotVerifiedException) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("Email not verified.");
+            }
+
+            log.warn("Authentication failed for user: {}", appUser.getUsername(), e);
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password.");
+        }
+        catch (Exception e) {
             log.error("Unexpected error during login", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error during login.");
         }
