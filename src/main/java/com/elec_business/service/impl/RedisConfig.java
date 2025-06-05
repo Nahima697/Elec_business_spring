@@ -1,4 +1,4 @@
-package com.elec_business.service;
+package com.elec_business.service.impl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

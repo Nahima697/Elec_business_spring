@@ -1,7 +1,7 @@
 package com.elec_business.mapper;
 
 import com.elec_business.dto.ChargingStationResponseDto;
-import com.elec_business.entity.ChargingStation;
+import com.elec_business.model.ChargingStation;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

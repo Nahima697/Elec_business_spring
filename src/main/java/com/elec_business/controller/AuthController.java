@@ -4,13 +4,13 @@ import com.elec_business.config.JwtUtil;
 import com.elec_business.dto.RegistrationDto;
 import com.elec_business.dto.RegistrationResponseDto;
 import com.elec_business.dto.UserProfileDto;
-import com.elec_business.entity.AppUser;
+import com.elec_business.model.AppUser;
 import com.elec_business.exception.EmailNotVerifiedException;
 import com.elec_business.mapper.AppUserMapper;
 import com.elec_business.mapper.RegistrationResponseMapper;
 import com.elec_business.repository.AppUserRepository;
 import com.elec_business.service.EmailVerificationService;
-import com.elec_business.service.UserRegistrationService;
+import com.elec_business.service.impl.UserRegistrationService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class AuthController {
     private boolean emailVerificationRequired;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid RegistrationDto registrationDto) {
+    public ResponseEntity<String> register(@RequestBody @Valid RegistrationDto registrationDto) {
         AppUser registeredUser;
 
         try {
@@ -87,7 +87,7 @@ public class AuthController {
     }
 
     @PostMapping("/email/resend")
-    public ResponseEntity<?> resendEmailVerification(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> resendEmailVerification(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         Optional<AppUser> appUser = appUserRepository.findByEmail(email);
 
@@ -101,7 +101,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AppUser appUser) {
+    public ResponseEntity<String> login(@RequestBody AppUser appUser) {
         if (appUser.getUsername() == null || appUser.getPassword() == null) {
             return ResponseEntity.badRequest().body("Missing username or password.");
         }

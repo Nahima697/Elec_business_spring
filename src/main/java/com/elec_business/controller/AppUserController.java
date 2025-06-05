@@ -1,6 +1,6 @@
 package com.elec_business.controller;
 
-import com.elec_business.entity.AppUser;
+import com.elec_business.model.AppUser;
 import com.elec_business.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

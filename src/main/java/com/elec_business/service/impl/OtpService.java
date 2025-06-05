@@ -1,4 +1,4 @@
-package com.elec_business.service;
+package com.elec_business.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

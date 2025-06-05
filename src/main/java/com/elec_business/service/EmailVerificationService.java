@@ -1,7 +1,8 @@
 package com.elec_business.service;
 
-import com.elec_business.entity.AppUser;
+import com.elec_business.model.AppUser;
 import com.elec_business.repository.AppUserRepository;
+import com.elec_business.service.impl.OtpService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

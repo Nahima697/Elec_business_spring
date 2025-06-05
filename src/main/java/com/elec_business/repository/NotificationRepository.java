@@ -1,6 +1,6 @@
 package com.elec_business.repository;
 
-import com.elec_business.entity.Notification;
+import com.elec_business.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

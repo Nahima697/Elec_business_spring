@@ -1,6 +1,6 @@
 package com.elec_business.repository;
 
-import com.elec_business.entity.Booking;
+import com.elec_business.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

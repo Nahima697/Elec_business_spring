@@ -1,7 +1,7 @@
-package com.elec_business.service;
+package com.elec_business.service.impl;
 
 import com.elec_business.dto.BookingRequestDto;
-import com.elec_business.entity.*;
+import com.elec_business.model.*;
 import com.elec_business.mapper.BookingMapper;
 import com.elec_business.repository.BookingRepository;
 import com.elec_business.repository.ChargingStationRepository;
@@ -66,7 +66,7 @@ public class BookingService {
 
         if ("pending".equalsIgnoreCase(statusEntity.getName())) {
             Notification notif = new Notification();
-            notif.setUser(station.getUser());
+            notif.setUser(station.getLocation().getUser());
             notif.setMessage("Vous avez reçu une demande de réservation");
             notificationRepository.save(notif);
         }
@@ -80,7 +80,7 @@ public class BookingService {
 
         ChargingStation station = booking.getStation();
 
-        if (!station.getUser().getId().equals(currentUser.getId())) {
+        if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not the owner of this station");
         }
 
@@ -147,14 +147,8 @@ public class BookingService {
         booking.setStation(chargingStationRepository.findById(dto.getStationId())
                 .orElseThrow(() -> new EntityNotFoundException("Station not found")));
 
-        // Si tu veux, tu peux aussi mettre à jour le status
-        // booking.setStatus(bookingStatusRepository.findById(dto.getStatus())
-        //      .orElseThrow(() -> new EntityNotFoundException("Status not found")));
-
         return bookingRepository.save(booking);
     }
-
-
 
     public void deleteBooking(UUID id) {
         bookingRepository.deleteBookingById(id);

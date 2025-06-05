@@ -1,15 +1,12 @@
 package com.elec_business.controller;
 
-import com.elec_business.dto.BookingRequestDto;
-import com.elec_business.dto.BookingResponseDto;
 import com.elec_business.dto.ChargingLocationRequestDto;
 import com.elec_business.dto.ChargingLocationResponseDto;
-import com.elec_business.entity.AppUser;
-import com.elec_business.entity.Booking;
-import com.elec_business.entity.ChargingLocation;
+import com.elec_business.model.AppUser;
+import com.elec_business.model.ChargingLocation;
 import com.elec_business.mapper.ChargingLocationMapper;
 import com.elec_business.mapper.ChargingLocationResponseMapper;
-import com.elec_business.service.ChargingLocationService;
+import com.elec_business.service.impl.ChargingLocationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -50,8 +46,7 @@ public class ChargingLocationController {
     }
 
     @GetMapping("/charging_locations")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-
+    @ResponseStatus(HttpStatus.OK)
     public List<ChargingLocationResponseDto> getAllLocations(@Valid @AuthenticationPrincipal AppUser currentUser) {
         return chargingLocationService.getAllChargingLocations()
                 .stream()
@@ -60,11 +55,8 @@ public class ChargingLocationController {
     }
 
     @GetMapping("/charging_locations/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-
+    @ResponseStatus(HttpStatus.OK)
     public ChargingLocationResponseDto getLocation(@PathVariable UUID id) {
             return chargingLocationResponseMapper.toDto(chargingLocationService.getChargingLocationById(id));
         }
-
-
 }

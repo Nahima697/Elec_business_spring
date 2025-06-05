@@ -1,7 +1,7 @@
-package com.elec_business.service;
+package com.elec_business.service.impl;
 
 import com.elec_business.dto.RegistrationDto;
-import com.elec_business.entity.AppUser;
+import com.elec_business.model.AppUser;
 import com.elec_business.mapper.UserRegistrationMapper;
 import com.elec_business.repository.AppUserRepository;
 import jakarta.transaction.Transactional;

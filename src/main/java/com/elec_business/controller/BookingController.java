@@ -2,11 +2,11 @@ package com.elec_business.controller;
 
 import com.elec_business.dto.BookingRequestDto;
 import com.elec_business.dto.BookingResponseDto;
-import com.elec_business.entity.AppUser;
-import com.elec_business.entity.Booking;
+import com.elec_business.model.AppUser;
+import com.elec_business.model.Booking;
 import com.elec_business.mapper.BookingMapper;
 import com.elec_business.mapper.BookingResponseMapper;
-import com.elec_business.service.BookingService;
+import com.elec_business.service.impl.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

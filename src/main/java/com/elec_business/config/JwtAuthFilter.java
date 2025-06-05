@@ -1,6 +1,6 @@
 package com.elec_business.config;
 
-import com.elec_business.service.CustomUserDetailsService;
+import com.elec_business.service.impl.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

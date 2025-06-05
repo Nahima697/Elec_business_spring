@@ -1,8 +1,8 @@
 package com.elec_business.mapper;
 
 import com.elec_business.dto.BookingRequestDto;
-import com.elec_business.entity.Booking;
-import com.elec_business.entity.ChargingStation;
+import com.elec_business.model.Booking;
+import com.elec_business.model.ChargingStation;
 import com.elec_business.repository.ChargingStationRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

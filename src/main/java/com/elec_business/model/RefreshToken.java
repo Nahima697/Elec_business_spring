@@ -1,4 +1,4 @@
-package com.elec_business.entity;
+package com.elec_business.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
