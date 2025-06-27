@@ -36,7 +36,18 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/login", "/api/register", "/api/email/verify", "/error","/favicon.ico").permitAll()
+                        .requestMatchers(
+                                "/api/login",
+                                "/api/register",
+                                "/api/email/verify",
+                                "/error",
+                                "/favicon.ico",
+                                "/api/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

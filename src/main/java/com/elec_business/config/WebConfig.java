@@ -13,7 +13,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8100", "capacitor://localhost", "http://localhost")
+                        .allowedOrigins("http://localhost:8100", "capacitor://localhost", "http://localhost","http://localhost:8080")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("Authorization", "Content-Type", "X-Requested-With", "x-authentication-token")
                         .exposedHeaders("Authorization", "x-authentication-token")
