@@ -26,7 +26,7 @@ public class AppUserController {
     @PostMapping
     public boolean updateUser(@RequestBody AppUser appUser) {
         if(appUser.getId() == null){
-            repository.update(appUser);
+            repository.save(appUser);
             return true;
         }
         return false;

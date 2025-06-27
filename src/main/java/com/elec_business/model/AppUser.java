@@ -90,24 +90,4 @@ public class AppUser {
         return Objects.hash(id, username, email, password, phoneNumber, emailVerified, phoneVerified, profilePictureUrl, role, createdAt, emailVerifiedAt, phoneVerifiedAt, emailVerifCode, phoneVerifCode, refreshTokens);
     }
 
-    @Override
-    public String toString() {
-        return "AppUser{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", emailVerified=" + emailVerified +
-                ", phoneVerified=" + phoneVerified +
-                ", profilePictureUrl='" + profilePictureUrl + '\'' +
-                ", role=" + role +
-                ", createdAt=" + createdAt +
-                ", emailVerifiedAt=" + emailVerifiedAt +
-                ", phoneVerifiedAt=" + phoneVerifiedAt +
-                ", emailVerifCode='" + emailVerifCode + '\'' +
-                ", phoneVerifCode='" + phoneVerifCode + '\'' +
-                ", refreshTokens=" + refreshTokens +
-                '}';
-    }
 }

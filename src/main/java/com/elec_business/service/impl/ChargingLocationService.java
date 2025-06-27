@@ -39,7 +39,7 @@ public class ChargingLocationService {
     }
 
     public ChargingLocation getChargingLocationByName(String name) {
-        return chargingLocationRepository.findChargingLocationBy(name);
+        return chargingLocationRepository.findChargingLocationByName(name);
     }
 
     public ChargingLocation updateChargingLocation(UUID id, ChargingLocationRequestDto chargingLocationRequestDto, AppUser currentUser) {

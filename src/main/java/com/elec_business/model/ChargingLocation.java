@@ -9,44 +9,77 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "charging_location", schema = "public", indexes = {
-        @Index(name = "idx_charging_location_geom", columnList = "geom")
-}, uniqueConstraints = {
-        @UniqueConstraint(name = "unique_station_location", columnNames = {"station_id"})
-})
+@Table(name = "charging_location", schema = "public")
 public class ChargingLocation {
+    private UUID id;
+
+    private String addressLine;
+
+    private String city;
+
+    private String postalCode;
+
+    private String country;
+
+    private AppUser user;
+
+    private Set<ChargingStation> chargingStations = new LinkedHashSet<>();
+
+    private String name;
+
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "name", nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    @OneToMany(mappedBy = "location")
+    public Set<ChargingStation> getChargingStations() {
+        return chargingStations;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @ColumnDefault("uuid_generate_v4()")
     @Column(name = "id", nullable = false)
-    private UUID id;
+    public UUID getId() {
+        return id;
+    }
 
     @Size(max = 255)
     @NotNull
     @Column(name = "address_line", nullable = false)
-    private String addressLine;
+    public String getAddressLine() {
+        return addressLine;
+    }
 
     @Size(max = 100)
     @NotNull
     @Column(name = "city", nullable = false, length = 100)
-    private String city;
+    public String getCity() {
+        return city;
+    }
 
     @Size(max = 10)
     @NotNull
     @Column(name = "postal_code", nullable = false, length = 10)
-    private String postalCode;
+    public String getPostalCode() {
+        return postalCode;
+    }
 
     @Size(max = 100)
     @NotNull
     @Column(name = "country", nullable = false, length = 100)
-    private String country;
-
-    private AppUser user;
+    public String getCountry() {
+        return country;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -54,4 +87,5 @@ public class ChargingLocation {
     public AppUser getUser() {
         return user;
     }
+
 }

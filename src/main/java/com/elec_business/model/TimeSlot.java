@@ -16,34 +16,38 @@ import java.util.UUID;
 @Entity
 @Table(name = "time_slot", schema = "public", indexes = {
         @Index(name = "idx_timeslot_range", columnList = "availability")
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "no_overlap", columnNames = {"station_id", "availability"})
 })
 public class TimeSlot {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @ColumnDefault("uuid_generate_v4()")
-    @Column(name = "id", nullable = false)
     private UUID id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "station_id", nullable = false)
     private ChargingStation station;
 
     private OffsetDateTime startTime;
 
     private OffsetDateTime endTime;
-
-    @Column(name = "availability", insertable = false, updatable = false)
-    private String availability;
-
     private Boolean isAvailable = false;
 
+    @Id
+    @ColumnDefault("uuid_generate_v4()")
+    @Column(name = "id", nullable = false)
+    public UUID getId() {
+        return id;
+    }
+
     @NotNull
-    @ColumnDefault("true")
-    @Column(name = "is_available", nullable = false)
-    public Boolean getIsAvailable() {
-        return isAvailable;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "station_id", nullable = false)
+    public ChargingStation getStation() {
+        return station;
+    }
+
+    @NotNull
+    @Column(name = "start_time", nullable = false)
+    public OffsetDateTime getStartTime() {
+        return startTime;
     }
 
     @NotNull
@@ -53,9 +57,15 @@ public class TimeSlot {
     }
 
     @NotNull
-    @Column(name = "start_time", nullable = false)
-    public OffsetDateTime getStartTime() {
-        return startTime;
+    @ColumnDefault("true")
+    @Column(name = "is_available", nullable = false)
+    public Boolean getIsAvailable() {
+        return isAvailable;
     }
 
+/*
+ TODO [Reverse Engineering] create field to map the 'availability' column
+ Available actions: Define target Java type | Uncomment as is | Remove column mapping
+    private Object availability;
+*/
 }

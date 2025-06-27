@@ -12,15 +12,21 @@ import java.util.UUID;
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
     List<TimeSlot> findByStationId(UUID stationId);
+    @Query("""
+    SELECT t FROM TimeSlot t
+    WHERE t.station.id = :stationId
+    AND t.startTime <= :startTime
+    AND t.endTime >= :endTime
+""")
     List<TimeSlot> findAvailableTimeSlots(UUID stationId, Instant startTime, Instant endTime);
-    @Query(value = """
-    SELECT EXISTS (
-        SELECT 1
-        FROM time_slot
-        WHERE station_id = :stationId
-        AND availability @> tsrange(:start, :end)
-    )
-""", nativeQuery = true)
+
+    @Query("""
+ SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
+ FROM TimeSlot t
+ WHERE t.station.id = :stationId
+ AND t.startTime <= :start
+ AND t.endTime >= :end
+""")
     boolean isSlotAvailable(UUID stationId, Instant start, Instant end);
 
 }

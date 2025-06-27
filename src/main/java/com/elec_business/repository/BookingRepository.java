@@ -21,7 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
     SELECT b FROM Booking b
     WHERE b.station.id = :stationId
       AND b.id <> :bookingId
-      AND b.status.name != 'CANCELLED' -- (optionnel, selon ta logique)
+      AND b.status.name != 'CANCELLED' 
       AND b.startDate < :endDate
       AND b.endDate > :startDate
 """)
@@ -30,7 +30,6 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
             @Param("endDate") Instant endDate,
             @Param("stationId") UUID stationId,
             @Param("bookingId") UUID bookingId);
-
 }
 
 
