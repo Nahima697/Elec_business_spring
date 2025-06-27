@@ -3,13 +3,13 @@ package com.elec_business.controller;
 import com.elec_business.config.JwtUtil;
 import com.elec_business.dto.RegistrationDto;
 import com.elec_business.dto.RegistrationResponseDto;
-import com.elec_business.dto.UserProfileDto;
+import com.elec_business.dto.UserRegisterDto;
 import com.elec_business.model.AppUser;
 import com.elec_business.exception.EmailNotVerifiedException;
 import com.elec_business.mapper.AppUserMapper;
 import com.elec_business.mapper.RegistrationResponseMapper;
 import com.elec_business.repository.AppUserRepository;
-import com.elec_business.service.EmailVerificationService;
+import com.elec_business.service.impl.EmailVerificationService;
 import com.elec_business.service.impl.UserRegistrationService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -64,7 +64,7 @@ public class AuthController {
 
             // 3. Création de la réponse
             RegistrationResponseDto responseDto = registrationResponseMapper.toDto(registeredUser);
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Votre compté a été créé avec succès" + responseDto);
 
         } catch (ValidationException ve) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ve.getMessage());
@@ -77,9 +77,8 @@ public class AuthController {
     }
 
     @GetMapping("/email/verify")
-    public ResponseEntity<UserProfileDto> verifyEmail(
+    public ResponseEntity<UserRegisterDto> verifyEmail(
             @RequestParam("uid") UUID userId, @RequestParam("t") String token) {
-
         final var verifiedUser =
                 emailVerificationService.verifyEmail(userId, token);
 
@@ -115,7 +114,7 @@ public class AuthController {
                 Map<String, Object> authData = new HashMap<>();
                 authData.put("token", jwtUtil.generateToken(appUser.getUsername()));
                 authData.put("type", "Bearer");
-                return ResponseEntity.ok(authData);
+                return ResponseEntity.ok(authData.toString());
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed.");
             }

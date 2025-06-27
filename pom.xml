@@ -41,6 +41,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<!-- Devtools pour recharger le serveur à chaque modif -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
 
 		<!-- Database Driver -->
 		<dependency>
@@ -96,6 +103,7 @@
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<!-- Spring Boot Mail for sending emails -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -104,6 +112,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!-- Swagger dependancy -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-common</artifactId>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 	<build>

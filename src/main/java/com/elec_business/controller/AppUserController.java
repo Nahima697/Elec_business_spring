@@ -24,7 +24,11 @@ public class AppUserController {
     }
 
     @PostMapping
-    public AppUser createUser(@RequestBody AppUser appUser) {
-        return repository.save(appUser);
+    public boolean updateUser(@RequestBody AppUser appUser) {
+        if(appUser.getId() == null){
+            repository.update(appUser);
+            return true;
+        }
+        return false;
     }
 }

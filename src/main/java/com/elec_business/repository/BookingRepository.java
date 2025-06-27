@@ -30,4 +30,9 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
             @Param("endDate") Instant endDate,
             @Param("stationId") UUID stationId,
             @Param("bookingId") UUID bookingId);
+
+    Booking findBookingByStatus_Id(Integer statusId);
 }
+
+
+

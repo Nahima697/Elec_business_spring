@@ -53,7 +53,6 @@ public class AppUser {
     @Column(name = "phone_verified")
     private Boolean phoneVerified;
 
-
     @Column(name = "profile_picture_url", length = Integer.MAX_VALUE)
     private String profilePictureUrl;
 
