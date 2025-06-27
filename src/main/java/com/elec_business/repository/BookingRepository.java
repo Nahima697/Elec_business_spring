@@ -31,7 +31,6 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
             @Param("stationId") UUID stationId,
             @Param("bookingId") UUID bookingId);
 
-    Booking findBookingByStatus_Id(Integer statusId);
 }
 
 

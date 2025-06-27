@@ -3,10 +3,7 @@ package com.elec_business.service.impl;
 import com.elec_business.dto.BookingRequestDto;
 import com.elec_business.model.*;
 import com.elec_business.mapper.BookingMapper;
-import com.elec_business.repository.BookingRepository;
-import com.elec_business.repository.ChargingStationRepository;
-import com.elec_business.repository.NotificationRepository;
-import com.elec_business.repository.TimeSlotRepository;
+import com.elec_business.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +26,7 @@ public class BookingService {
     private final NotificationRepository notificationRepository;
     private final TimeSlotRepository timeSlotRepository;
     private final BookingMapper bookingMapper;
+    private final BookingStatusRepository bookingStatusRepository;
 
     public Booking createBooking(BookingRequestDto bookingRequestDto, AppUser currentUser) {
         Booking booking = bookingMapper.toEntity(bookingRequestDto);
@@ -56,15 +54,13 @@ public class BookingService {
         booking.setStartDate(start);
         booking.setEndDate(end);
         booking.setTotalPrice(totalPrice);
-
-        BookingStatus statusEntity = new BookingStatus();
-        statusEntity.setId(bookingRequestDto.getStatus());
-        booking.setStatus(statusEntity);
-
+        BookingStatus pendingStatus = bookingStatusRepository.findByName("PENDING")
+                .orElseThrow(() -> new IllegalStateException("Default booking status not found"));
+        booking.setStatus(pendingStatus);
         booking.setCreatedAt(Instant.now());
         bookingRepository.save(booking);
 
-        if ("pending".equalsIgnoreCase(statusEntity.getName())) {
+        if ("PENDING".equalsIgnoreCase(pendingStatus.getName())) {
             Notification notif = new Notification();
             notif.setUser(station.getLocation().getUser());
             notif.setMessage("Vous avez reçu une demande de réservation");

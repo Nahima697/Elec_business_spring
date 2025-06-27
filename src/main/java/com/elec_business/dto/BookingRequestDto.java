@@ -1,5 +1,6 @@
 package com.elec_business.dto;
 
+import com.elec_business.model.BookingStatus;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -26,7 +27,4 @@ public class BookingRequestDto {
     @Future(message = "endDate doit être dans le futur")
     private Instant endDate;
 
-    @NotNull(message = "status ne peut pas être null")
-    @Positive(message = "status doit être un entier positif")
-    private Integer status;
 }
