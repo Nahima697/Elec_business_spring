@@ -1,4 +1,4 @@
-package com.elec_business.service.impl;
+package com.elec_business.service;
 
 import com.elec_business.dto.RegistrationDto;
 import com.elec_business.model.AppUser;

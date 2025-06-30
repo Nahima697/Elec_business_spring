@@ -1,12 +1,14 @@
 package com.elec_business.dto;
 
+
 import java.util.UUID;
 
 public record ChargingLocationResponseDto(
-        UUID stationId,
+        UUID id,
         String addressLine,
         String city,
         String postalCode,
-        String country
+        String country,
+        UUID userId
 ) {
 }

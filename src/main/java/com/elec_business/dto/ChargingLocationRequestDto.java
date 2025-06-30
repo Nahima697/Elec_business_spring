@@ -3,13 +3,16 @@ package com.elec_business.dto;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Data
+@Getter
+@Setter
 public class ChargingLocationRequestDto {
-
-    @NotNull(message = "StationId ne peut pas être null")
-    private UUID stationId;
 
     @Size(max = 255)
     @NotNull
@@ -30,4 +33,9 @@ public class ChargingLocationRequestDto {
     @NotNull
     @Column(name = "country", nullable = false, length = 100)
     private String country;
+
+    @NotNull
+    @Size(max = 255)
+    private String name;
+
 }

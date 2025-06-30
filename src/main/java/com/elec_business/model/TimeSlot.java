@@ -1,14 +1,16 @@
 package com.elec_business.model;
 
+import io.hypersistence.utils.hibernate.type.range.PostgreSQLRangeType;
+import io.hypersistence.utils.hibernate.type.range.Range;
 import jakarta.persistence.*;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -20,52 +22,32 @@ import java.util.UUID;
         @UniqueConstraint(name = "no_overlap", columnNames = {"station_id", "availability"})
 })
 public class TimeSlot {
-    private UUID id;
-
-    private ChargingStation station;
-
-    private OffsetDateTime startTime;
-
-    private OffsetDateTime endTime;
-    private Boolean isAvailable = false;
 
     @Id
-    @ColumnDefault("uuid_generate_v4()")
-    @Column(name = "id", nullable = false)
-    public UUID getId() {
-        return id;
-    }
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, updatable = false, columnDefinition = "uuid DEFAULT uuid_generate_v4()")
+    private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "station_id", nullable = false)
-    public ChargingStation getStation() {
-        return station;
-    }
+    private ChargingStation station;
 
     @NotNull
     @Column(name = "start_time", nullable = false)
-    public OffsetDateTime getStartTime() {
-        return startTime;
-    }
+    private Instant startTime;
 
     @NotNull
     @Column(name = "end_time", nullable = false)
-    public OffsetDateTime getEndTime() {
-        return endTime;
-    }
+    private Instant endTime;
 
     @NotNull
-    @ColumnDefault("true")
     @Column(name = "is_available", nullable = false)
-    public Boolean getIsAvailable() {
-        return isAvailable;
-    }
+    @ColumnDefault("true")
+    private Boolean isAvailable = true;
 
-/*
- TODO [Reverse Engineering] create field to map the 'availability' column
- Available actions: Define target Java type | Uncomment as is | Remove column mapping
-    private Object availability;
-*/
+    @Type(PostgreSQLRangeType.class)
+    @Column(name = "availability", columnDefinition = "tsrange", insertable = false, updatable = false)
+    private Range<Instant> availability;
 }

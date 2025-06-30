@@ -1,6 +1,6 @@
 package com.elec_business.config;
 
-import com.elec_business.service.impl.CustomUserDetailsService;
+import com.elec_business.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.elec_business.service.impl;
+package com.elec_business.service;
 
 public class UserProfileService {
 

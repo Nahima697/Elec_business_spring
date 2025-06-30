@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface ChargingLocationRepository extends JpaRepository<ChargingLocation, Long> {
+public interface ChargingLocationRepository extends JpaRepository<ChargingLocation, UUID> {
 
     ChargingLocation findChargingLocationByName(String name);
     ChargingLocation findChargingLocationById(UUID id);

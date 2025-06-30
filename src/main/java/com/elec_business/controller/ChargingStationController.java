@@ -6,10 +6,11 @@ import com.elec_business.dto.ChargingStationUpdateRequestDto;
 import com.elec_business.model.AppUser;
 import com.elec_business.model.ChargingStation;
 import com.elec_business.mapper.ChargingStationResponseMapper;
-import com.elec_business.service.impl.ChargingStationService;
+import com.elec_business.service.ChargingStationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,9 @@ public class ChargingStationController {
     private final ChargingStationService chargingStationService;
     private final ChargingStationResponseMapper chargingStationResponseMapper;
 
-    @PostMapping("/charging_stations")
+    @PostMapping(value = "/charging_stations",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ChargingStationResponseDto addChargingStation(@Valid @RequestBody ChargingStationRequestDto dto,
+    public ChargingStationResponseDto addChargingStation(@Valid   @ModelAttribute ChargingStationRequestDto dto,
                                                          @AuthenticationPrincipal AppUser currentUser) throws AccessDeniedException {
         ChargingStation createdStation = chargingStationService.createChargingStation(dto, currentUser);
         return chargingStationResponseMapper.toDto(createdStation);

@@ -1,11 +1,13 @@
-package com.elec_business.service.impl;
+package com.elec_business.service;
 
 import com.elec_business.dto.ChargingStationRequestDto;
 import com.elec_business.dto.ChargingStationUpdateRequestDto;
 import com.elec_business.model.AppUser;
+import com.elec_business.model.ChargingLocation;
 import com.elec_business.model.ChargingStation;
 import com.elec_business.mapper.ChargingStationMapper;
 import com.elec_business.mapper.ChargingStationUpdateMapper;
+import com.elec_business.repository.ChargingLocationRepository;
 import com.elec_business.repository.ChargingStationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +24,38 @@ public class ChargingStationService {
     private final ChargingStationRepository chargingStationRepository;
     private final ChargingStationMapper chargingStationMapper;
     private final ChargingStationUpdateMapper updateMapper;
+    private final FileStorageService fileStorageService;
+    private final ChargingLocationRepository chargingLocationRepository;
 
     public ChargingStation createChargingStation(ChargingStationRequestDto dto, AppUser currentUser) throws AccessDeniedException {
         ChargingStation station = chargingStationMapper.toEntity(dto);
 
+        ChargingLocation location = chargingLocationRepository.findById(dto.getLocationId())
+                .orElseThrow(() -> new IllegalArgumentException("Location non trouvée"));
+
+        station.setLocation(location);
+
+        // Vérifie que l'utilisateur est bien le propriétaire
         if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not the owner of this location");
         }
 
-        return chargingStationRepository.save(station);
+        // Gestion de l'image
+        try {
+            String imageUrl;
+
+            if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+                imageUrl = fileStorageService.saveImage(dto.getImage());
+            } else {
+                imageUrl = "/uploads/default.png";
+            }
+            station.setImageUrl(imageUrl);
+
+            return chargingStationRepository.save(station);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Could not save charging station", e);
+        }
     }
 
     public List<ChargingStation> getAllChargingStations() {

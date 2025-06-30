@@ -8,11 +8,10 @@ public record ChargingStationResponseDto(
         UUID id,
         String name,
         String description,
-        UUID typeId,
         BigDecimal powerKw,
         BigDecimal price,
         Instant createdAt,
         BigDecimal lng,
-        BigDecimal lat
-) {
+        BigDecimal lat,
+        String imageUrl) {
 }

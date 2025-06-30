@@ -8,12 +8,11 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ import java.util.UUID;
 @Table(name = "app_user", schema = "public", uniqueConstraints = {
         @UniqueConstraint(name = "app_user_email_key", columnNames = {"email"})
 })
-public class AppUser {
+public class AppUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @ColumnDefault("uuid_generate_v4()")
@@ -90,4 +89,23 @@ public class AppUser {
         return Objects.hash(id, username, email, password, phoneNumber, emailVerified, phoneVerified, profilePictureUrl, role, createdAt, emailVerifiedAt, phoneVerifiedAt, emailVerifCode, phoneVerifCode, refreshTokens);
     }
 
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+    @Override
+    public boolean isEnabled() { return true; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
 }

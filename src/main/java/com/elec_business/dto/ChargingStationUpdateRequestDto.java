@@ -2,9 +2,12 @@ package com.elec_business.dto;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
 
 public record ChargingStationUpdateRequestDto(
         @Size(max = 100, message = "Name cannot exceed 100 characters")

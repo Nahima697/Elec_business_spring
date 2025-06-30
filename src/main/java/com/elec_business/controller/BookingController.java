@@ -6,7 +6,7 @@ import com.elec_business.model.AppUser;
 import com.elec_business.model.Booking;
 import com.elec_business.mapper.BookingMapper;
 import com.elec_business.mapper.BookingResponseMapper;
-import com.elec_business.service.impl.BookingService;
+import com.elec_business.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

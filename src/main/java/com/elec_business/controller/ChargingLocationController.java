@@ -6,7 +6,7 @@ import com.elec_business.model.AppUser;
 import com.elec_business.model.ChargingLocation;
 import com.elec_business.mapper.ChargingLocationMapper;
 import com.elec_business.mapper.ChargingLocationResponseMapper;
-import com.elec_business.service.impl.ChargingLocationService;
+import com.elec_business.service.ChargingLocationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

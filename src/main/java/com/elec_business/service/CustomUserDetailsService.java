@@ -1,4 +1,4 @@
-package com.elec_business.service.impl;
+package com.elec_business.service;
 
 import com.elec_business.model.AppUser;
 import com.elec_business.exception.EmailNotVerifiedException;
@@ -33,11 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new EmailNotVerifiedException("Email not verified");
         }
 
-        return new User(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.emptyList()
-        );
+        return user;
     }
 
 }

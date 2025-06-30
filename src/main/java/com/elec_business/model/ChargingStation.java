@@ -33,10 +33,6 @@ public class ChargingStation {
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "type_id", nullable = false)
-    private ChargingStationType type;
 
     @Column(name = "power_kw", precision = 5, scale = 2)
     private BigDecimal powerKw;
@@ -59,16 +55,23 @@ public class ChargingStation {
     @JoinColumn(name = "location_id", nullable = false)
     private ChargingLocation location;
 
+    private String imageUrl;
+
+    @Column(name = "image_url", length = Integer.MAX_VALUE)
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ChargingStation that = (ChargingStation) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(type, that.type) && Objects.equals(powerKw, that.powerKw) && Objects.equals(price, that.price) && Objects.equals(createdAt, that.createdAt) && Objects.equals(lat, that.lat) && Objects.equals(lng, that.lng) && Objects.equals(location, that.location);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description)  && Objects.equals(powerKw, that.powerKw) && Objects.equals(price, that.price) && Objects.equals(createdAt, that.createdAt) && Objects.equals(lat, that.lat) && Objects.equals(lng, that.lng) && Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, type, powerKw, price, createdAt, lat, lng, location);
+        return Objects.hash(id, name, description, powerKw, price, createdAt, lat, lng, location);
     }
 
     @Override
@@ -77,7 +80,6 @@ public class ChargingStation {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", type=" + type +
                 ", powerKw=" + powerKw +
                 ", price=" + price +
                 ", createdAt=" + createdAt +

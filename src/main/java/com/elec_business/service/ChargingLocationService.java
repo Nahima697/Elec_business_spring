@@ -1,4 +1,4 @@
-package com.elec_business.service.impl;
+package com.elec_business.service;
 
 import com.elec_business.dto.ChargingLocationRequestDto;
 import com.elec_business.model.AppUser;
@@ -19,9 +19,20 @@ public class ChargingLocationService {
     private final ChargingLocationRepository chargingLocationRepository;
 
     public ChargingLocation createChargingLocation(ChargingLocationRequestDto chargingLocationRequestDto, AppUser currentUser) {
-        ChargingLocation chargingLocation = chargingLocationMapper.toEntity(chargingLocationRequestDto) ;
-        chargingLocation.setUser(currentUser);
-        chargingLocationRepository.save(chargingLocation);
+        System.out.println("Current User: " + currentUser);
+        if (currentUser != null) {
+            System.out.println("User ID: " + currentUser.getId());
+        } else {
+            System.out.println("Current user is null!");
+        }
+        ChargingLocation chargingLocation = chargingLocationMapper.toEntityWithUser(chargingLocationRequestDto,currentUser) ;
+        try {
+
+            chargingLocationRepository.save(chargingLocation);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         return chargingLocation;
     }
 
@@ -44,8 +55,7 @@ public class ChargingLocationService {
 
     public ChargingLocation updateChargingLocation(UUID id, ChargingLocationRequestDto chargingLocationRequestDto, AppUser currentUser) {
         try {
-            ChargingLocation chargingLocation = chargingLocationMapper.toEntity(chargingLocationRequestDto) ;;
-            chargingLocation.setUser(currentUser);
+            ChargingLocation chargingLocation = chargingLocationMapper.toEntityWithUser(chargingLocationRequestDto,currentUser) ;
             chargingLocationRepository.save(chargingLocation);
             return chargingLocation;
         } catch (EntityNotFoundException e) {
