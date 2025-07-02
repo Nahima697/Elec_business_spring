@@ -2,6 +2,7 @@ package com.elec_business.controller;
 
 import com.elec_business.dto.BookingRequestDto;
 import com.elec_business.dto.BookingResponseDto;
+import com.elec_business.dto.TimeSlotResponseDto;
 import com.elec_business.model.AppUser;
 import com.elec_business.model.Booking;
 import com.elec_business.mapper.BookingMapper;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,11 +32,11 @@ public class BookingController {
 
     @PostMapping("/bookings")
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingResponseDto addBooking(
+    public ResponseEntity<BookingResponseDto> addBooking(
             @Valid @RequestBody BookingRequestDto bookingRequestDto,
             @AuthenticationPrincipal AppUser currentUser) {
-        Booking createdBooking = bookingService.createBooking(bookingRequestDto, currentUser);
-        return bookingResponseMapper.toDto(createdBooking);
+        BookingResponseDto createdBookingResponse = bookingService.createBooking(bookingRequestDto, currentUser);
+         return ResponseEntity.status(HttpStatus.CREATED).body(createdBookingResponse);
     }
 
     @PostMapping("/bookings/{id}/accept")

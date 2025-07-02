@@ -52,6 +52,7 @@ public class Booking {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", nullable = false)
+    @ColumnDefault("'PENDING'")
     private BookingStatus status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

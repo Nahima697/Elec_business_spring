@@ -1,11 +1,13 @@
 package com.elec_business.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
 public record ChargingStationResponseDto(
-        UUID id,
+        @NotNull UUID id,
         String name,
         String description,
         BigDecimal powerKw,

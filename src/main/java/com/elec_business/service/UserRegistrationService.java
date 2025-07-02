@@ -23,7 +23,6 @@ public class UserRegistrationService {
     public AppUser registerUser(@Valid RegistrationDto request) {
         if (userRepository.existsByUsername(request.getUsername()) ||
                 userRepository.existsByEmail(request.getEmail())) {
-
             throw new ValidationException(
                     "Username or Email already exists");
         }

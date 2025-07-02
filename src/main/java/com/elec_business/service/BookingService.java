@@ -1,6 +1,7 @@
 package com.elec_business.service;
 
 import com.elec_business.dto.BookingRequestDto;
+import com.elec_business.dto.BookingResponseDto;
 import com.elec_business.model.*;
 import com.elec_business.mapper.BookingMapper;
 import com.elec_business.repository.*;
@@ -34,7 +35,7 @@ public class BookingService {
     private final BookingStatusRepository bookingStatusRepository;
 
     @Transactional
-    public Booking createBooking(BookingRequestDto bookingRequestDto, AppUser currentUser) {
+    public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, AppUser currentUser) {
         try {
 
             ChargingStation station = chargingStationRepository.findById(bookingRequestDto.getStationId())
@@ -73,13 +74,33 @@ public class BookingService {
             }
 
             // Crée le booking
-            BookingStatus pendingStatus = bookingStatusRepository.findByName("PENDING")
-                    .orElseThrow(() -> new IllegalStateException("Default booking status not found"));
-            booking.setStatus(pendingStatus);
+            if (booking.getStatus() == null) {
+                BookingStatus pendingStatus = bookingStatusRepository.findByName("PENDING")
+                        .orElseThrow(() -> new EntityNotFoundException("Status PENDING not found"));
+                booking.setStatus(pendingStatus);
+            }
+
             booking.setStartDate(start);
             booking.setEndDate(end);
 
-            bookingRepository.save(booking);
+           //Calcul du prix total basé sur la durée de la réservation
+            BigDecimal pricePerHour = station.getPrice();  // Prix par heure de la station
+            long durationInHours = Duration.between(booking.getStartDate(), booking.getEndDate()).toHours();
+
+            if (durationInHours <= 0) {
+                throw new IllegalArgumentException("The booking duration must be greater than 0 hours.");
+            }
+
+            // Calcul du prix total
+            BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationInHours));
+            booking.setTotalPrice(totalPrice);
+
+            // Définir la date de création (si nécessaire)
+            if (booking.getCreatedAt() == null) {
+                booking.setCreatedAt(Instant.now());
+            }
+
+           Booking savedBooking = bookingRepository.save(booking);
 
             // Notification envoyée après la sauvegarde du booking
             Notification notif = new Notification();
@@ -89,7 +110,15 @@ public class BookingService {
 
             log.info("Booking created successfully with ID: " + booking.getId());
 
-            return booking;
+            return new BookingResponseDto(
+                    savedBooking.getId(),
+                    savedBooking.getStartDate(),
+                    savedBooking.getEndDate(),
+                    savedBooking.getTotalPrice(),
+                    savedBooking.getStatus().getName(),
+                    savedBooking.getStation().getName(),
+                    currentUser.getUsername()
+            );
         } catch (Exception e) {
             log.error("An error occurred while creating the booking", e);
             throw new RuntimeException("Une erreur inattendue est survenue.", e);

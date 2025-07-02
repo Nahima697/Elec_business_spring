@@ -89,7 +89,6 @@ public class AppUser implements UserDetails {
         return Objects.hash(id, username, email, password, phoneNumber, emailVerified, phoneVerified, profilePictureUrl, role, createdAt, emailVerifiedAt, phoneVerifiedAt, emailVerifCode, phoneVerifCode, refreshTokens);
     }
 
-
     @Override
     public String getUsername() {
         return username;

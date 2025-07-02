@@ -16,7 +16,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-
     private final AppUserRepository appUserRepository;
 
     @Value("${email-verification.required:true}")
