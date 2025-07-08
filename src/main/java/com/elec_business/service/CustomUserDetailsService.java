@@ -5,12 +5,10 @@ import com.elec_business.exception.EmailNotVerifiedException;
 import com.elec_business.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -22,10 +20,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private boolean emailVerificationRequired;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AppUser> userOpt = appUserRepository.findByUsername(username);
-        AppUser user = userOpt.orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username: " + username)
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        AppUser user = appUserRepository.findByIdentifier(identifier).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with identifier: " + identifier)
         );
 
         if (emailVerificationRequired && Boolean.FALSE.equals(user.getEmailVerified())) {
@@ -34,5 +31,4 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return user;
     }
-
 }

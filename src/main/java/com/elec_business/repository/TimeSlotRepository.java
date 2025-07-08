@@ -2,6 +2,8 @@ package com.elec_business.repository;
 
 import com.elec_business.model.ChargingStation;
 import com.elec_business.model.TimeSlot;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,7 +21,7 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
     AND t.startTime <= :startTime
     AND t.endTime >= :endTime
 """)
-    List<TimeSlot> findAvailableTimeSlots(UUID stationId, Instant startTime, Instant endTime);
+    Page<TimeSlot> findAvailableTimeSlotsByPeriod(UUID stationId, Instant startTime, Instant endTime,Pageable pageable);
 
     @Query(value = """
     SELECT EXISTS (
@@ -38,5 +40,8 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
     @Query(value = "SELECT (count(t) > 0) FROM time_slot t WHERE t.station_id = ?1 AND t.availability && tsrange(?2, ?3, '[)')", nativeQuery = true)
     boolean existsByStationAndAvailability(UUID stationId, Instant startTime, Instant endTime);
 
+    void deleteByStartTimeBefore(Instant now);
+
+    Page<TimeSlot> findByStationId(UUID stationId, Pageable pageable);
 
 }

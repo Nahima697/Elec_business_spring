@@ -4,29 +4,34 @@ package com.elec_business.service;
 import com.elec_business.dto.TimeSlotResponseDto;
 import com.elec_business.mapper.TimeSlotMapper;
 import com.elec_business.mapper.TimeSlotResponseMapper;
+import com.elec_business.model.AvailabilityRule;
 import com.elec_business.model.ChargingStation;
 import com.elec_business.model.TimeSlot;
 import com.elec_business.repository.ChargingStationRepository;
 import com.elec_business.repository.TimeSlotRepository;
-import io.hypersistence.utils.hibernate.type.range.Range;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class TimeSlotService {
 
-    @Autowired
+
     private TimeSlotRepository timeSlotRepository;
 
-    @Autowired
     private ChargingStationRepository chargingStationRepository;
-
-    @Autowired
-    private TimeSlotMapper timeSlotMapper; // Le mapper qui va transformer le DTO en entité
+    private TimeSlotMapper timeSlotMapper;
     private TimeSlotResponseMapper timeSlotResponseMapper;
 
     @Transactional
@@ -54,4 +59,44 @@ public class TimeSlotService {
                 savedTimeSlot.getEndTime()
         );
     }
+
+    public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules) {
+        List<TimeSlot> generatedSlots = new ArrayList<>();
+
+        for (AvailabilityRule rule : rules) {
+            LocalDate currentDate = startDate;
+
+            while (!currentDate.isAfter(endDate)) {
+                if (currentDate.getDayOfWeek().getValue() == rule.getDayOfWeek()) {
+                    ZonedDateTime zonedStart = currentDate.atTime(rule.getStartTime()).atZone(ZoneId.systemDefault());
+                    ZonedDateTime zonedEnd = currentDate.atTime(rule.getEndTime()).atZone(ZoneId.systemDefault());
+
+                    TimeSlot slot = new TimeSlot();
+                    slot.setStation(rule.getChargingStation());
+                    slot.setStartTime(zonedStart.toInstant());
+                    slot.setEndTime(zonedEnd.toInstant());
+
+                    generatedSlots.add(slot);
+                }
+                currentDate = currentDate.plusDays(1);
+            }
+        }
+
+        timeSlotRepository.saveAll(generatedSlots);
+    }
+
+    public void purgeOldTimeSlots() {
+        timeSlotRepository.deleteByStartTimeBefore(Instant.now());
+    }
+
+    public Page<TimeSlotResponseDto> getAvailableSlots(UUID stationId, Pageable pageable) {
+        return timeSlotRepository.findByStationId(stationId, pageable)
+                .map(timeSlotResponseMapper::toDto);
+    }
+
+    public Page<TimeSlotResponseDto> getAvailableSlotsByPeriode(UUID stationId, Instant startTime, Instant endTime, Pageable pageable) {
+        return timeSlotRepository.findAvailableTimeSlotsByPeriod(stationId,startTime,endTime,pageable)
+                .map(timeSlotResponseMapper::toDto);
+    }
+
 }
