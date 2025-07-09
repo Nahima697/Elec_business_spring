@@ -1,9 +1,9 @@
-package com.elec_business.model;
+package com.elec_business.notification;
 
-import com.elec_business.charging_station.model.ChargingStation;
 import com.elec_business.user.model.AppUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -16,8 +16,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "review", schema = "public")
-public class Review {
+@Table(name = "notification", schema = "public")
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @ColumnDefault("uuid_generate_v4()")
@@ -26,17 +26,20 @@ public class Review {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "station_id", nullable = false)
-    private ChargingStation station;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser user;
 
-    @Column(name = "comments", length = Integer.MAX_VALUE)
-    private String comments;
+    @Size(max = 50)
+    @Column(name = "type", length = 50)
+    private String type;
+
+    @Column(name = "message", length = Integer.MAX_VALUE)
+    private String message;
+
+    @ColumnDefault("false")
+    @Column(name = "is_read")
+    private Boolean isRead;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
