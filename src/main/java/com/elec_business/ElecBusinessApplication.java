@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.elec_business.repository")
+@EnableJpaRepositories(basePackages = "com.elec_business")
 @EnableScheduling
 public class ElecBusinessApplication {
 

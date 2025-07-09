@@ -26,7 +26,6 @@ import java.util.UUID;
 public class BookingController {
 
     private final BookingService bookingService;
-    private final BookingMapper bookingMapper;
     private final BookingResponseMapper bookingResponseMapper;
 
     @PostMapping("/bookings")
@@ -42,8 +41,7 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public BookingResponseDto validateBooking(@PathVariable UUID id,
                                               @AuthenticationPrincipal AppUser currentUser) throws AccessDeniedException {
-        Booking booking = bookingService.acceptBooking(id, currentUser);
-        return bookingResponseMapper.toDto(booking);
+        return bookingService.acceptBooking(id, currentUser);
     }
 
     @PutMapping("/bookings/{id}")
@@ -51,22 +49,20 @@ public class BookingController {
     public BookingResponseDto updateBooking(@PathVariable UUID id,
                                             @Valid @RequestBody BookingRequestDto bookingRequestDto,
                                             @AuthenticationPrincipal AppUser currentUser) throws AccessDeniedException {
-        Booking updated = bookingService.updateBooking(id, bookingRequestDto, currentUser);
-        return bookingResponseMapper.toDto(updated); // Correction ici
+        return  bookingService.updateBooking(id, bookingRequestDto, currentUser);
+
     }
 
     @GetMapping("/bookings")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingResponseDto> getAllBookings() {
-        return bookingService.getAllBookings().stream()
-                .map(bookingResponseMapper::toDto)
-                .toList();
+        return bookingService.getAllBookings();
     }
 
     @GetMapping("/bookings/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BookingResponseDto getBooking(@PathVariable UUID id) {
-        return bookingResponseMapper.toDto(bookingService.getBookingById(id));
+        return bookingService.getBookingById(id);
     }
 
     @DeleteMapping("/bookings/{id}")

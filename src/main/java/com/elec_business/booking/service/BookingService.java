@@ -5,20 +5,21 @@ import com.elec_business.availability.repository.TimeSlotRepository;
 import com.elec_business.booking.mapper.BookingMapper;
 import com.elec_business.booking.dto.BookingRequestDto;
 import com.elec_business.booking.dto.BookingResponseDto;
+import com.elec_business.booking.mapper.BookingResponseMapper;
 import com.elec_business.booking.model.Booking;
 import com.elec_business.booking.model.BookingStatus;
 import com.elec_business.booking.repository.BookingRepository;
 import com.elec_business.booking.repository.BookingStatusRepository;
 import com.elec_business.charging_station.model.ChargingStation;
 import com.elec_business.charging_station.repository.ChargingStationRepository;
-import com.elec_business.notification.Notification;
-import com.elec_business.notification.NotificationRepository;
+import com.elec_business.notification.eventlistener.BookingAcceptedEvent;
 import com.elec_business.user.model.AppUser;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +30,19 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+
 @Service
 @RequiredArgsConstructor
 public class BookingService {
 
-    private static Logger log = LoggerFactory.getLogger(BookingService.class);
+    private final static Logger log = LoggerFactory.getLogger(BookingService.class);
     private final BookingRepository bookingRepository;
     private final ChargingStationRepository chargingStationRepository;
-    private final NotificationRepository notificationRepository;
     private final TimeSlotRepository timeSlotRepository;
     private final BookingMapper bookingMapper;
+    private final BookingResponseMapper bookingResponseMapper;
     private final BookingStatusRepository bookingStatusRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, AppUser currentUser) {
@@ -110,10 +113,10 @@ public class BookingService {
            Booking savedBooking = bookingRepository.save(booking);
 
             // Notification envoyée après la sauvegarde du booking
-            Notification notif = new Notification();
-            notif.setUser(station.getLocation().getUser());
-            notif.setMessage("Vous avez reçu une demande de réservation");
-            notificationRepository.save(notif);
+//            Notification notif = new Notification();
+//            notif.setUser(station.getLocation().getUser());
+//            notif.setMessage("Vous avez reçu une demande de réservation");
+//            notificationRepository.save(notif);
 
             log.info("Booking created successfully with ID: " + booking.getId());
 
@@ -132,13 +135,11 @@ public class BookingService {
         }
     }
 
-
-    public Booking acceptBooking(UUID bookingId, AppUser currentUser) throws AccessDeniedException {
+    @Transactional
+    public BookingResponseDto acceptBooking(UUID bookingId, AppUser currentUser) throws AccessDeniedException {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
-
         ChargingStation station = booking.getStation();
-
         if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not the owner of this station");
         }
@@ -149,27 +150,27 @@ public class BookingService {
 
         bookingRepository.save(booking);
 
-        //A remplacer par un eventListener
-//        eventPublisher.publishEvent(
-//                new BookingAcceptedEvent(booking.getId(), booking.getUser().getId(), booking.getStartTime())
-//        );
-        Notification notif = new Notification();
-        notif.setUser(booking.getUser());
-        notif.setMessage("Votre réservation a été acceptée !");
-        notificationRepository.save(notif);
+        eventPublisher.publishEvent(
+                new BookingAcceptedEvent(booking, booking.getUser())
+        );
 
-        return booking;
+        log.info("BookingAcceptedEvent published for booking ID: {}", booking.getId());
+
+        return bookingResponseMapper.toDto(booking);
+
     }
 
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<BookingResponseDto> getAllBookings() {
+        return bookingRepository.findAll().stream()
+                .map(bookingResponseMapper::toDto)
+                .toList();
     }
 
-    public Booking getBookingById(UUID id) {
-        return bookingRepository.findBookingById(id);
+    public BookingResponseDto getBookingById(UUID id) {
+        return bookingResponseMapper.toDto(bookingRepository.findBookingById(id))   ;
     }
 
-    public Booking updateBooking(UUID id, BookingRequestDto dto, AppUser currentUser) throws AccessDeniedException {
+    public BookingResponseDto updateBooking(UUID id, BookingRequestDto dto, AppUser currentUser) throws AccessDeniedException {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
 
@@ -196,7 +197,7 @@ public class BookingService {
         booking.setStation(chargingStationRepository.findById(dto.getStationId())
                 .orElseThrow(() -> new EntityNotFoundException("Station not found")));
 
-        return bookingRepository.save(booking);
+        return bookingResponseMapper.toDto(bookingRepository.save(booking));
     }
 
     public void deleteBooking(UUID id) {
