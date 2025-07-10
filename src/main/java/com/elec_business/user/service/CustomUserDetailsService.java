@@ -1,7 +1,7 @@
 package com.elec_business.user.service;
 
 import com.elec_business.user.model.AppUser;
-import com.elec_business.exception.EmailNotVerifiedException;
+import com.elec_business.user.exception.EmailNotVerifiedException;
 import com.elec_business.user.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

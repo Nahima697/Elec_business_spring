@@ -1,16 +1,21 @@
 package com.elec_business.booking.dto;
 
+import lombok.Builder;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-public record BookingResponseDto (
-    UUID id,
-    Instant startDate,
-    Instant endDate,
-    BigDecimal totalPrice,
-    String statusLabel,
-    String stationName,
-    String userName) {
+@Data
+@Builder
+public class BookingResponseDto {
+    private UUID id;
+    private Instant startDate;
+    private Instant endDate;
+    private BigDecimal totalPrice;
+    private String statusLabel;
+    private String stationName;
+    private String userName;
+    private String stationOwnerName;
 }

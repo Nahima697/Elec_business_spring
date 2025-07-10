@@ -1,11 +1,8 @@
 package com.elec_business.booking.controller;
 
-import com.elec_business.booking.mapper.BookingMapper;
-import com.elec_business.booking.mapper.BookingResponseMapper;
 import com.elec_business.booking.service.BookingService;
 import com.elec_business.booking.dto.BookingRequestDto;
 import com.elec_business.booking.dto.BookingResponseDto;
-import com.elec_business.booking.model.Booking;
 import com.elec_business.user.model.AppUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,10 +22,8 @@ import java.util.UUID;
 public class BookingController {
 
     private final BookingService bookingService;
-    private final BookingResponseMapper bookingResponseMapper;
 
     @PostMapping("/bookings")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<BookingResponseDto> addBooking(
             @Valid @RequestBody BookingRequestDto bookingRequestDto,
             @AuthenticationPrincipal AppUser currentUser) {
@@ -40,7 +34,8 @@ public class BookingController {
     @PostMapping("/bookings/{id}/accept")
     @ResponseStatus(HttpStatus.OK)
     public BookingResponseDto validateBooking(@PathVariable UUID id,
-                                              @AuthenticationPrincipal AppUser currentUser) throws AccessDeniedException {
+                                              @AuthenticationPrincipal AppUser currentUser)
+    {
         return bookingService.acceptBooking(id, currentUser);
     }
 
@@ -48,11 +43,11 @@ public class BookingController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public BookingResponseDto updateBooking(@PathVariable UUID id,
                                             @Valid @RequestBody BookingRequestDto bookingRequestDto,
-                                            @AuthenticationPrincipal AppUser currentUser) throws AccessDeniedException {
+                                            @AuthenticationPrincipal AppUser currentUser)
+    {
         return  bookingService.updateBooking(id, bookingRequestDto, currentUser);
 
     }
-
     @GetMapping("/bookings")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingResponseDto> getAllBookings() {

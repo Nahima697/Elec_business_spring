@@ -18,7 +18,7 @@ public class BookingNotificationListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleBookingAccepted(BookingAcceptedEvent event) {
-        log.info("⚡ NotificationService.sendNotificationBookingAccepted triggered for user {}", event.currentUser().getEmail());
-        notificationService.sendNotificationBookingAccepted(event.booking(), event.currentUser());
+        log.info("⚡ NotificationService.sendNotificationBookingAccepted triggered for user {}", event.getCurrentUser().getEmail());
+        notificationService.sendNotificationBookingAccepted(event.getBooking(), event.getCurrentUser());
     }
 }

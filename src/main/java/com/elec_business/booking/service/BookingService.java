@@ -5,7 +5,6 @@ import com.elec_business.availability.repository.TimeSlotRepository;
 import com.elec_business.booking.mapper.BookingMapper;
 import com.elec_business.booking.dto.BookingRequestDto;
 import com.elec_business.booking.dto.BookingResponseDto;
-import com.elec_business.booking.mapper.BookingResponseMapper;
 import com.elec_business.booking.model.Booking;
 import com.elec_business.booking.model.BookingStatus;
 import com.elec_business.booking.repository.BookingRepository;
@@ -39,62 +38,55 @@ public class BookingService {
     private final ChargingStationRepository chargingStationRepository;
     private final TimeSlotRepository timeSlotRepository;
     private final BookingMapper bookingMapper;
-    private final BookingResponseMapper bookingResponseMapper;
     private final BookingStatusRepository bookingStatusRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     // Service pour la création d'une réservation
     @Transactional
     public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, AppUser currentUser) {
-        try {
 
-            // Vérification de l'existence de la station
-            ChargingStation station = chargingStationRepository.findById(bookingRequestDto.getStationId())
-                    .orElseThrow(() -> new EntityNotFoundException("Station not found"));
+        // Vérification de l'existence de la station
+        ChargingStation station = chargingStationRepository.findById(bookingRequestDto.getStationId())
+                .orElseThrow(() -> new EntityNotFoundException("Station not found"));
 
-            // Création de la réservation
-            Booking booking = bookingMapper.toEntity(bookingRequestDto);
-            booking.setUser(currentUser);
-            booking.setStation(station);
+        // Création de la réservation
+        Booking booking = bookingMapper.toEntity(bookingRequestDto);
+        booking.setUser(currentUser);
+        booking.setStation(station);
 
-            Instant start = bookingRequestDto.getStartDate();
-            Instant end = bookingRequestDto.getEndDate();
+        Instant start = bookingRequestDto.getStartDate();
+        Instant end = bookingRequestDto.getEndDate();
 
-            // Vérification que la date de fin est après la date de début
-            if (end.isBefore(start)) {
-                throw new InvalidBookingDurationException("End date must be after start date");
-            }
-
-            // Vérification de la disponibilité du créneau
-            verifyAvailability(station, booking);
-
-            // Création du créneau horaire
-            createAndSaveTimeSlot(station, booking);
-
-            // Définition de l'état de la réservation
-            setBookingStatus(booking);
-
-            // Calcul du prix total
-            BigDecimal totalPrice = calculateTotalPrice(station, booking);
-            booking.setTotalPrice(totalPrice);
-
-            // Définir la date de création
-            if (booking.getCreatedAt() == null) {
-                booking.setCreatedAt(Instant.now());
-            }
-
-            // Sauvegarde de la réservation
-            Booking savedBooking = bookingRepository.save(booking);
-
-            log.info("Booking created successfully with ID: " + booking.getId());
-
-            // Retourner la réponse
-            return bookingResponseMapper.toDto(savedBooking);
-
-        } catch (Exception e) {
-            log.error("An error occurred while creating the booking", e);
-            throw new RuntimeException("Une erreur inattendue est survenue.", e);
+        // Vérification que la date de fin est après la date de début
+        if (end.isBefore(start)) {
+            throw new InvalidBookingDurationException("End date must be after start date");
         }
+
+        // Vérification de la disponibilité du créneau
+        verifyAvailability(station, booking);
+
+        // Création du créneau horaire
+        createAndSaveTimeSlot(station, booking);
+
+        // Définition de l'état de la réservation
+        setBookingStatus(booking);
+
+        // Calcul du prix total
+        BigDecimal totalPrice = calculateTotalPrice(station, booking);
+        booking.setTotalPrice(totalPrice);
+
+        // Définir la date de création
+        if (booking.getCreatedAt() == null) {
+            booking.setCreatedAt(Instant.now());
+        }
+
+        // Sauvegarde de la réservation
+        Booking savedBooking = bookingRepository.save(booking);
+
+        log.info("Booking created successfully with ID: " + booking.getId());
+
+        // Retourner la réponse
+        return bookingMapper.toDto(savedBooking);
     }
 
     // Méthode pour créer et sauvegarder un créneau horaire
@@ -160,19 +152,19 @@ public class BookingService {
 
         log.info("BookingAcceptedEvent published for booking ID: {}", booking.getId());
 
-        return bookingResponseMapper.toDto(booking);
+        return bookingMapper.toDto(booking);
     }
 
     // Récupération de toutes les réservations
     public List<BookingResponseDto> getAllBookings() {
         return bookingRepository.findAll().stream()
-                .map(bookingResponseMapper::toDto)
+                .map(bookingMapper::toDto)
                 .toList();
     }
 
     // Récupération d'une réservation par ID
     public BookingResponseDto getBookingById(UUID id) {
-        return bookingResponseMapper.toDto(bookingRepository.findBookingById(id));
+        return bookingMapper.toDto(bookingRepository.findBookingById(id));
     }
 
     // Mise à jour d'une réservation
@@ -197,7 +189,7 @@ public class BookingService {
         booking.setStation(chargingStationRepository.findById(dto.getStationId())
                 .orElseThrow(() -> new EntityNotFoundException("Station not found")));
 
-        return bookingResponseMapper.toDto(bookingRepository.save(booking));
+        return bookingMapper.toDto(bookingRepository.save(booking));
     }
 
     // Suppression d'une réservation

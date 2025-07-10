@@ -5,7 +5,7 @@ import com.elec_business.user.dto.RegistrationDto;
 import com.elec_business.user.dto.RegistrationResponseDto;
 import com.elec_business.user.dto.UserRegisterDto;
 import com.elec_business.user.model.AppUser;
-import com.elec_business.exception.EmailNotVerifiedException;
+import com.elec_business.user.exception.EmailNotVerifiedException;
 import com.elec_business.user.mapper.AppUserMapper;
 import com.elec_business.user.mapper.RegistrationResponseMapper;
 import com.elec_business.user.repository.AppUserRepository;

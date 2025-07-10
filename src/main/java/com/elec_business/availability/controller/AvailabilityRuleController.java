@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/availability-rules")
+@RequestMapping("/api/availability_rules")
 public class AvailabilityRuleController {
 
     private final AvailabilityRuleService service;
