@@ -22,6 +22,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -98,11 +99,10 @@ public class AuthController {
         return ResponseEntity.ok("Verification email resent.");
     }
 
-
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AppUser appUser) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody AppUser appUser) {
         if (appUser.getUsername() == null || appUser.getPassword() == null) {
-            return ResponseEntity.badRequest().body("Missing username or password.");
+            return ResponseEntity.badRequest().body(Map.of("error", "Missing username or password."));
         }
 
         try {
@@ -114,28 +114,36 @@ public class AuthController {
                 Map<String, Object> authData = new HashMap<>();
                 authData.put("token", jwtUtil.generateToken(appUser.getUsername()));
                 authData.put("type", "Bearer");
-                return ResponseEntity.ok(authData.toString());
+
+                return ResponseEntity.ok(authData);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Authentication failed."));
             }
 
         } catch (AuthenticationException e) {
             Throwable cause = e.getCause();
-
             if (cause instanceof EmailNotVerifiedException) {
-                return ResponseEntity
-                        .status(HttpStatus.FORBIDDEN)
-                        .body("Email not verified.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("error", "Email not verified."));
             }
 
             log.warn("Authentication failed for user: {}", appUser.getUsername(), e);
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid username or password.");
-        }
-        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid username or password."));
+        } catch (Exception e) {
             log.error("Unexpected error during login", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error during login.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Unexpected error during login."));
         }
     }
+        @GetMapping("/me")
+        public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal AppUser currentUser){
+            if (currentUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+              return ResponseEntity.ok(userRegistrationService.getCurrentUser(currentUser));
+        }
 }
+
+

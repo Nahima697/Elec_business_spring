@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,17 +47,27 @@ public class ChargingStationService {
             String imageUrl;
 
             if (dto.getImage() != null && !dto.getImage().isEmpty()) {
-                imageUrl = fileStorageService.saveImage(dto.getImage());
-            } else {
-                imageUrl = "/uploads/default.png";
-            }
-            station.setImageUrl(imageUrl);
+                // Vérifie le type MIME
+                boolean isValidImage = fileStorageService.checkMediaType(dto.getImage(), "image");
+                if (!isValidImage) {
+                    throw new IllegalArgumentException("Le fichier fourni n'est pas une image valide.");
+                }
 
+                // Upload + génération de miniature
+                imageUrl = fileStorageService.upload(dto.getImage());
+            } else {
+                imageUrl = "default.png";
+
+            }
+
+            station.setImageUrl(imageUrl);
+            station.setCreatedAt(Instant.now());
             return chargingStationRepository.save(station);
+
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("Could not save charging station", e);
         }
+
     }
 
     public List<ChargingStation> getAllChargingStations() {
@@ -66,6 +77,10 @@ public class ChargingStationService {
     public ChargingStation getChargingStationById(UUID id) {
         return chargingStationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Charging station not found"));
+    }
+
+    public List<ChargingStation> getByLocationId(UUID id) {
+        return chargingStationRepository.findByLocation_Id(id);
     }
 
     public ChargingStation getChargingStationByName(String name) {

@@ -101,7 +101,7 @@ public class AppUser implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() { return true; }
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() { return emailVerified || phoneVerified; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

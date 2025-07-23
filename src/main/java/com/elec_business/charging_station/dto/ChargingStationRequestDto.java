@@ -1,5 +1,6 @@
 package com.elec_business.charging_station.dto;
 
+import com.elec_business.service.UrlBuilder;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -45,4 +46,6 @@ public class ChargingStationRequestDto {
     private UUID locationId;
 
     private MultipartFile image;
+
+
 }

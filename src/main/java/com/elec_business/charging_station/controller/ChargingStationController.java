@@ -34,7 +34,7 @@ public class ChargingStationController {
         return chargingStationResponseMapper.toDto(createdStation);
     }
 
-    @PatchMapping("/charging_stations/{id}")
+    @PutMapping("/charging_stations/{id}")
     public ChargingStationResponseDto updateStation(@PathVariable UUID id,
                                                     @RequestBody @Valid ChargingStationUpdateRequestDto dto,
                                                     @AuthenticationPrincipal AppUser currentUser) throws AccessDeniedException {
@@ -45,6 +45,14 @@ public class ChargingStationController {
     @GetMapping("/charging_stations")
     public List<ChargingStationResponseDto> getAllChargingStations() {
         return chargingStationService.getAllChargingStations()
+                .stream()
+                .map(chargingStationResponseMapper::toDto)
+                .toList();
+    }
+
+    @GetMapping("/charging_stations/location/{locationId}")
+    public List<ChargingStationResponseDto> getChargingStationsByUser(@PathVariable UUID locationId) {
+        return chargingStationService.getByLocationId(locationId)
                 .stream()
                 .map(chargingStationResponseMapper::toDto)
                 .toList();

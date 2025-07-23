@@ -1,6 +1,8 @@
 package com.elec_business.user.service;
 
 import com.elec_business.user.dto.RegistrationDto;
+import com.elec_business.user.dto.UserRegisterDto;
+import com.elec_business.user.mapper.AppUserMapper;
 import com.elec_business.user.model.AppUser;
 import com.elec_business.user.mapper.UserRegistrationMapper;
 import com.elec_business.user.repository.AppUserRepository;
@@ -18,6 +20,7 @@ public class UserRegistrationService {
     private final AppUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRegistrationMapper userRegistrationMapper;
+    private final AppUserMapper appUserMapper;
 
     @Transactional
     public AppUser registerUser(@Valid RegistrationDto request) {
@@ -32,5 +35,9 @@ public class UserRegistrationService {
         user.setEmailVerified(false);
 
         return userRepository.save(user);
+    }
+
+    public UserRegisterDto getCurrentUser(AppUser user) {
+        return appUserMapper.toDto(user);
     }
 }

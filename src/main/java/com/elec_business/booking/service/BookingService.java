@@ -1,7 +1,7 @@
 package com.elec_business.booking.service;
 
-import com.elec_business.availability.model.TimeSlot;
-import com.elec_business.availability.repository.TimeSlotRepository;
+import com.elec_business.charging_station.availability.model.TimeSlot;
+import com.elec_business.charging_station.availability.repository.TimeSlotRepository;
 import com.elec_business.booking.mapper.BookingMapper;
 import com.elec_business.booking.dto.BookingRequestDto;
 import com.elec_business.booking.dto.BookingResponseDto;
