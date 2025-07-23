@@ -1,4 +1,4 @@
-package com.elec_business.availability.model;
+package com.elec_business.charging_station.availability.model;
 
 import com.elec_business.charging_station.model.ChargingStation;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package com.elec_business.availability.dto;
+package com.elec_business.charging_station.availability.dto;
 
 import com.elec_business.charging_station.model.ChargingStation;
 import jakarta.validation.constraints.NotNull;

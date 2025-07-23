@@ -1,6 +1,6 @@
-package com.elec_business.availability.repository;
+package com.elec_business.charging_station.availability.repository;
 
-import com.elec_business.availability.model.TimeSlot;
+import com.elec_business.charging_station.availability.model.TimeSlot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

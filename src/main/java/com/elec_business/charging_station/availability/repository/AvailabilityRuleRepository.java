@@ -1,6 +1,6 @@
-package com.elec_business.availability.repository;
+package com.elec_business.charging_station.availability.repository;
 
-import com.elec_business.availability.model.AvailabilityRule;
+import com.elec_business.charging_station.availability.model.AvailabilityRule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

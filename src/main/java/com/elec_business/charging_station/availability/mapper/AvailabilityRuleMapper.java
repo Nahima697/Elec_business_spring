@@ -1,7 +1,7 @@
-package com.elec_business.availability.mapper;
+package com.elec_business.charging_station.availability.mapper;
 
-import com.elec_business.availability.dto.AvailabilityRuleDto;
-import com.elec_business.availability.model.AvailabilityRule;
+import com.elec_business.charging_station.availability.dto.AvailabilityRuleDto;
+import com.elec_business.charging_station.availability.model.AvailabilityRule;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

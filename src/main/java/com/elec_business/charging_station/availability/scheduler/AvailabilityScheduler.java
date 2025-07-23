@@ -1,9 +1,9 @@
-package com.elec_business.availability.scheduler;
+package com.elec_business.charging_station.availability.scheduler;
 
-import com.elec_business.availability.model.AvailabilityRule;
-import com.elec_business.availability.repository.AvailabilityRuleRepository;
-import com.elec_business.availability.service.AvailabilityRuleService;
-import com.elec_business.availability.service.TimeSlotService;
+import com.elec_business.charging_station.availability.model.AvailabilityRule;
+import com.elec_business.charging_station.availability.repository.AvailabilityRuleRepository;
+import com.elec_business.charging_station.availability.service.AvailabilityRuleService;
+import com.elec_business.charging_station.availability.service.TimeSlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

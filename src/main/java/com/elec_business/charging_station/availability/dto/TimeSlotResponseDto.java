@@ -1,4 +1,4 @@
-package com.elec_business.availability.dto;
+package com.elec_business.charging_station.availability.dto;
 
 import java.time.Instant;
 import java.util.UUID;

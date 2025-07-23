@@ -1,7 +1,7 @@
-package com.elec_business.availability.controller;
+package com.elec_business.charging_station.availability.controller;
 
-import com.elec_business.availability.dto.AvailabilityRuleDto;
-import com.elec_business.availability.service.AvailabilityRuleService;
+import com.elec_business.charging_station.availability.dto.AvailabilityRuleDto;
+import com.elec_business.charging_station.availability.service.AvailabilityRuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

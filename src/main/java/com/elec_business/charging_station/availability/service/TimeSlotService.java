@@ -1,12 +1,12 @@
-package com.elec_business.availability.service;
+package com.elec_business.charging_station.availability.service;
 
 
-import com.elec_business.availability.mapper.TimeSlotMapper;
-import com.elec_business.availability.mapper.TimeSlotResponseMapper;
-import com.elec_business.availability.dto.TimeSlotResponseDto;
-import com.elec_business.availability.model.AvailabilityRule;
-import com.elec_business.availability.model.TimeSlot;
-import com.elec_business.availability.repository.TimeSlotRepository;
+import com.elec_business.charging_station.availability.mapper.TimeSlotMapper;
+import com.elec_business.charging_station.availability.mapper.TimeSlotResponseMapper;
+import com.elec_business.charging_station.availability.dto.TimeSlotResponseDto;
+import com.elec_business.charging_station.availability.model.AvailabilityRule;
+import com.elec_business.charging_station.availability.model.TimeSlot;
+import com.elec_business.charging_station.availability.repository.TimeSlotRepository;
 import com.elec_business.charging_station.model.ChargingStation;
 import com.elec_business.charging_station.repository.ChargingStationRepository;
 import jakarta.transaction.Transactional;

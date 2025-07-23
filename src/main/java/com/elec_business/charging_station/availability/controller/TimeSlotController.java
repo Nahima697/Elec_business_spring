@@ -1,8 +1,8 @@
-package com.elec_business.availability.controller;
+package com.elec_business.charging_station.availability.controller;
 
-import com.elec_business.availability.dto.TimeSlotRequestDto;
-import com.elec_business.availability.dto.TimeSlotResponseDto;
-import com.elec_business.availability.service.TimeSlotService;
+import com.elec_business.charging_station.availability.dto.TimeSlotRequestDto;
+import com.elec_business.charging_station.availability.dto.TimeSlotResponseDto;
+import com.elec_business.charging_station.availability.service.TimeSlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

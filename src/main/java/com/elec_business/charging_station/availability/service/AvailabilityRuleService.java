@@ -1,9 +1,9 @@
-package com.elec_business.availability.service;
+package com.elec_business.charging_station.availability.service;
 
-import com.elec_business.availability.mapper.AvailabilityRuleMapper;
-import com.elec_business.availability.dto.AvailabilityRuleDto;
-import com.elec_business.availability.model.AvailabilityRule;
-import com.elec_business.availability.repository.AvailabilityRuleRepository;
+import com.elec_business.charging_station.availability.mapper.AvailabilityRuleMapper;
+import com.elec_business.charging_station.availability.dto.AvailabilityRuleDto;
+import com.elec_business.charging_station.availability.model.AvailabilityRule;
+import com.elec_business.charging_station.availability.repository.AvailabilityRuleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
