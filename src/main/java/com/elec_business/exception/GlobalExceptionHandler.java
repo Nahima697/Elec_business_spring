@@ -1,8 +1,8 @@
 package com.elec_business.exception;
 
-import com.elec_business.booking.exception.BookingNotFoundException;
-import com.elec_business.booking.exception.InvalidBookingDurationException;
-import com.elec_business.user.exception.EmailNotVerifiedException;
+import com.elec_business.business.exception.BookingNotFoundException;
+import com.elec_business.business.exception.InvalidBookingDurationException;
+import com.elec_business.business.exception.EmailNotVerifiedException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.coyote.BadRequestException;
