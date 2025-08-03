@@ -1,4 +1,4 @@
-package com.elec_business.service.impl;
+package com.elec_business.service;
 
 import jakarta.annotation.PostConstruct;
 import net.coobird.thumbnailator.Thumbnails;
@@ -22,9 +22,9 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
-public class FileStorageServiceImpl {
+public class FileStorageService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileStorageServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
 
     @Value("${file.upload.folder}")
     private String uploadFolderString;

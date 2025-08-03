@@ -10,7 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -22,15 +22,14 @@ import java.util.UUID;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @ColumnDefault("uuid_generate_v4()")
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private String id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private AppUser user;
+    private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface BookingRepository extends JpaRepository<Booking, UUID> {
+public interface BookingRepository extends JpaRepository<Booking, String> {
 
-    Booking findBookingById(UUID id);
+    Booking findBookingById(String id);
 
-    void deleteBookingById(UUID id);
+    void deleteBookingById(String id);
 
     @Query("""
     SELECT b FROM Booking b
@@ -28,8 +28,8 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
     List<Booking> findConflictsExcludingBooking(
             @Param("startDate") Instant startDate,
             @Param("endDate") Instant endDate,
-            @Param("stationId") UUID stationId,
-            @Param("bookingId") UUID bookingId);
+            @Param("stationId") String stationId,
+            @Param("bookingId") String bookingId);
 }
 
 

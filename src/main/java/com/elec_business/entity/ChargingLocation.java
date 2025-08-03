@@ -3,17 +3,20 @@ package com.elec_business.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "charging_location", schema = "public")
 public class ChargingLocation {
@@ -21,7 +24,7 @@ public class ChargingLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private String id;
 
     @Size(max = 255)
     @NotNull
@@ -51,7 +54,7 @@ public class ChargingLocation {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id",nullable = false)
-    private AppUser user;
+    private User user;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ChargingStation> chargingStations = new LinkedHashSet<>();

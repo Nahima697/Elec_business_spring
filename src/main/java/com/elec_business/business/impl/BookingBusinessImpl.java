@@ -1,10 +1,9 @@
 package com.elec_business.business.impl;
 
+import com.elec_business.business.BookingBusiness;
+import com.elec_business.business.exception.AccessDeniedStationException;
 import com.elec_business.entity.TimeSlot;
 import com.elec_business.repository.TimeSlotRepository;
-import com.elec_business.controller.mapper.BookingMapper;
-import com.elec_business.controller.dto.BookingRequestDto;
-import com.elec_business.controller.dto.BookingResponseDto;
 import com.elec_business.entity.Booking;
 import com.elec_business.entity.BookingStatus;
 import com.elec_business.repository.BookingRepository;
@@ -12,7 +11,7 @@ import com.elec_business.repository.BookingStatusRepository;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.repository.ChargingStationRepository;
 import com.elec_business.business.eventlistener.BookingAcceptedEvent;
-import com.elec_business.entity.AppUser;
+import com.elec_business.entity.User;
 import com.elec_business.business.exception.BookingNotFoundException;
 import com.elec_business.business.exception.InvalidBookingDurationException;
 import com.elec_business.business.exception.AccessDeniedBookingException;
@@ -27,39 +26,37 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
-public class BookingBusinessImpl {
+public class BookingBusinessImpl implements BookingBusiness {
 
-    private final static Logger log = LoggerFactory.getLogger(BookingBusinessImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingBusinessImpl.class);
     private final BookingRepository bookingRepository;
     private final ChargingStationRepository chargingStationRepository;
     private final TimeSlotRepository timeSlotRepository;
-    private final BookingMapper bookingMapper;
     private final BookingStatusRepository bookingStatusRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     // Service pour la création d'une réservation
     @Transactional
-    public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, AppUser currentUser) {
+    public Booking createBooking(Booking booking, User currentUser) {
 
         // Vérification de l'existence de la station
-        ChargingStation station = chargingStationRepository.findById(bookingRequestDto.getStationId())
+        ChargingStation station = chargingStationRepository.findById(booking.getStation().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Station not found"));
 
         // Création de la réservation
-        Booking booking = bookingMapper.toEntity(bookingRequestDto);
         booking.setUser(currentUser);
         booking.setStation(station);
 
-        Instant start = bookingRequestDto.getStartDate();
-        Instant end = bookingRequestDto.getEndDate();
+        Instant start = booking.getStartDate();
+        Instant end = booking.getEndDate();
 
         // Vérification que la date de fin est après la date de début
         if (end.isBefore(start)) {
-            throw new InvalidBookingDurationException("End date must be after start date");
+            throw new InvalidBookingDurationException();
         }
 
         // Vérification de la disponibilité du créneau
@@ -86,11 +83,11 @@ public class BookingBusinessImpl {
         log.info("Booking created successfully with ID: " + booking.getId());
 
         // Retourner la réponse
-        return bookingMapper.toDto(savedBooking);
+        return savedBooking;
     }
 
     // Méthode pour créer et sauvegarder un créneau horaire
-    private void createAndSaveTimeSlot(ChargingStation station, Booking booking) {
+    public void createAndSaveTimeSlot(ChargingStation station, Booking booking) {
         TimeSlot slot = new TimeSlot();
         slot.setStation(station);
         slot.setStartTime(booking.getStartDate());
@@ -101,7 +98,7 @@ public class BookingBusinessImpl {
     }
 
     // Vérification de la disponibilité du créneau
-    private void verifyAvailability(ChargingStation station, Booking booking) {
+    public void verifyAvailability(ChargingStation station, Booking booking) {
         boolean isAvailable = timeSlotRepository.isSlotAvailable(station.getId(), booking.getStartDate(), booking.getEndDate());
         if (!isAvailable) {
             throw new IllegalStateException("La plage horaire n’est pas disponible pour cette borne.");
@@ -109,7 +106,7 @@ public class BookingBusinessImpl {
     }
 
     // Définition de l'état de la réservation à "PENDING"
-    private void setBookingStatus(Booking booking) {
+    public void setBookingStatus(Booking booking) {
         if (booking.getStatus() == null) {
             BookingStatus pendingStatus = bookingStatusRepository.findByName("PENDING")
                     .orElseThrow(() -> new EntityNotFoundException("Status PENDING not found"));
@@ -118,12 +115,12 @@ public class BookingBusinessImpl {
     }
 
     // Calcul du prix total basé sur la durée de la réservation
-    private BigDecimal calculateTotalPrice(ChargingStation station, Booking booking) {
+    public BigDecimal calculateTotalPrice(ChargingStation station, Booking booking) {
         BigDecimal pricePerHour = station.getPrice();
         long durationInHours = Duration.between(booking.getStartDate(), booking.getEndDate()).toHours();
 
         if (durationInHours <= 0) {
-            throw new InvalidBookingDurationException("The booking duration must be greater than 0 hours.");
+            throw new InvalidBookingDurationException();
         }
 
         return pricePerHour.multiply(BigDecimal.valueOf(durationInHours));
@@ -131,13 +128,13 @@ public class BookingBusinessImpl {
 
     // Acceptation de la réservation
     @Transactional
-    public BookingResponseDto acceptBooking(UUID bookingId, AppUser currentUser) throws AccessDeniedBookingException {
+    public Booking acceptBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
+                .orElseThrow(BookingNotFoundException::new);
 
         ChargingStation station = booking.getStation();
         if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
-            throw new AccessDeniedBookingException("You are not the owner of this station");
+            throw new AccessDeniedStationException();
         }
 
         BookingStatus acceptedStatus = new BookingStatus();
@@ -152,28 +149,27 @@ public class BookingBusinessImpl {
 
         log.info("BookingAcceptedEvent published for booking ID: {}", booking.getId());
 
-        return bookingMapper.toDto(booking);
+        return booking;
     }
 
     // Récupération de toutes les réservations
-    public List<BookingResponseDto> getAllBookings() {
+    public List<Booking> getAllBookings() {
         return bookingRepository.findAll().stream()
-                .map(bookingMapper::toDto)
                 .toList();
     }
 
     // Récupération d'une réservation par ID
-    public BookingResponseDto getBookingById(UUID id) {
-        return bookingMapper.toDto(bookingRepository.findBookingById(id));
+    public Booking getBookingById(String  id) {
+            return bookingRepository.findById(id).orElseThrow(BookingNotFoundException::new);
     }
 
     // Mise à jour d'une réservation
-    public BookingResponseDto updateBooking(UUID id, BookingRequestDto dto, AppUser currentUser) throws AccessDeniedBookingException {
-        Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
+    public Booking updateBooking(String  id,Booking booking, User currentUser) throws AccessDeniedBookingException {
+       Booking updateBooking = bookingRepository.findById(id)
+                .orElseThrow(BookingNotFoundException::new);
 
         if (!booking.getUser().getId().equals(currentUser.getId())) {
-            throw new AccessDeniedBookingException("You can only update your own bookings");
+            throw new AccessDeniedBookingException();
         }
 
         if (!"PENDING".equalsIgnoreCase(booking.getStatus().getName())) {
@@ -184,16 +180,16 @@ public class BookingBusinessImpl {
         verifyAvailability(booking.getStation(), booking);
 
         // Mise à jour des informations de la réservation
-        booking.setStartDate(dto.getStartDate());
-        booking.setEndDate(dto.getEndDate());
-        booking.setStation(chargingStationRepository.findById(dto.getStationId())
+        updateBooking.setStartDate(booking.getStartDate());
+        updateBooking.setEndDate(booking.getEndDate());
+        updateBooking.setStation(chargingStationRepository.findById(booking.getStation().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Station not found")));
 
-        return bookingMapper.toDto(bookingRepository.save(booking));
+        return bookingRepository.save(updateBooking);
     }
 
     // Suppression d'une réservation
-    public void deleteBooking(UUID id) {
+    public void deleteBooking(String id) {
         bookingRepository.deleteBookingById(id);
     }
 }

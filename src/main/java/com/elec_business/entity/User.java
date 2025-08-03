@@ -3,7 +3,9 @@ package com.elec_business.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -16,17 +18,16 @@ import java.util.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "app_user", schema = "public", uniqueConstraints = {
         @UniqueConstraint(name = "app_user_email_key", columnNames = {"email"})
 })
-public class AppUser implements UserDetails {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @ColumnDefault("uuid_generate_v4()")
-    @Column(name = "id", nullable = false)
-    private UUID id;
-
+    private String id;
     @Size(max = 100)
     @NotNull
     @Column(name = "username", nullable = false, length = 100)
@@ -80,7 +81,7 @@ public class AppUser implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        AppUser appUser = (AppUser) o;
+        User appUser = (User) o;
         return Objects.equals(id, appUser.id) && Objects.equals(username, appUser.username) && Objects.equals(email, appUser.email) && Objects.equals(password, appUser.password) && Objects.equals(phoneNumber, appUser.phoneNumber) && Objects.equals(emailVerified, appUser.emailVerified) && Objects.equals(phoneVerified, appUser.phoneVerified) && Objects.equals(profilePictureUrl, appUser.profilePictureUrl) && Objects.equals(role, appUser.role) && Objects.equals(createdAt, appUser.createdAt) && Objects.equals(emailVerifiedAt, appUser.emailVerifiedAt) && Objects.equals(phoneVerifiedAt, appUser.phoneVerifiedAt) && Objects.equals(emailVerifCode, appUser.emailVerifCode) && Objects.equals(phoneVerifCode, appUser.phoneVerifCode) && Objects.equals(refreshTokens, appUser.refreshTokens);
     }
 

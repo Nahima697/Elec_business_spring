@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record ChargingStationResponseDto(
-        @NotNull UUID id,
+        @NotNull String id,
         String name,
         String description,
         BigDecimal powerKw,

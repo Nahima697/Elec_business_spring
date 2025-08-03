@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ChargingStationRepository  extends JpaRepository<ChargingStation, UUID> {
+public interface ChargingStationRepository  extends JpaRepository<ChargingStation, String> {
     ChargingStation findChargingStationByName(String name);
 
-    List<ChargingStation>  findByLocation_Id(UUID locationId);
+    List<ChargingStation>  findByLocation_Id(String locationId);
 }

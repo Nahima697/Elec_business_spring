@@ -2,7 +2,7 @@ package com.elec_business.exception;
 
 import com.elec_business.business.exception.BookingNotFoundException;
 import com.elec_business.business.exception.InvalidBookingDurationException;
-import com.elec_business.business.exception.EmailNotVerifiedException;
+import com.elec_business.security.exception.EmailNotVerifiedException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.coyote.BadRequestException;
@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidBookingDurationException.class)
     public ProblemDetail handleInvalidBookingDurationException(InvalidBookingDurationException ex,HttpServletRequest req) {
-        return buildProblemDetail(HttpStatus.BAD_REQUEST,"Invalid duration booking",
+        return buildProblemDetail(HttpStatus.BAD_REQUEST,"Invalid duration booking" + ex,
                 "Il y a une erreur dans la durée de la réservation",req);
     }
 

@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
-    List<TimeSlot> findByStationId(UUID stationId);
+public interface TimeSlotRepository extends JpaRepository<TimeSlot, String> {
+    List<TimeSlot> findByStationId(String stationId);
     @Query("""
     SELECT t FROM TimeSlot t
     WHERE t.station.id = :stationId
     AND t.startTime <= :startTime
     AND t.endTime >= :endTime
 """)
-    Page<TimeSlot> findAvailableTimeSlotsByPeriod(UUID stationId, Instant startTime, Instant endTime,Pageable pageable);
+    Page<TimeSlot> findAvailableTimeSlotsByPeriod(String stationId, Instant startTime, Instant endTime,Pageable pageable);
 
     @Query(value = """
     SELECT EXISTS (
@@ -34,13 +34,13 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
           )
     )
 """, nativeQuery = true)
-    boolean isSlotAvailable(UUID stationId, Instant start, Instant end);
+    boolean isSlotAvailable(String stationId, Instant start, Instant end);
 
     @Query(value = "SELECT (count(t) > 0) FROM time_slot t WHERE t.station_id = ?1 AND t.availability && tsrange(?2, ?3, '[)')", nativeQuery = true)
-    boolean existsByStationAndAvailability(UUID stationId, Instant startTime, Instant endTime);
+    boolean existsByStationAndAvailability(String stationId, Instant startTime, Instant endTime);
 
     void deleteByStartTimeBefore(Instant now);
 
-    Page<TimeSlot> findByStationId(UUID stationId, Pageable pageable);
+    Page<TimeSlot> findByStationId(String stationId, Pageable pageable);
 
 }

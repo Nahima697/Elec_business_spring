@@ -1,9 +1,8 @@
 package com.elec_business.business.impl;
 
 
-import com.elec_business.controller.mapper.TimeSlotMapper;
+import com.elec_business.business.TimeSlotBusiness;
 import com.elec_business.controller.mapper.TimeSlotResponseMapper;
-import com.elec_business.controller.dto.TimeSlotResponseDto;
 import com.elec_business.entity.AvailabilityRule;
 import com.elec_business.entity.TimeSlot;
 import com.elec_business.repository.TimeSlotRepository;
@@ -21,22 +20,19 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class TimeSlotBusinessImpl {
+public class TimeSlotBusinessImpl implements TimeSlotBusiness {
 
 
     private  final TimeSlotRepository timeSlotRepository;
 
     private final ChargingStationRepository chargingStationRepository;
-    private final TimeSlotMapper timeSlotMapper;
-    private final TimeSlotResponseMapper timeSlotResponseMapper;
 
     @Transactional
 
-    public TimeSlotResponseDto addTimeSlot(UUID stationId, Instant startTime, Instant endTime) {
+    public void addTimeSlot(String stationId, Instant startTime, Instant endTime) {
         // Vérification de l'existence de la station
         ChargingStation station = chargingStationRepository.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException("Station introuvable"));
@@ -48,16 +44,8 @@ public class TimeSlotBusinessImpl {
         timeSlot.setEndTime(endTime);
 
         // Sauvegarder le créneau
-        TimeSlot savedTimeSlot = timeSlotRepository.save(timeSlot);
+       timeSlotRepository.save(timeSlot);
 
-        // Mapper en DTO
-        return new TimeSlotResponseDto(
-                savedTimeSlot.getId(),
-                savedTimeSlot.getStation().getId(),   // Renvoie juste l'ID de la station
-                savedTimeSlot.getStation().getName(), // Nom de la station
-                savedTimeSlot.getStartTime(),
-                savedTimeSlot.getEndTime()
-        );
     }
 
     public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules) {
@@ -89,14 +77,12 @@ public class TimeSlotBusinessImpl {
         timeSlotRepository.deleteByStartTimeBefore(Instant.now());
     }
 
-    public Page<TimeSlotResponseDto> getAvailableSlots(UUID stationId, Pageable pageable) {
-        return timeSlotRepository.findByStationId(stationId, pageable)
-                .map(timeSlotResponseMapper::toDto);
+    public Page<TimeSlot> getAvailableSlots(String stationId, Pageable pageable) {
+        return timeSlotRepository.findByStationId(stationId, pageable);
     }
 
-    public Page<TimeSlotResponseDto> getAvailableSlotsByPeriode(UUID stationId, Instant startTime, Instant endTime, Pageable pageable) {
-        return timeSlotRepository.findAvailableTimeSlotsByPeriod(stationId,startTime,endTime,pageable)
-                .map(timeSlotResponseMapper::toDto);
+    public Page<TimeSlot> getAvailableSlotsByPeriod(String stationId, Instant startTime, Instant endTime, Pageable pageable) {
+        return timeSlotRepository.findAvailableTimeSlotsByPeriod(stationId,startTime,endTime,pageable);
     }
 
 }

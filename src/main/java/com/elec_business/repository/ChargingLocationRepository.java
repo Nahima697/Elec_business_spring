@@ -1,7 +1,7 @@
 package com.elec_business.repository;
 
 import com.elec_business.entity.ChargingLocation;
-import com.elec_business.entity.AppUser;
+import com.elec_business.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ChargingLocationRepository extends JpaRepository<ChargingLocation, UUID> {
+public interface ChargingLocationRepository extends JpaRepository<ChargingLocation, String> {
 
     ChargingLocation findChargingLocationByName(String name);
-    ChargingLocation findChargingLocationById(UUID id);
+    ChargingLocation findChargingLocationById(String id);
 
-    List<ChargingLocation> findChargingLocationByUserId(UUID userId);
+    List<ChargingLocation> findChargingLocationByUserId(String userId);
 
-    List<ChargingLocation> findByUser(AppUser user);
+    List<ChargingLocation> findByUser(User user);
 }

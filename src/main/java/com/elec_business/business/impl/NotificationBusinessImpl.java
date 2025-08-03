@@ -1,9 +1,10 @@
 package com.elec_business.business.impl;
 
+import com.elec_business.business.NotificationBusiness;
 import com.elec_business.entity.Booking;
 import com.elec_business.entity.Notification;
 import com.elec_business.repository.NotificationRepository;
-import com.elec_business.entity.AppUser;
+import com.elec_business.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +17,13 @@ import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationBusinessImpl {
+public class NotificationBusinessImpl implements NotificationBusiness {
 
     private final NotificationRepository notificationRepository;
     private static Logger log = LoggerFactory.getLogger(NotificationBusinessImpl.class);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void sendNotificationBookingAccepted(Booking booking, AppUser currentUser) {
+    public void sendNotificationBookingAccepted(Booking booking, User currentUser) {
         Notification notif = new Notification();
         notif.setUser(booking.getUser());
         notif.setMessage("Votre réservation a été acceptée !");

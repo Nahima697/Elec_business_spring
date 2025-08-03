@@ -38,7 +38,7 @@ public class ChargingStationRequestDto {
     private BigDecimal lng;
 
     @NotNull(message = "locationId ne peut pas être null")
-    private UUID locationId;
+    private String locationId;
 
     private MultipartFile image;
 

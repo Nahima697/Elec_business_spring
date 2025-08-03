@@ -1,5 +1,6 @@
 package com.elec_business.business.impl;
 
+import com.elec_business.business.AvailabilityRuleBusiness;
 import com.elec_business.controller.mapper.AvailabilityRuleMapper;
 import com.elec_business.controller.dto.AvailabilityRuleDto;
 import com.elec_business.entity.AvailabilityRule;
@@ -13,14 +14,14 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AvailabilityRuleBusinessImpl {
+public class AvailabilityRuleBusinessImpl implements AvailabilityRuleBusiness {
 
     private final AvailabilityRuleRepository ruleRepo;
     private final AvailabilityRuleMapper mapper;
     private final TimeSlotBusinessImpl timeSlotService;
 
-    public void createRule(AvailabilityRuleDto dto) {
-        AvailabilityRule rule = mapper.toEntity(dto);
+    public void createRule(AvailabilityRule rule) {
+
         ruleRepo.save(rule);
 
         // générer les slots automatiquement
@@ -32,12 +33,12 @@ public class AvailabilityRuleBusinessImpl {
         );
     }
 
-    public List<AvailabilityRuleDto> getRules(UUID stationId) {
+    public List<AvailabilityRule> getRules(String stationId) {
         return ruleRepo.findByChargingStation_Id(stationId)
-                .stream().map(mapper::toDto).toList();
+                .stream().toList();
     }
 
-    public void deleteRule(UUID id) {
+    public void deleteRule(String id) {
         ruleRepo.deleteById(id);
     }
 }

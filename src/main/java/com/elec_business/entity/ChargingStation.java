@@ -3,7 +3,9 @@ package com.elec_business.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -14,6 +16,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "charging_station", schema = "public", indexes = {
         @Index(name = "idx_station_user", columnList = "user_id")
@@ -21,9 +25,8 @@ import java.util.UUID;
 public class ChargingStation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @ColumnDefault("uuid_generate_v4()")
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private String id;
 
     @Size(max = 100)
     @NotNull

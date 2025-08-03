@@ -11,7 +11,6 @@ public record ChargingStationUpdateRequestDto(
         @Size(max = 100, message = "Name cannot exceed 100 characters")
         String name,
         String description,
-        UUID typeId,
         @Positive(message = "Power must be positive")
         BigDecimal powerKw,
         @Positive(message = "Price must be positive")
@@ -20,7 +19,6 @@ public record ChargingStationUpdateRequestDto(
     public boolean isEmpty() {
         return name == null &&
                 description == null &&
-                typeId == null &&
                 powerKw == null &&
                 price == null;
     }

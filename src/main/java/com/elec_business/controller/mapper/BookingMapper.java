@@ -12,9 +12,10 @@ public abstract class BookingMapper {
 
     // Mapping du DTO vers l'entité Booking
     public abstract Booking toEntity(BookingRequestDto dto);
+    public abstract BookingRequestDto toRequestDto(Booking booking);
 
     // Mapping de l'entité Booking vers le DTO
-    public abstract BookingResponseDto toDto(Booking booking);
+    public abstract BookingResponseDto toResponseDto(Booking booking);
 
     public abstract List<BookingResponseDto> toDtos(List<Booking> bookings);
 
@@ -34,5 +35,9 @@ public abstract class BookingMapper {
         if (booking.getUser() != null) {
             builder.userName(booking.getUser().getUsername());
         }
+    }
+
+    public List<BookingResponseDto> toListResponseDto(List<Booking> allBookings) {
+        return null;
     }
 }

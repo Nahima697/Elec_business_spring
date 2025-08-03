@@ -1,7 +1,7 @@
 package com.elec_business.controller.mapper;
 
 import com.elec_business.controller.dto.RegistrationResponseDto;
-import com.elec_business.entity.AppUser;
+import com.elec_business.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -9,5 +9,5 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RegistrationResponseMapper {
     @Mapping(target = "emailVerificationRequired", expression = "java(true)")
-    RegistrationResponseDto toDto(AppUser user);
+    RegistrationResponseDto toDto(User user);
 }

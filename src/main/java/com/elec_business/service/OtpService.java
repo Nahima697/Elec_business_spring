@@ -16,7 +16,7 @@ public class OtpService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public String generateAndStoreOtp(final UUID id) {
+    public String generateAndStoreOtp(final String id) {
         final var otp = generateOtp("ABCDEFG123456789", 10);
         final var cacheKey = getCacheKey(id);
 
@@ -25,18 +25,18 @@ public class OtpService {
         return otp;
     }
 
-    public boolean isOtpValid(final UUID id, final String otp) {
+    public boolean isOtpValid(final String id, final String otp) {
         final var cacheKey = getCacheKey(id);
         return Objects.equals(
                 redisTemplate.opsForValue().get(cacheKey), otp);
     }
 
-    public void deleteOtp(final UUID id) {
+    public void deleteOtp(final String id) {
         final var cacheKey = getCacheKey(id);
         redisTemplate.delete(cacheKey);
     }
 
-    private String getCacheKey(UUID id) {
+    private String getCacheKey(String id) {
         return "otp:%s".formatted(id);
     }
 

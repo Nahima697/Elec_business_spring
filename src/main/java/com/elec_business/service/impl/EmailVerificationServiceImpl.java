@@ -1,7 +1,8 @@
 package com.elec_business.service.impl;
 
-import com.elec_business.entity.AppUser;
-import com.elec_business.repository.AppUserRepository;
+import com.elec_business.entity.User;
+import com.elec_business.repository.UserRepository;
+import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.OtpService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +18,16 @@ import static org.springframework.http.HttpStatus.*;
 
 @Service
 @RequiredArgsConstructor
-public class EmailVerificationServiceImpl {
+public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     private final OtpService otpService;
 
-    private final AppUserRepository userRepository;
+    private final UserRepository userRepository;
 
     private final JavaMailSender mailSender;
 
     @Async
-    public void sendVerificationToken(UUID userId, String email) {
+    public void sendVerificationToken(String  userId, String email) {
         final var token = otpService.generateAndStoreOtp(userId);
 
         // Localhost URL with userId and OTP token
@@ -47,7 +48,7 @@ public class EmailVerificationServiceImpl {
     }
 
     @Transactional
-    public AppUser verifyEmail(UUID userId, String token) {
+    public User verifyEmail(String  userId, String token) {
         if (!otpService.isOtpValid(userId, token)) {
             throw new ResponseStatusException(BAD_REQUEST,
                     "Token invalid or expired");

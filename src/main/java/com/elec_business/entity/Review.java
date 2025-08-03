@@ -9,7 +9,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,9 +17,8 @@ import java.util.UUID;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @ColumnDefault("uuid_generate_v4()")
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private String id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,7 +29,7 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private AppUser user;
+    private User user;
 
     @Column(name = "comments", length = Integer.MAX_VALUE)
     private String comments;

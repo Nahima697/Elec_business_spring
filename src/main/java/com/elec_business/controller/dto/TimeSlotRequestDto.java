@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 public class TimeSlotRequestDto {
     @NotNull(message = "StationId ne peut pas être null")
-    private UUID stationId;
+    private String stationId;
 
     @NotNull(message = "startDate ne peut pas être null")
     @Future(message = "startDate doit être dans le futur")

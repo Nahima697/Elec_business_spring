@@ -1,18 +1,19 @@
 package com.elec_business.business.impl;
 
+import com.elec_business.business.ChargingStationBusiness;
 import com.elec_business.repository.ChargingLocationRepository;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.repository.ChargingStationRepository;
-import com.elec_business.controller.dto.ChargingStationRequestDto;
-import com.elec_business.controller.dto.ChargingStationUpdateRequestDto;
-import com.elec_business.controller.mapper.ChargingStationMapper;
-import com.elec_business.controller.mapper.ChargingStationUpdateMapper;
-import com.elec_business.entity.AppUser;
+import com.elec_business.entity.User;
 import com.elec_business.entity.ChargingLocation;
-import com.elec_business.service.impl.FileStorageServiceImpl;
+import com.elec_business.service.FileStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;
@@ -21,18 +22,14 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ChargingStationBusinessImpl {
+public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     private final ChargingStationRepository chargingStationRepository;
-    private final ChargingStationMapper chargingStationMapper;
-    private final ChargingStationUpdateMapper updateMapper;
-    private final FileStorageServiceImpl fileStorageService;
+    private final FileStorageService fileStorageService;
     private final ChargingLocationRepository chargingLocationRepository;
 
-    public ChargingStation createChargingStation(ChargingStationRequestDto dto, AppUser currentUser) throws AccessDeniedException {
-        ChargingStation station = chargingStationMapper.toEntity(dto);
-
-        ChargingLocation location = chargingLocationRepository.findById(dto.getLocationId())
+    public ChargingStation createChargingStation(ChargingStation station, User currentUser, MultipartFile image) throws AccessDeniedException {
+        ChargingLocation location = chargingLocationRepository.findById(station.getLocation().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Location non trouvée"));
 
         station.setLocation(location);
@@ -46,15 +43,15 @@ public class ChargingStationBusinessImpl {
         try {
             String imageUrl;
 
-            if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            if (station.getImageUrl() != null && !station.getImageUrl().isEmpty()) {
                 // Vérifie le type MIME
-                boolean isValidImage = fileStorageService.checkMediaType(dto.getImage(), "image");
+                boolean isValidImage = fileStorageService.checkMediaType(image, "image");
                 if (!isValidImage) {
                     throw new IllegalArgumentException("Le fichier fourni n'est pas une image valide.");
                 }
 
                 // Upload + génération de miniature
-                imageUrl = fileStorageService.upload(dto.getImage());
+                imageUrl = fileStorageService.upload(image);
             } else {
                 imageUrl = "default.png";
 
@@ -62,10 +59,10 @@ public class ChargingStationBusinessImpl {
 
             station.setImageUrl(imageUrl);
             station.setCreatedAt(Instant.now());
-            return chargingStationRepository.save(station);
+           return chargingStationRepository.save(station);
 
-        } catch (Exception e) {
-            throw new RuntimeException("Could not save charging station", e);
+        } catch (InvalidMediaTypeException e ) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid format, image required");
         }
 
     }
@@ -74,12 +71,12 @@ public class ChargingStationBusinessImpl {
         return chargingStationRepository.findAll();
     }
 
-    public ChargingStation getChargingStationById(UUID id) {
+    public ChargingStation getChargingStationById(String id) {
         return chargingStationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Charging station not found"));
     }
 
-    public List<ChargingStation> getByLocationId(UUID id) {
+    public List<ChargingStation> getByLocationId(String id) {
         return chargingStationRepository.findByLocation_Id(id);
     }
 
@@ -91,22 +88,34 @@ public class ChargingStationBusinessImpl {
         return station;
     }
 
-    public ChargingStation updateChargingStation(UUID id, ChargingStationUpdateRequestDto dto, AppUser currentUser) throws AccessDeniedException {
+    public ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser) throws AccessDeniedException {
+        ChargingStation updateStation = chargingStationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Charging station not found"));
+
+        if (!updateStation.getLocation().getUser().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not allowed to update this station");
+        }
+
+
+        updateStation.setName(station.getName());
+        updateStation.setDescription(station.getDescription());
+        updateStation.setLocation(station.getLocation());
+        updateStation.setCreatedAt(Instant.now());
+        updateStation.setPowerKw(station.getPowerKw());
+
+        updateStation.setPrice(station.getPrice());
+        return chargingStationRepository.save(updateStation);
+    }
+
+    public void deleteChargingStationById(String id, User currentUser) throws AccessDeniedException {
         ChargingStation station = chargingStationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Charging station not found"));
 
         if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
-            throw new AccessDeniedException("You are not allowed to update this station"); // peut être remplacé par AccessDeniedException
+            throw new AccessDeniedException("You are not allowed to delete this station");
         }
 
-        updateMapper.updateChargingStationFromDto(dto, station);
-        return chargingStationRepository.save(station);
+        chargingStationRepository.delete(station);
     }
 
-    public void deleteChargingStationById(UUID id) {
-        if (!chargingStationRepository.existsById(id)) {
-            throw new EntityNotFoundException("Charging station not found");
-        }
-        chargingStationRepository.deleteById(id);
-    }
 }

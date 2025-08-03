@@ -25,8 +25,7 @@ public class TimeSlot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false, updatable = false, columnDefinition = "uuid DEFAULT uuid_generate_v4()")
-    private UUID id;
+    private String id;
 
     @NotNull
     @ManyToOne()

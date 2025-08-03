@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class BookingResponseDto {
-    private UUID id;
+    private String id;
     private Instant startDate;
     private Instant endDate;
     private BigDecimal totalPrice;

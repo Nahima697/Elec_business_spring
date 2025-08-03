@@ -8,7 +8,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalTime;
-import java.util.UUID;
 
 
 @Getter
@@ -20,7 +19,7 @@ public class AvailabilityRule {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false)
-    private UUID id;
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

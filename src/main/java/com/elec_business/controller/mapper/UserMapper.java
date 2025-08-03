@@ -1,13 +1,15 @@
 package com.elec_business.controller.mapper;
 
+import com.elec_business.controller.dto.UserDTO;
 import com.elec_business.controller.dto.UserRegisterDto;
-import com.elec_business.entity.AppUser;
+import com.elec_business.entity.User;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface AppUserMapper {
-    AppUser toEntity(UserRegisterDto userRegisterDto);
-    UserRegisterDto toDto(AppUser appUser);
+public interface UserMapper {
+    User toEntity(UserRegisterDto userRegisterDto);
+    UserRegisterDto toDto(User appUser);
+    UserDTO toDTO(User appUser);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    AppUser partialUpdate(UserRegisterDto userRegisterDto, @MappingTarget AppUser appUser);
+    User partialUpdate(UserRegisterDto userRegisterDto, @MappingTarget User appUser);
 }

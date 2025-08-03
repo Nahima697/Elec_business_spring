@@ -4,11 +4,11 @@ import com.elec_business.security.jwt.JwtUtil;
 import com.elec_business.controller.dto.RegistrationDto;
 import com.elec_business.controller.dto.RegistrationResponseDto;
 import com.elec_business.controller.dto.UserRegisterDto;
-import com.elec_business.entity.AppUser;
-import com.elec_business.business.exception.EmailNotVerifiedException;
-import com.elec_business.controller.mapper.AppUserMapper;
+import com.elec_business.entity.User;
+import com.elec_business.security.exception.EmailNotVerifiedException;
+import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.controller.mapper.RegistrationResponseMapper;
-import com.elec_business.repository.AppUserRepository;
+import com.elec_business.repository.UserRepository;
 import com.elec_business.service.impl.EmailVerificationServiceImpl;
 import com.elec_business.service.impl.UserRegistrationServiceImpl;
 import jakarta.validation.Valid;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -39,17 +38,17 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final EmailVerificationServiceImpl emailVerificationService;
-    private final AppUserMapper appUserMapper;
+    private final UserMapper userMapper;
     private final UserRegistrationServiceImpl userRegistrationService;
     private final RegistrationResponseMapper registrationResponseMapper;
-    private final AppUserRepository appUserRepository;
+    private final UserRepository appUserRepository;
 
     @Value("${app.auth.email-verification-required:true}")
     private boolean emailVerificationRequired;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegistrationDto registrationDto) {
-        AppUser registeredUser;
+        User registeredUser;
 
         try {
             // 1. Création de l'utilisateur
@@ -79,40 +78,40 @@ public class AuthController {
 
     @GetMapping("/email/verify")
     public ResponseEntity<UserRegisterDto> verifyEmail(
-            @RequestParam("uid") UUID userId, @RequestParam("t") String token) {
+            @RequestParam String userId, @RequestParam("t") String token) {
         final var verifiedUser =
                 emailVerificationService.verifyEmail(userId, token);
 
-        return ResponseEntity.ok(appUserMapper.toDto(verifiedUser));
+        return ResponseEntity.ok(userMapper.toDto(verifiedUser));
     }
 
     @PostMapping("/email/resend")
     public ResponseEntity<String> resendEmailVerification(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
-        Optional<AppUser> appUser = appUserRepository.findByEmail(email);
+        Optional<User> user = appUserRepository.findByEmail(email);
 
-        if (appUser.isEmpty()) {
+        if (user.isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid or already verified user.");
         }
 
-        emailVerificationService.sendVerificationToken(appUser.get().getId(), appUser.get().getEmail());
+        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail());
         return ResponseEntity.ok("Verification email resent.");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody AppUser appUser) {
-        if (appUser.getUsername() == null || appUser.getPassword() == null) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+        if (user.getUsername() == null || user.getPassword() == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Missing username or password."));
         }
 
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(appUser.getUsername(), appUser.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
             );
 
             if (authentication.isAuthenticated()) {
                 Map<String, Object> authData = new HashMap<>();
-                authData.put("token", jwtUtil.generateToken(appUser.getUsername()));
+                authData.put("token", jwtUtil.generateToken(user.getUsername()));
                 authData.put("type", "Bearer");
 
                 return ResponseEntity.ok(authData);
@@ -128,7 +127,7 @@ public class AuthController {
                         .body(Map.of("error", "Email not verified."));
             }
 
-            log.warn("Authentication failed for user: {}", appUser.getUsername(), e);
+            log.warn("Authentication failed for user: {}", user.getUsername(), e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid username or password."));
         } catch (Exception e) {
@@ -138,7 +137,7 @@ public class AuthController {
         }
     }
         @GetMapping("/me")
-        public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal AppUser currentUser){
+        public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal User currentUser){
             if (currentUser == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
