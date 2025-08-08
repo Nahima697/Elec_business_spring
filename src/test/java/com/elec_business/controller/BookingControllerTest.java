@@ -3,34 +3,31 @@ package com.elec_business.controller;
 import com.elec_business.TestDataLoader;
 import com.elec_business.controller.dto.BookingRequestDto;
 import com.elec_business.controller.dto.BookingResponseDto;
-import com.elec_business.entity.User;
-import com.elec_business.repository.UserRepository;
+import com.elec_business.repository.TimeSlotRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@Testcontainers
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@AutoConfigureTestDatabase
 @Transactional
  class BookingControllerTest {
     @Autowired
@@ -43,11 +40,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserRepository userRepository;
+    TimeSlotRepository timeSlotRepository;
 
     List<String> userIds = new ArrayList<>();
     List<String> bookingIds = new ArrayList<>();
     List<String> stationIds = new ArrayList<>();
+
+
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
+            "postgres:17-alpine"
+    );
+
+    @BeforeAll
+    static void beforeAll() {
+        postgres.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgres.stop();
+    }
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+
 
     @BeforeEach
      void setUp() throws Exception {
@@ -57,28 +78,58 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         bookingIds = result.bookingsIds();
         assertFalse(userIds.isEmpty(), "userIds should not be empty after loading test data");
         assertFalse(stationIds.isEmpty(), "stationIds should not be empty after loading test data");
-        assertFalse(bookingIds.isEmpty(), "bookingIds should not be empty after loading test data");
     }
 
     @Test
     void createBooking_shouldCreateBookingSuccessFully() throws Exception {
-        User mockUser = userRepository.findById(userIds.getFirst())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        String username = "user2";
+        String password = "password456";
 
-        BookingRequestDto requestDto = new BookingRequestDto(stationIds.getFirst(), Instant.now(),Instant.now().plusSeconds(7200));
+        String loginPayload = """
+        {
+            "username": "%s",
+            "password": "%s"
+        }
+        """.formatted(username, password);
+
+        String response = mvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginPayload))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String jwtToken = objectMapper.readTree(response).get("token").asText();
+        assertNotNull(jwtToken, "Le token ne doit pas être null");
+
+        LocalDateTime start = LocalDateTime.of(2025, 9, 10, 8, 20);
+        LocalDateTime end = LocalDateTime.of(2025, 9, 10, 10, 20);
+
+
+        BookingRequestDto requestDto = new BookingRequestDto(stationIds.getFirst(), start, end);
+
         mvc.perform(post("/api/bookings")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(result -> {
                     String content = result.getResponse().getContentAsString();
-                    BookingResponseDto response = objectMapper.readValue(content, BookingResponseDto.class);
-                    assertNotNull(response.getId(), "Booking ID should not be null");
-                    assertFalse(response.getStationName().isBlank(), "Station name should be present");
-                    assertFalse(response.getUserName().isBlank(), "User name should be present");
+                    BookingResponseDto responseDto = objectMapper.readValue(content, BookingResponseDto.class);
+                    assertNotNull(responseDto.getId(), "Booking ID should not be null");
+                    assertFalse(responseDto.getStationName().isBlank(), "Station name should be present");
+                    assertFalse(responseDto.getUserName().isBlank(), "User name should be present");
                 });
     }
+
+    @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
+        mvc.perform(post("/api/bookings/"+bookingIds.getFirst()+"/accept")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(bookingIds.getFirst())))
+                .andExpect(status().isOk());
+    }
+
 }

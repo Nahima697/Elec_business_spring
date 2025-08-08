@@ -5,12 +5,13 @@ import com.elec_business.entity.Booking;
 import com.elec_business.entity.ChargingStation;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
 public interface BookingBusiness {
-    Booking createBooking(Booking booking, User currentUser);
-    void createAndSaveTimeSlot(ChargingStation station, Booking booking);
+    Booking createBooking(String stationId, LocalDateTime startDate, LocalDateTime endDate, User currentUser);
     void verifyAvailability(ChargingStation station, Booking booking);
     void setBookingStatus(Booking booking);
     BigDecimal calculateTotalPrice(ChargingStation station, Booking booking);

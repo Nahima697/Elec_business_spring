@@ -1,6 +1,7 @@
 package com.elec_business.business.impl;
 
 import com.elec_business.business.BookingBusiness;
+import com.elec_business.business.TimeSlotBusiness;
 import com.elec_business.business.exception.AccessDeniedStationException;
 import com.elec_business.entity.TimeSlot;
 import com.elec_business.repository.TimeSlotRepository;
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,32 +41,32 @@ public class BookingBusinessImpl implements BookingBusiness {
     private final TimeSlotRepository timeSlotRepository;
     private final BookingStatusRepository bookingStatusRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final TimeSlotBusiness timeSlotBusiness;
 
-    // Service pour la création d'une réservation
     @Transactional
-    public Booking createBooking(Booking booking, User currentUser) {
+    public Booking createBooking(String stationId, LocalDateTime startDate, LocalDateTime endDate, User currentUser) {
 
         // Vérification de l'existence de la station
-        ChargingStation station = chargingStationRepository.findById(booking.getStation().getId())
+        ChargingStation station = chargingStationRepository.findById(stationId)
                 .orElseThrow(() -> new EntityNotFoundException("Station not found"));
+        if(station.getLocation().getUser().equals(currentUser)) {
+            throw new IllegalArgumentException("Vous ne pouvez pas louer votre propre borne");
+        }
+        Booking booking = new Booking();
 
-        // Création de la réservation
         booking.setUser(currentUser);
         booking.setStation(station);
 
-        Instant start = booking.getStartDate();
-        Instant end = booking.getEndDate();
+        booking.setStartDate(startDate);
+        booking.setEndDate(endDate);
 
         // Vérification que la date de fin est après la date de début
-        if (end.isBefore(start)) {
+        if (endDate.isBefore(startDate)) {
             throw new InvalidBookingDurationException();
         }
 
         // Vérification de la disponibilité du créneau
         verifyAvailability(station, booking);
-
-        // Création du créneau horaire
-        createAndSaveTimeSlot(station, booking);
 
         // Définition de l'état de la réservation
         setBookingStatus(booking);
@@ -86,16 +89,6 @@ public class BookingBusinessImpl implements BookingBusiness {
         return savedBooking;
     }
 
-    // Méthode pour créer et sauvegarder un créneau horaire
-    public void createAndSaveTimeSlot(ChargingStation station, Booking booking) {
-        TimeSlot slot = new TimeSlot();
-        slot.setStation(station);
-        slot.setStartTime(booking.getStartDate());
-        slot.setEndTime(booking.getEndDate());
-        slot.setIsAvailable(false);
-        timeSlotRepository.saveAndFlush(slot);
-        log.info("Time slot saved successfully.");
-    }
 
     // Vérification de la disponibilité du créneau
     public void verifyAvailability(ChargingStation station, Booking booking) {
@@ -138,9 +131,11 @@ public class BookingBusinessImpl implements BookingBusiness {
         }
 
         BookingStatus acceptedStatus = new BookingStatus();
-        acceptedStatus.setId(2); // ACCEPTED
+        acceptedStatus.setId(2);
         booking.setStatus(acceptedStatus);
 
+        // mettre le timeSlot en indisponible
+        timeSlotBusiness.setTimeSlotAvailability(station.getId(), booking.getStartDate(), booking.getEndDate());
         bookingRepository.save(booking);
 
         eventPublisher.publishEvent(

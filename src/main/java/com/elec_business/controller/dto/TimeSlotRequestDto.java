@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -14,10 +15,10 @@ public class TimeSlotRequestDto {
 
     @NotNull(message = "startDate ne peut pas être null")
     @Future(message = "startDate doit être dans le futur")
-    private Instant startTime;
+    private LocalDateTime startTime;
 
     @NotNull(message = "endDate ne peut pas être null")
     @Future(message = "endDate doit être dans le futur")
-    private Instant endTime;
+    private LocalDateTime endTime;
 
 }

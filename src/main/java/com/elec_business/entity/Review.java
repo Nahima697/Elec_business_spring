@@ -28,7 +28,6 @@ public class Review {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "comments", length = Integer.MAX_VALUE)

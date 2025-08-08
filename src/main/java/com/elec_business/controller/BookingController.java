@@ -30,7 +30,7 @@ public class BookingController {
     public ResponseEntity<BookingResponseDto> addBooking(
             @Valid @RequestBody BookingRequestDto bookingRequestDto,
             @AuthenticationPrincipal User currentUser) {
-        Booking createdBooking = bookingBusiness.createBooking(bookingMapper.toEntity(bookingRequestDto), currentUser);
+        Booking createdBooking = bookingBusiness.createBooking(bookingRequestDto.getStationId(),bookingRequestDto.getStartDate(),bookingRequestDto.getEndDate(), currentUser);
          return ResponseEntity.status(HttpStatus.CREATED).body(bookingMapper.toResponseDto(createdBooking));
     }
 

@@ -11,8 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDateTime;
+
 
 @RestController
 @RequestMapping("/api/time_slots")
@@ -42,8 +42,8 @@ public class TimeSlotController {
     @GetMapping("/station/{station_id}/filtered")
     public ResponseEntity<Page<TimeSlotResponseDto>> getFilteredTimeSlots(
             @PathVariable("station_id") String stationId,
-            @RequestParam("start") Instant start,
-            @RequestParam("end") Instant end,
+            @RequestParam("start") LocalDateTime start,
+            @RequestParam("end") LocalDateTime end,
             Pageable pageable
     ) {
         Page<TimeSlotResponseDto> slots =timeSlotMapper.toDtoPage(timeSlotBusiness.getAvailableSlotsByPeriod(stationId, start, end, pageable));

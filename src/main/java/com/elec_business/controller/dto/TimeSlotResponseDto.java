@@ -1,7 +1,6 @@
 package com.elec_business.controller.dto;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
-public record TimeSlotResponseDto(UUID id, UUID stationId, String stationName, Instant startTime, Instant endTime) {
+public record TimeSlotResponseDto(String id, String stationId, String stationName, LocalDateTime startTime, LocalDateTime endTime) {
 }

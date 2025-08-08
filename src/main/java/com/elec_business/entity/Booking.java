@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -39,11 +40,11 @@ public class Booking {
 
     @NotNull
     @Column(name = "start_date", nullable = false)
-    private Instant startDate;
+    private LocalDateTime startDate;
 
     @NotNull
     @Column(name = "end_date", nullable = false)
-    private Instant endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice;
@@ -51,7 +52,6 @@ public class Booking {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", nullable = false)
-    @ColumnDefault("'PENDING'")
     private BookingStatus status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

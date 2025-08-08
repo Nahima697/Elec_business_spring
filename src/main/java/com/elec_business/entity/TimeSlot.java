@@ -11,6 +11,8 @@ import lombok.Setter;
 import org.hibernate.annotations.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -35,11 +37,11 @@ public class TimeSlot {
 
     @NotNull
     @Column(name = "start_time", nullable = false)
-    private Instant startTime;
+    private LocalDateTime startTime;
 
     @NotNull
     @Column(name = "end_time", nullable = false)
-    private Instant endTime;
+    private LocalDateTime endTime;
 
     @NotNull
     @Column(name = "is_available", nullable = false)
@@ -47,6 +49,7 @@ public class TimeSlot {
     private Boolean isAvailable = true;
 
     @Type(PostgreSQLRangeType.class)
-    @Column(name = "availability", columnDefinition = "tsrange", insertable = false, updatable = false)
-    private Range<Instant> availability;
+    @Column(name = "availability", columnDefinition = "tsrange")
+    private Range<LocalDateTime> availability;
+
 }

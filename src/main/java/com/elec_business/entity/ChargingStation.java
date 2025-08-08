@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -20,7 +21,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "charging_station", schema = "public", indexes = {
-        @Index(name = "idx_station_user", columnList = "user_id")
 })
 public class ChargingStation {
     @Id
@@ -59,6 +59,9 @@ public class ChargingStation {
     private ChargingLocation location;
 
     private String imageUrl;
+
+    @OneToMany(mappedBy = "station")
+    List<TimeSlot> timeSlots;
 
     @Column(name = "image_url", length = Integer.MAX_VALUE)
     public String getImageUrl() {

@@ -15,7 +15,6 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_role", schema = "public", uniqueConstraints = {
-        @UniqueConstraint(name = "user_role_name_key", columnNames = {"name"})
 })
 public class UserRole {
     @Id

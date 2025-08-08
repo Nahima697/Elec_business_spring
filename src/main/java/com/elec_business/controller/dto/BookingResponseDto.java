@@ -5,14 +5,15 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Builder
 public class BookingResponseDto {
     private String id;
-    private Instant startDate;
-    private Instant endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private BigDecimal totalPrice;
     private String statusLabel;
     private String stationName;
