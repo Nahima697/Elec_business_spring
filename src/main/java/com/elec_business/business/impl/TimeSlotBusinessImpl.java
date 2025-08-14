@@ -53,7 +53,7 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
         Boolean timeSlotIsAvailable = timeSlotRepository.isSlotAvailable(stationId, startTime, endTime);
 
         // Marquer comme indisponible
-        if(timeSlotIsAvailable == true) {
+        if(timeSlotIsAvailable) {
             TimeSlot slot =timeSlotRepository.findSlotAvailableByStationIdBetweenStartDateTimeAndEndDateTime(stationId, startTime, endTime);
                   slot.setIsAvailable(false);
             // Sauvegarder
@@ -61,7 +61,6 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
         }
 
     }
-
 
     public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules) {
         List<TimeSlot> generatedSlots = new ArrayList<>();
