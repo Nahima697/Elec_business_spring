@@ -16,5 +16,4 @@ public interface ChargingStationBusiness {
     ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser) throws AccessDeniedException;
     void deleteChargingStationById(String id,User currentUser) throws AccessDeniedException;
 
-
 }

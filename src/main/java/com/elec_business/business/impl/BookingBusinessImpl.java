@@ -2,17 +2,14 @@ package com.elec_business.business.impl;
 
 import com.elec_business.business.BookingBusiness;
 import com.elec_business.business.TimeSlotBusiness;
+import com.elec_business.business.eventlistener.BookingRejectedEvent;
 import com.elec_business.business.exception.AccessDeniedStationException;
-import com.elec_business.entity.TimeSlot;
+import com.elec_business.entity.*;
 import com.elec_business.repository.TimeSlotRepository;
-import com.elec_business.entity.Booking;
-import com.elec_business.entity.BookingStatus;
 import com.elec_business.repository.BookingRepository;
 import com.elec_business.repository.BookingStatusRepository;
-import com.elec_business.entity.ChargingStation;
 import com.elec_business.repository.ChargingStationRepository;
 import com.elec_business.business.eventlistener.BookingAcceptedEvent;
-import com.elec_business.entity.User;
 import com.elec_business.business.exception.BookingNotFoundException;
 import com.elec_business.business.exception.InvalidBookingDurationException;
 import com.elec_business.business.exception.AccessDeniedBookingException;
@@ -27,7 +24,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -101,11 +97,12 @@ public class BookingBusinessImpl implements BookingBusiness {
     // Définition de l'état de la réservation à "PENDING"
     public void setBookingStatus(Booking booking) {
         if (booking.getStatus() == null) {
-            BookingStatus pendingStatus = bookingStatusRepository.findByName("PENDING")
+            BookingStatus pendingStatus = bookingStatusRepository.findByName(BookingStatusType.PENDING)
                     .orElseThrow(() -> new EntityNotFoundException("Status PENDING not found"));
             booking.setStatus(pendingStatus);
         }
     }
+
 
     // Calcul du prix total basé sur la durée de la réservation
     public BigDecimal calculateTotalPrice(ChargingStation station, Booking booking) {
@@ -130,14 +127,14 @@ public class BookingBusinessImpl implements BookingBusiness {
             throw new AccessDeniedStationException();
         }
 
-        BookingStatus acceptedStatus = new BookingStatus();
-        acceptedStatus.setId(2);
+        BookingStatus acceptedStatus = bookingStatusRepository.findByName(BookingStatusType.ACCEPTED)
+                .orElseThrow(() -> new EntityNotFoundException("Status ACCEPTED not found"));
         booking.setStatus(acceptedStatus);
 
-        // mettre le timeSlot en indisponible
         timeSlotBusiness.setTimeSlotAvailability(station.getId(), booking.getStartDate(), booking.getEndDate());
-        bookingRepository.save(booking);
 
+//        bookingRepository.save(booking);
+// pas besoin de save avec Transactional
         eventPublisher.publishEvent(
                 new BookingAcceptedEvent(booking, booking.getUser())
         );
@@ -146,6 +143,30 @@ public class BookingBusinessImpl implements BookingBusiness {
 
         return booking;
     }
+
+    @Transactional
+    public Booking rejectBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(BookingNotFoundException::new);
+
+        ChargingStation station = booking.getStation();
+        if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedStationException();
+        }
+
+        BookingStatus rejectedStatus = bookingStatusRepository.findByName(BookingStatusType.REJECTED)
+                .orElseThrow(() -> new EntityNotFoundException("Status Rejected not found"));
+        booking.setStatus(rejectedStatus);
+
+        eventPublisher.publishEvent(
+                new BookingRejectedEvent(booking, booking.getUser())
+        );
+
+        log.info("BookingRejectedEvent published for booking ID: {}", booking.getId());
+
+        return booking;
+    }
+
 
     // Récupération de toutes les réservations
     public List<Booking> getAllBookings() {
@@ -158,27 +179,30 @@ public class BookingBusinessImpl implements BookingBusiness {
             return bookingRepository.findById(id).orElseThrow(BookingNotFoundException::new);
     }
 
-    // Mise à jour d'une réservation
+    // Mise à jour d'une réservation par le locataire
     public Booking updateBooking(String  id,Booking booking, User currentUser) throws AccessDeniedBookingException {
        Booking updateBooking = bookingRepository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
 
-        if (!booking.getUser().getId().equals(currentUser.getId())) {
+        if (!updateBooking.getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedBookingException();
         }
 
-        if (!"PENDING".equalsIgnoreCase(booking.getStatus().getName())) {
+        if (updateBooking.getStatus() == null ||
+                !BookingStatusType.PENDING.equals(updateBooking.getStatus().getName())) {
             throw new IllegalStateException("Only pending bookings can be updated");
         }
 
+        updateBooking.setStation(chargingStationRepository.findById(booking.getStation().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Station not found")));
+
+
         // Vérification que le créneau est disponible sur la station
-        verifyAvailability(booking.getStation(), booking);
+        verifyAvailability(updateBooking.getStation(), booking);
 
         // Mise à jour des informations de la réservation
         updateBooking.setStartDate(booking.getStartDate());
         updateBooking.setEndDate(booking.getEndDate());
-        updateBooking.setStation(chargingStationRepository.findById(booking.getStation().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Station not found")));
 
         return bookingRepository.save(updateBooking);
     }

@@ -5,7 +5,6 @@ import com.elec_business.entity.Booking;
 import com.elec_business.entity.ChargingStation;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +15,7 @@ public interface BookingBusiness {
     void setBookingStatus(Booking booking);
     BigDecimal calculateTotalPrice(ChargingStation station, Booking booking);
     Booking acceptBooking(String bookingId, User currentUser);
+    Booking rejectBooking(String bookingId, User currentUser);
     Booking getBookingById(String id);
     List<Booking> getAllBookings();
     Booking updateBooking(String id,Booking booking, User currentUser);

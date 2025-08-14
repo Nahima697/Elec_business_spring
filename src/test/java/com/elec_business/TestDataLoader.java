@@ -24,11 +24,11 @@ public class TestDataLoader {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public List<String> stationIds = new ArrayList<>();
-    public List<String> userIds = new ArrayList<>();
-    public List<String> bookingIds = new ArrayList<>();
+    public List<ChargingStation> stations = new ArrayList<>();
+    public List<User> users = new ArrayList<>();
+    public List<Booking> bookings = new ArrayList<>();
 
-    public record LoadResult(List<String> stationsIds, List<String> userIds, List<String> bookingsIds) {}
+    public record LoadResult(List<ChargingStation> stations, List<User> users, List<Booking> bookings) {}
 
     @Transactional
     public LoadResult load() {
@@ -116,32 +116,38 @@ public class TestDataLoader {
         booking1.setTotalPrice(new BigDecimal("0.50"));
         booking1.setCreatedAt(Instant.now());
 
-
-        em.flush();
-
         // BOOKING STATUS
 
-        BookingStatus pendingStatus = new BookingStatus(null, "PENDING");
+        BookingStatus pendingStatus = new BookingStatus(BookingStatusType.PENDING);
         em.persist(pendingStatus);
 
+        BookingStatus acceptedStatus = new BookingStatus(BookingStatusType.ACCEPTED);
+        em.persist(acceptedStatus);
+
+
+        BookingStatus rejectedStatus = new BookingStatus(BookingStatusType.REJECTED);
+        em.persist(rejectedStatus);
+
+        BookingStatus cancelledStatus = new BookingStatus(BookingStatusType.CANCELLED);
+        em.persist(cancelledStatus);
         booking1.setStatus(pendingStatus);
 
         em.persist(booking1);
-        // Ajout des IDs
-        userIds.clear();
-        stationIds.clear();
-        bookingIds.clear();
+        em.flush();
 
-        userIds.add(user1.getId());
-        userIds.add(user2.getId());
-        userIds.add(user3.getId());
+        // Ajout des Objets
+        users.clear();
+        stations.clear();
+        bookings.clear();
 
-        stationIds.add(station1.getId());
-        stationIds.add(station2.getId());
-        bookingIds.add(booking1.getId());
+        users.add(user1);
+        users.add(user2);
+        users.add(user3);
 
+        stations.add(station1);
+        stations.add(station2);
+        bookings.add(booking1);
 
-
-        return new LoadResult(stationIds, userIds, bookingIds);
+        return new LoadResult(stations, users, bookings);
     }
 }

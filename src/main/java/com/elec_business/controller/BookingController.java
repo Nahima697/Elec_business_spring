@@ -42,6 +42,14 @@ public class BookingController {
         return bookingMapper.toResponseDto(bookingBusiness.acceptBooking(id, currentUser));
     }
 
+    @PostMapping("/bookings/{id}/reject")
+    @ResponseStatus(HttpStatus.OK)
+    public BookingResponseDto rejectBooking(@PathVariable String id,
+                                              @AuthenticationPrincipal User currentUser)
+    {
+        return bookingMapper.toResponseDto(bookingBusiness.rejectBooking(id, currentUser));
+    }
+
     @PutMapping("/bookings/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public BookingResponseDto updateBooking(@PathVariable String id,

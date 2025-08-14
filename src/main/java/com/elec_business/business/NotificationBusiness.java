@@ -5,5 +5,6 @@ import com.elec_business.entity.Booking;
 
 public interface NotificationBusiness {
     void sendNotificationBookingAccepted(Booking booking, User currentUser);
+    void sendNotificationBookingRejected(Booking booking, User currentUser);
 
 }

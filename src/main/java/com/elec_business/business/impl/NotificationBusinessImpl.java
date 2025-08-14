@@ -36,4 +36,18 @@ public class NotificationBusinessImpl implements NotificationBusiness {
         notificationRepository.flush();
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void sendNotificationBookingRejected(Booking booking, User currentUser) {
+        Notification notif = new Notification();
+        notif.setUser(booking.getUser());
+        notif.setMessage("Votre réservation a été refusée !");
+        notif.setType("RESERVATION_REJECTED");
+        notif.setIsRead(false);
+        notif.setCreatedAt(OffsetDateTime.now());
+
+        log.info("✅ Envoi de notification à {}", booking.getUser().getEmail());
+        notificationRepository.save(notif);
+        notificationRepository.flush();
+    }
+
 }

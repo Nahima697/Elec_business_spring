@@ -3,16 +3,22 @@ package com.elec_business.controller.mapper;
 import com.elec_business.controller.dto.BookingRequestDto;
 import com.elec_business.controller.dto.BookingResponseDto;
 import com.elec_business.entity.Booking;
+import com.elec_business.entity.ChargingStation;
 import org.mapstruct.*;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class BookingMapper {
-
-    // Mapping du DTO vers l'entité Booking
+    @Mapping(source = "stationId", target = "station")
     public abstract Booking toEntity(BookingRequestDto dto);
-    public abstract BookingRequestDto toRequestDto(Booking booking);
+
+    protected ChargingStation toStation(String stationId) {
+        if (stationId == null) return null;
+        ChargingStation station = new ChargingStation();
+        station.setId(stationId);
+        return station;
+    }
 
     // Mapping de l'entité Booking vers le DTO
     public abstract BookingResponseDto toResponseDto(Booking booking);
@@ -28,7 +34,7 @@ public abstract class BookingMapper {
             if (booking.getStation().getLocation() != null &&
                     booking.getStation().getLocation().getUser() != null) {
                 builder.stationOwnerName(booking.getStation().getLocation().getUser().getUsername());
-                builder.statusLabel(booking.getStatus().getName());
+                builder.statusLabel(booking.getStatus().getName().name());
             }
         }
 

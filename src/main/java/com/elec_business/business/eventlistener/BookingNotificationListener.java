@@ -20,4 +20,10 @@ public class BookingNotificationListener {
         log.info("⚡ NotificationService.sendNotificationBookingAccepted triggered for user {}", event.getCurrentUser().getEmail());
         notificationService.sendNotificationBookingAccepted(event.getBooking(), event.getCurrentUser());
     }
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleBookingRejected(BookingRejectedEvent event) {
+        log.info("⚡ NotificationService.sendNotificationBookingRejected triggered for user {}", event.getCurrentUser().getEmail());
+        notificationService.sendNotificationBookingRejected(event.getBooking(), event.getCurrentUser());
+    }
+
 }

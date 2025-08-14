@@ -3,30 +3,30 @@ package com.elec_business.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "booking_status", schema = "public", uniqueConstraints = {
-        @UniqueConstraint(name = "booking_status_name_key", columnNames = {"name"})
-})
+@Table(name = "booking_status")
 public class BookingStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ColumnDefault("nextval('booking_status_id_seq')")
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 50)
+    @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(name = "name", nullable = false, length = 50)
-    private String name;
+    @Column(name = "name", nullable = false, unique = true, length = 50)
+    private BookingStatusType name;
+
+
+    public BookingStatus(BookingStatusType bookingStatusType) {
+        this.name = bookingStatusType;
+    }
+
 
 }
