@@ -2,9 +2,11 @@ package com.elec_business.repository;
 
 import com.elec_business.entity.TimeSlot;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
@@ -16,45 +18,40 @@ import java.util.UUID;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, String> {
+
     List<TimeSlot> findByStationId(String stationId);
-    @Query("""
-    SELECT t FROM TimeSlot t
-    WHERE t.station.id = :stationId
-    AND t.startTime <= :startTime
-    AND t.endTime >= :endTime
-""")
-    Page<TimeSlot> findAvailableTimeSlotsByPeriod(String stationId, LocalDateTime startTime, LocalDateTime endTime,Pageable pageable);
-
-    @Query(value = """
-    SELECT EXISTS (
-        SELECT 1
-        FROM time_slot
-        WHERE station_id = :stationId
-          AND availability && tsrange(
-              CAST(:start AS timestamp),
-              CAST(:end AS timestamp),
-              '[)'
-          )
-    )
-""", nativeQuery = true)
-    boolean isSlotAvailable(String stationId, LocalDateTime start, LocalDateTime end);
-    @Query(value = """
-        SELECT *
-        FROM time_slot
-        WHERE station_id = :stationId
-          AND availability && tsrange(
-              CAST(:start AS timestamp),
-              CAST(:end AS timestamp),
-              '[)'
-          )
-    
-""", nativeQuery = true)
-    TimeSlot findSlotAvailableByStationIdBetweenStartDateTimeAndEndDateTime(String stationId, LocalDateTime start, LocalDateTime end);
-    @Query(value = "SELECT (count(t) > 0) FROM time_slot t WHERE t.station_id = ?1 AND t.availability && tsrange(?2, ?3, '[)')", nativeQuery = true)
-    boolean existsByStationAndAvailability(String stationId, LocalDateTime startTime, LocalDateTime endTime);
-
-    void deleteByStartTimeBefore(LocalDateTime now);
 
     Page<TimeSlot> findByStationId(String stationId, Pageable pageable);
 
+    void deleteByStartTimeBefore(LocalDateTime now);
+
+    @Query(value = """
+        SELECT *
+        FROM time_slot t
+        WHERE t.station_id = :stationId
+          AND t.availability && tsrange(
+              CAST(:startTime AS timestamp),
+              CAST(:endTime AS timestamp),
+              :bounds
+          )
+        """, nativeQuery = true)
+    List<TimeSlot> findSlotsInRange(
+            @Param("stationId") String stationId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime,
+            @Param("bounds") String bounds
+    );
+
+    default boolean existsSlotInRange(String stationId, LocalDateTime start, LocalDateTime end, String bounds) {
+        return !findSlotsInRange(stationId, start, end, bounds).isEmpty();
+    }
+
+    default Page<TimeSlot> findAvailableSlotsPage(String stationId, LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        List<TimeSlot> result = findSlotsInRange(stationId, start, end, "[]");
+        return new PageImpl<>(result, pageable, result.size());
+    }
+
+    default Optional<TimeSlot> findSingleAvailableSlot(String stationId, LocalDateTime start, LocalDateTime end, String bounds) {
+        return findSlotsInRange(stationId, start, end, bounds).stream().findFirst();
+    }
 }

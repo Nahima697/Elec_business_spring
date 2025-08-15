@@ -88,10 +88,17 @@ public class BookingBusinessImpl implements BookingBusiness {
 
     // Vérification de la disponibilité du créneau
     public void verifyAvailability(ChargingStation station, Booking booking) {
-        boolean isAvailable = timeSlotRepository.isSlotAvailable(station.getId(), booking.getStartDate(), booking.getEndDate());
-        if (!isAvailable) {
-            throw new IllegalStateException("La plage horaire n’est pas disponible pour cette borne.");
+        boolean slotAvailable = timeSlotRepository.existsSlotInRange(
+                station.getId(),
+                booking.getStartDate(),
+                booking.getEndDate(),
+                "[]"
+        );
+
+        if (!slotAvailable) {
+            throw new IllegalStateException("No available slot for the given period.");
         }
+
     }
 
     // Définition de l'état de la réservation à "PENDING"

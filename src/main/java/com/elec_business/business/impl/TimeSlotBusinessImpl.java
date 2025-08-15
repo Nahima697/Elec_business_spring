@@ -49,18 +49,18 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
 
     @Transactional
     public void setTimeSlotAvailability(String stationId, LocalDateTime startTime, LocalDateTime endTime) {
-        // Récupérer le timeSlot existant
-        Boolean timeSlotIsAvailable = timeSlotRepository.isSlotAvailable(stationId, startTime, endTime);
+        // Récupérer tous les slots dans la plage donnée
+        List<TimeSlot> slots = timeSlotRepository.findSlotsInRange(stationId, startTime, endTime, "[]");
 
-        // Marquer comme indisponible
-        if(timeSlotIsAvailable) {
-            TimeSlot slot =timeSlotRepository.findSlotAvailableByStationIdBetweenStartDateTimeAndEndDateTime(stationId, startTime, endTime);
-                  slot.setIsAvailable(false);
-            // Sauvegarder
-            timeSlotRepository.save(slot);
+        for (TimeSlot slot : slots) {
+            slot.setIsAvailable(false);
         }
 
+        if (!slots.isEmpty()) {
+            timeSlotRepository.saveAll(slots);
+        }
     }
+
 
     public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules) {
         List<TimeSlot> generatedSlots = new ArrayList<>();
@@ -100,11 +100,9 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
         return timeSlotRepository.findByStationId(stationId, pageable);
     }
 
+
     public Page<TimeSlot> getAvailableSlotsByPeriod(String stationId, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
-        return timeSlotRepository.findAvailableTimeSlotsByPeriod(stationId,startTime,endTime,pageable);
+        return timeSlotRepository.findAvailableSlotsPage(stationId, startTime, endTime, pageable);
     }
 
-    public void setAvailabilityToFalse( List<TimeSlot> timeSlots) {
-
-    }
 }

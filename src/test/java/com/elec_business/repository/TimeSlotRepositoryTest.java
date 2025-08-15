@@ -145,32 +145,32 @@ class TimeSlotRepositoryTest {
     @Test
     void testFindAvailableTimeSlotsByPeriod() {
         LocalDateTime start = slot1.getStartTime();
-        LocalDateTime end = slot1.getEndTime();
+        LocalDateTime end = slot2.getEndTime();
 
-        Page<TimeSlot> page = timeSlotRepository.findAvailableTimeSlotsByPeriod(
+        Page<TimeSlot> page = timeSlotRepository.findAvailableSlotsPage(
                 station.getId(), start, end, PageRequest.of(0, 10)
         );
 
-        assertThat(page.getTotalElements()).isEqualTo(1);
+        assertThat(page.getTotalElements()).isEqualTo(2);
     }
 
     @Test
     void testIsSlotAvailable() {
-        boolean available = timeSlotRepository.isSlotAvailable(station.getId(), slot1.getStartTime(), slot1.getEndTime());
+        boolean available = timeSlotRepository.existsSlotInRange(station.getId(), slot1.getStartTime(), slot1.getEndTime(),"[]");
         assertThat(available).isTrue();
     }
 
     @Test
     void testFindSlotAvailableByStationIdBetweenStartDateTimeAndEndDateTime() {
-        TimeSlot found = timeSlotRepository.findSlotAvailableByStationIdBetweenStartDateTimeAndEndDateTime(
-                station.getId(), slot1.getStartTime(), slot1.getEndTime()
+        List<TimeSlot> found = timeSlotRepository.findSlotsInRange(
+                station.getId(), slot1.getStartTime(), slot1.getEndTime(),"[]"
         );
         assertThat(found).isNotNull();
     }
 
     @Test
     void testExistsByStationAndAvailability() {
-        boolean exists = timeSlotRepository.existsByStationAndAvailability(station.getId(), slot1.getStartTime(), slot1.getEndTime());
+        boolean exists = timeSlotRepository.existsSlotInRange(station.getId(), slot1.getStartTime(), slot1.getEndTime(),"[]");
         assertThat(exists).isTrue();
     }
 
