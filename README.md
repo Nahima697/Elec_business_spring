@@ -26,7 +26,12 @@ Tout est dockerisé pour simplifier le déploiement local et serveur.
 git clone https://github.com/Nahima697/elecbusiness_spring.git
 git clone https://github.com/Nahima697/elecbusiness_front.git
 
+
+```
+---
 ## 4.Créer un fichier .env à la racine avec le contenu suivant :
+
+```bash
 # PostgreSQL
 POSTGRES_DB=eb_db
 POSTGRES_USER=eb_user
@@ -43,8 +48,11 @@ MAIL_PORT=1025
 # JWT
 JWT_SECRET=<votre_secret_jwt>
 
+```
+---
 ## 5. Schéma d’architecture des conteneurs
 
+---
 ## 6. Lancer l’application
 
 Depuis le dossier contenant le `docker-compose.yaml` :
@@ -52,11 +60,14 @@ Depuis le dossier contenant le `docker-compose.yaml` :
 ```bash
 docker-compose up --build -d
 
+```
 Vérifier les conteneurs :
 
 ```bash
 docker-compose ps
 
+```
+---
 ## 7. Accès aux services
 
 - Frontend : [http://<serveur>:8100](http://<serveur>:8100)  
@@ -71,9 +82,12 @@ docker-compose ps
 
 ```bash
 docker-compose down
+```
+---
 
 ## 9. Notes importantes
 
 - Docker Compose permet de lancer tout l’environnement complet localement ou sur serveur.  
 - CI/CD via GitHub Actions utilise Testcontainers pour les tests d’intégration.  
 - Pour la production, adapter les variables `.env` (Redis/Postgres managés, SMTP réel).
+
