@@ -24,11 +24,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private AuthenticationManager authManager;
-    private JwtUtil jwtUtil;
-    private UserMapper mapper;
-    private RefreshTokenRepository tokenRepository;
-    private UserRepository userRepo;
+    private final AuthenticationManager authManager;
+    private final JwtUtil jwtUtil;
+    private final UserMapper mapper;
+    private final RefreshTokenRepository tokenRepository;
+    private final UserRepository userRepo;
 
     @Override
     public LoginResponseDTO login(LoginCredentialsDTO credentials) {
