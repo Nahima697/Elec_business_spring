@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
-import java.util.UUID;
+
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -32,7 +32,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
         // Localhost URL with userId and OTP token
         final var emailVerificationUrl =
-                "http://localhost:8080/api/email/verify?uid=%s&t=%s"
+                "http://localhost:8080/api/email/verify?userId=%s&t=%s"
                         .formatted(userId, token);
 
         final var emailText =
