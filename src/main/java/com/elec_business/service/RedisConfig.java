@@ -9,7 +9,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 
 @Configuration
-@Profile("dev")
+
 public class RedisConfig {
 
     @Bean
