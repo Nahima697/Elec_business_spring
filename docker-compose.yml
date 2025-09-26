@@ -1,15 +1,55 @@
 version: '3.8'
 
 services:
+  # === Redis ===
   redis:
     image: redis:7
     container_name: redis-server
     ports:
       - "6379:6379"
 
+  # === Mailhog ===
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog
     ports:
       - "1025:1025"  # SMTP
       - "8025:8025"  # Web UI
+
+  # === PostgreSQL ===
+  postgres:
+    image: postgres:17
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: elec_business
+      POSTGRES_USER: elec_business_user
+      POSTGRES_PASSWORD: veBzeqIT9aMtGwzWPBlyOvSzvsgdHI0n
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # === Backend Spring Boot ===
+  backend:
+    build:
+      context: ./elecbusiness_spring
+      dockerfile: Dockerfile
+    container_name: elecbusiness-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://postgres:5432/elec_business
+      DB_USERNAME: elec_business_user
+      DB_PASSWORD: veBzeqIT9aMtGwzWPBlyOvSzvsgdHI0n
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+    depends_on:
+      - postgres
+      - redis
+      - mailhog
+
+volumes:
+  postgres-data:
