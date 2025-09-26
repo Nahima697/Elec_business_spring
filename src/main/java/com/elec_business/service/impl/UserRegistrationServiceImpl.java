@@ -1,13 +1,10 @@
 package com.elec_business.service.impl;
 
-import com.elec_business.controller.dto.RegistrationDto;
-import com.elec_business.controller.dto.UserRegisterDto;
 import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.entity.User;
-import com.elec_business.controller.mapper.UserRegistrationMapper;
 import com.elec_business.repository.UserRepository;
+import com.elec_business.service.UserRegistrationService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,29 +12,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserRegistrationServiceImpl {
+public class UserRegistrationServiceImpl implements  UserRegistrationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserRegistrationMapper userRegistrationMapper;
-    private final UserMapper appUserMapper;
 
     @Transactional
-    public User registerUser(@Valid RegistrationDto request) {
-        if (userRepository.existsByUsername(request.getUsername()) ||
-                userRepository.existsByEmail(request.getEmail())) {
+    public User registerUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername()) ||
+                userRepository.existsByEmail(user.getEmail())) {
             throw new ValidationException(
                     "Username or Email already exists");
         }
-
-        User user = userRegistrationMapper.toEntity(request);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmailVerified(false);
 
         return userRepository.save(user);
-    }
-
-    public UserRegisterDto getCurrentUser(User user) {
-        return appUserMapper.toDto(user);
     }
 }
