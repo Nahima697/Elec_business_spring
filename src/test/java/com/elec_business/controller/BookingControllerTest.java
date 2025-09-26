@@ -54,7 +54,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     List<Booking> bookings = new ArrayList<>();
     List<ChargingStation> stations = new ArrayList<>();
 
-
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:17-alpine"
     );
