@@ -4,8 +4,6 @@ import com.elec_business.controller.dto.LoginCredentialsDTO;
 import com.elec_business.controller.dto.LoginResponseDTO;
 import com.elec_business.service.impl.TokenPair;
 
-import java.util.UUID;
-
 
 public interface AuthService {
     /**

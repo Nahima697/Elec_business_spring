@@ -10,6 +10,7 @@ import com.elec_business.repository.RefreshTokenRepository;
 import com.elec_business.security.jwt.JwtUtil;
 import com.elec_business.service.AuthService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private AuthenticationManager authManager;
     private JwtUtil jwtUtil;
