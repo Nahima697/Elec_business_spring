@@ -46,7 +46,6 @@ public class AuthController {
     private final EmailVerificationServiceImpl emailVerificationService;
     private final AuthService authService;
     private final UserRegistrationServiceImpl userRegistrationService;
-    private final RegistrationResponseMapper registrationResponseMapper;
     private final UserRepository appUserRepository;
 
     @Value("${app.auth.email-verification-required:true}")
