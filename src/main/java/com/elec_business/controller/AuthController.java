@@ -7,12 +7,11 @@ import com.elec_business.controller.dto.UserRegisterDto;
 import com.elec_business.entity.User;
 import com.elec_business.security.exception.EmailNotVerifiedException;
 import com.elec_business.controller.mapper.UserMapper;
-import com.elec_business.controller.mapper.RegistrationResponseMapper;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.AuthService;
-import com.elec_business.service.impl.EmailVerificationServiceImpl;
+import com.elec_business.service.EmailVerificationService;
+import com.elec_business.service.UserRegistrationService;
 import com.elec_business.service.impl.TokenPair;
-import com.elec_business.service.impl.UserRegistrationServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -40,13 +38,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
-
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
-    private final EmailVerificationServiceImpl emailVerificationService;
+    private final EmailVerificationService emailVerificationService;
     private final AuthService authService;
-    private final UserRegistrationServiceImpl userRegistrationService;
+    private final UserRegistrationService userRegistrationService;
     private final UserRepository appUserRepository;
+    private final UserMapper userMapper;
 
     @Value("${app.auth.email-verification-required:true}")
     private boolean emailVerificationRequired;
@@ -58,7 +56,7 @@ public class AuthController {
     public ResponseEntity<RegistrationResponseDto> register(@RequestBody @Valid RegistrationDto registrationDto) {
         try {
             // 1. Création de l'utilisateur
-            User registeredUser = userRegistrationService.registerUser(registrationDto);
+            User registeredUser = userRegistrationService.registerUser(userMapper.toEntity(registrationDto));
 
             // 2. Envoi de l'email si nécessaire
             if (emailVerificationRequired) {
@@ -173,7 +171,7 @@ public class AuthController {
             if (currentUser == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-              return ResponseEntity.ok(userRegistrationService.getCurrentUser(currentUser));
+              return ResponseEntity.ok(userMapper.toDto(currentUser));
         }
 
     @PostMapping("/api/refresh-token")
@@ -201,7 +199,7 @@ public class AuthController {
     private ResponseCookie generateCookie(String refreshToken) {
        return ResponseCookie.from("refresh-token", refreshToken)
                 .httpOnly(true)
-                .secure(false)//faudrait plutôt mettre à true pour qu'il ne soit envoyé qu'en HTTPS, mais le temps du dev on le met à false
+                .secure(true)
                 .sameSite(SameSiteCookies.NONE.toString())
                 .path("/api/refresh-token")
                 .build()
