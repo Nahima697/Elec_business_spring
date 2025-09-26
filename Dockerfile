@@ -1,5 +1,5 @@
 # === Étape 1 : build
-FROM maven:4.0.0-eclipse-temurin-21 AS build
+FROM maven:3.9.1-eclipse-temurin-21 AS build
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -8,7 +8,6 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# Build du projet (tests inclus, ou skip si tu veux)
 RUN mvn clean package -DskipTests
 
 # === Étape 2 : runtime
