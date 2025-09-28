@@ -12,6 +12,9 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
 
+      - name: Installer CA certificates
+        run: sudo apt-get update && sudo apt-get install -y ca-certificates
+
       - name: 🚀 Déclencher le déploiement Render
         run: |
           curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
