@@ -9,11 +9,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupérer le code
+      # 1️⃣ Checkout
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
 
-      # 2️⃣ Vérifier que les secrets existent
+      # 2️⃣ Setup Java 21 + Maven
+      - name: Setup Java 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # 3️⃣ Vérification des secrets
       - name: 🔒 Vérification des secrets
         run: |
           if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ]; then
@@ -25,15 +32,19 @@ jobs:
             exit 1
           fi
 
-      # 3️⃣ Build et tests via Dockerfile
-      - name: 🐳 Build Docker et tests
-        run: docker build --target build -t myapp-build .
+      # 4️⃣ Maven build + tests (Testcontainers)
+      - name: Maven build + tests
+        run: mvn clean verify
 
-      # 4️⃣ Installer les certificats CA (pour curl HTTPS)
-      - name: 📜 Installer ca-certificates
+      # 5️⃣ Build Dockerfile pour Render (skip tests)
+      - name: Build Docker image
+        run: docker build -t myapp --target runtime .
+
+      # 6️⃣ Installer CA certificates pour curl HTTPS
+      - name: Installer CA certificates
         run: sudo apt-get update && sudo apt-get install -y ca-certificates
 
-      # 5️⃣ Déploiement Render
+      # 7️⃣ Déploiement Render
       - name: 🚀 Déclencher le déploiement Render
         run: |
           curl -v -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
