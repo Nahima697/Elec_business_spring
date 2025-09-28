@@ -53,7 +53,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     List<User> users = new ArrayList<>();
     List<Booking> bookings = new ArrayList<>();
     List<ChargingStation> stations = new ArrayList<>();
-    String jwtTokenUser1;
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:17-alpine"
@@ -77,68 +76,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @BeforeEach
-    void setUp() throws Exception {
-        // Charge les données de test
+     void setUp() throws Exception {
         TestDataLoader.LoadResult result = testDataLoader.load();
         users = result.users();
         stations = result.stations();
         bookings = result.bookings();
-
-        // Login programmatique pour user1
-        jwtTokenUser1 = loginAndGetToken("user1@test.com", "password123");
+        assertFalse(users.isEmpty(), "users should not be empty after loading test data");
+        assertFalse(stations.isEmpty(), "stations should not be empty after loading test data");
+        assertFalse(bookings.isEmpty(), "bookings should not be empty after loading test data");
     }
-
-    private String loginAndGetToken(String username, String password) throws Exception {
-        String payload = """
-            {
-                "username": "%s",
-                "password": "%s"
-            }
-            """.formatted(username, password);
-
-        String response = mvc.perform(post("/api/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(payload))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        return objectMapper.readTree(response).get("token").asText();
-    }
-
 
     @Test
-    void createBooking_shouldCreateBookingSuccessFully() throws Exception {
-        String username = "user2";
-        String password = "password456";
+    @WithUserDetails(value = "user2@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    void createBooking_shouldCreateBookingSuccessfully() throws Exception {
+        // Récupération de la station pour la réservation
+        String stationId = stations.getFirst().getId();
 
-        String loginPayload = """
-        {
-            "username": "%s",
-            "password": "%s"
-        }
-        """.formatted(username, password);
+        LocalDateTime start = LocalDateTime.now().plusHours(1);
+        LocalDateTime end = LocalDateTime.now().plusHours(3);
 
-        String response = mvc.perform(post("/api/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginPayload))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        String jwtToken = objectMapper.readTree(response).get("token").asText();
-        assertNotNull(jwtToken, "Le token ne doit pas être null");
-
-        LocalDateTime start = LocalDateTime.of(2025, 9, 10, 8, 20);
-        LocalDateTime end = LocalDateTime.of(2025, 9, 10, 10, 20);
-
-
-        BookingRequestDto requestDto = new BookingRequestDto(stations.getFirst().getId(), start, end);
+        BookingRequestDto requestDto = new BookingRequestDto(stationId, start, end);
 
         mvc.perform(post("/api/bookings")
-                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -148,10 +107,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                     assertNotNull(responseDto.getId(), "Booking ID should not be null");
                     assertFalse(responseDto.getStationName().isBlank(), "Station name should be present");
                     assertFalse(responseDto.getUserName().isBlank(), "User name should be present");
+                    assertEquals("user2", responseDto.getUserName(), "Booking should be linked to user2");
                 });
     }
 
+
     @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
         mvc.perform(post("/api/bookings/"+bookings.getFirst().getId()+"/accept")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -160,6 +122,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void rejectBooking_shouldRejectBookingSuccessfully() throws Exception {
         mvc.perform(post("/api/bookings/" + bookings.getFirst().getId() + "/reject")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,6 +131,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
         mvc.perform(get("/api/bookings/" + bookings.getFirst().getId()))
                 .andExpect(status().isOk())
@@ -182,9 +146,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldUpdateBooking() throws Exception {
-        LocalDateTime start = LocalDateTime.of(2025, 9, 10, 14, 20);
-        LocalDateTime end = LocalDateTime.of(2025, 9, 10, 15, 20);
+        LocalDateTime start = LocalDateTime.now().plusHours(3);
+        LocalDateTime end = start.plusHours(4);
+
         String stationId = stations.getFirst().getId();
 
         BookingRequestDto requestDto = new BookingRequestDto(stationId, start, end);
@@ -204,6 +170,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
     @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldFailOnValidationError() throws Exception {
         BookingRequestDto requestDto = new BookingRequestDto(); // vide = validation error
 
@@ -214,9 +181,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldThrow404IfNotExist() throws Exception {
-        LocalDateTime start = LocalDateTime.of(2025, 9, 10, 14, 20);
-        LocalDateTime end = LocalDateTime.of(2025, 9, 10, 15, 20);
+        LocalDateTime start = LocalDateTime.now().plusHours(1);
+        LocalDateTime end = start.plusHours(2);
+
         String stationId = stations.getFirst().getId();
 
         BookingRequestDto requestDto = new BookingRequestDto(stationId, start, end);
@@ -227,7 +196,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 .andExpect(status().isNotFound());
     }
 
+    // a voir si je supprime le booking ou si je met le statut annulé
     @Test
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void deleteShouldDeleteBookingSuccessfully() throws Exception {
         mvc.perform(delete("/api/bookings/" + bookings.getFirst().getId()))
                 .andExpect(status().isNoContent());

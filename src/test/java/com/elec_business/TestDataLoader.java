@@ -1,6 +1,7 @@
 package com.elec_business;
 
 import com.elec_business.entity.*;
+import com.elec_business.repository.UserRepository;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -36,6 +37,7 @@ public class TestDataLoader {
         // ROLE
         UserRole roleUser = new UserRole(null, "ROLE_USER");
         em.persist(roleUser);
+        em.flush(); // <-- flush ici pour éviter le TransientObjectException
 
         // USERS
         User user1 = new User(
@@ -61,6 +63,7 @@ public class TestDataLoader {
                 null, null, null
         );
         em.persist(user3);
+        em.flush(); // flush des users pour être sûr qu'ils sont en base
 
         // LOCATION
         ChargingLocation location1 = new ChargingLocation(
@@ -68,7 +71,7 @@ public class TestDataLoader {
         );
         em.persist(location1);
 
-        // STATION 1
+        // STATIONS
         ChargingStation station1 = new ChargingStation();
         station1.setName("Station A");
         station1.setDescription("Charge rapide 50kW");
@@ -81,7 +84,6 @@ public class TestDataLoader {
         station1.setImageUrl(null);
         em.persist(station1);
 
-        // STATION 2
         ChargingStation station2 = new ChargingStation();
         station2.setName("Station B");
         station2.setDescription("Borne classique 22kW");
@@ -93,59 +95,51 @@ public class TestDataLoader {
         station2.setLocation(location1);
         station2.setImageUrl(null);
         em.persist(station2);
+        em.flush(); // flush stations
 
         // TIMESLOT
-        LocalDateTime start = LocalDateTime.of(2025, 9, 10, 8, 20);
-        LocalDateTime end = LocalDateTime.of(2025, 9, 10, 18, 20);
-
+        LocalDateTime now = LocalDateTime.now();
         TimeSlot slot = new TimeSlot();
         slot.setStation(station1);
-        slot.setStartTime(start);
-        slot.setEndTime(end);
+        slot.setStartTime(now.plusHours(1));
+        slot.setEndTime(now.plusHours(8));
         slot.setIsAvailable(true);
-
-        slot.setAvailability(Range.closed(start, end));
-
+        slot.setAvailability(Range.closed(slot.getStartTime(), slot.getEndTime()));
         em.persist(slot);
 
+/// BOOKING STATUS
+        BookingStatus pendingStatus = new BookingStatus(BookingStatusType.PENDING);
+        BookingStatus acceptedStatus = new BookingStatus(BookingStatusType.ACCEPTED);
+        BookingStatus rejectedStatus = new BookingStatus(BookingStatusType.REJECTED);
+        BookingStatus cancelledStatus = new BookingStatus(BookingStatusType.CANCELLED);
+        em.persist(pendingStatus);
+        em.persist(acceptedStatus);
+        em.persist(rejectedStatus);
+        em.persist(cancelledStatus);
+
+// Booking dans le futur
         Booking booking1 = new Booking();
         booking1.setUser(user1);
         booking1.setStation(station1);
-        booking1.setStartDate(LocalDateTime.of(2025, 9, 10, 11, 20));
-        booking1.setEndDate(LocalDateTime.of(2025, 9, 10, 13, 20));
+        booking1.setStartDate(now.plusHours(2));
+        booking1.setEndDate(now.plusHours(4));
         booking1.setTotalPrice(new BigDecimal("0.50"));
         booking1.setCreatedAt(Instant.now());
-
-        // BOOKING STATUS
-
-        BookingStatus pendingStatus = new BookingStatus(BookingStatusType.PENDING);
-        em.persist(pendingStatus);
-
-        BookingStatus acceptedStatus = new BookingStatus(BookingStatusType.ACCEPTED);
-        em.persist(acceptedStatus);
-
-
-        BookingStatus rejectedStatus = new BookingStatus(BookingStatusType.REJECTED);
-        em.persist(rejectedStatus);
-
-        BookingStatus cancelledStatus = new BookingStatus(BookingStatusType.CANCELLED);
-        em.persist(cancelledStatus);
         booking1.setStatus(pendingStatus);
-
         em.persist(booking1);
         em.flush();
 
-        // Ajout des Objets
+        // Ajout des objets dans les listes
         users.clear();
-        stations.clear();
-        bookings.clear();
-
         users.add(user1);
         users.add(user2);
         users.add(user3);
 
+        stations.clear();
         stations.add(station1);
         stations.add(station2);
+
+        bookings.clear();
         bookings.add(booking1);
 
         return new LoadResult(stations, users, bookings);
