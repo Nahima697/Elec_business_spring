@@ -7,12 +7,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    services:
-      # Docker service pour Testcontainers
-      docker:
-        image: docker:24.0
-        options: --privileged
-
     steps:
       # 1️⃣ Checkout
       - name: 📥 Checkout du code
@@ -37,9 +31,33 @@ jobs:
             exit 1
           fi
 
-      # 4️⃣ Maven build + tests avec Testcontainers
-      - name: Maven build + tests
-        run: mvn clean verify -Dspring.profiles.active=test
+ - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Run Maven Integration Tests
+        run: mvn clean verify site
+
+      - name: Upload JUnit Test Results
+        if: always()
+        uses: actions/upload-artifact@v4 # Updated to v4 (or a newer version)
+        with:
+          name: junit-xml-reports
+          path: |
+            **/target/surefire-reports/*.xml
+            **/target/failsafe-reports/TEST-*.xml
+
+      - name: Upload HTML Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4 # Updated to v4 (or a newer version)
+        with:
+          name: html-test-reports
+          path: |
+            **/target/site
 
       # 5️⃣ Build Dockerfile pour Render (skip tests)
       - name: Build Docker image
