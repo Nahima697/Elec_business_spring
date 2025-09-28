@@ -1,6 +1,6 @@
 package com.elec_business.repository;
 
-
+import com.elec_business.config.TestConfig;
 import com.elec_business.entity.*;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import org.junit.jupiter.api.*;
@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
+@Import(TestConfig.class)
 class TimeSlotRepositoryTest {
 
     @Container

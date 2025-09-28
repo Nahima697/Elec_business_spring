@@ -47,9 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    TimeSlotRepository timeSlotRepository;
-
     List<User> users = new ArrayList<>();
     List<Booking> bookings = new ArrayList<>();
     List<ChargingStation> stations = new ArrayList<>();
