@@ -67,19 +67,14 @@ public class AuthController {
             }
 
             // 3. Création de la réponse succès
-            RegistrationResponseDto responseDto = new RegistrationResponseDto(
-                    registeredUser.getUsername(),
-                    registeredUser.getEmail(),
-                    emailVerificationRequired,
-                    "Votre compte a été créé avec succès"
-            );
+            RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(registeredUser,emailVerificationRequired,
+                    "Votre compte a été créé avec succès");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 
         } catch (ValidationException ve) {
             // Création de la réponse erreur spécifique
             RegistrationResponseDto responseDto = new RegistrationResponseDto(
-                    null,
                     null,
                     false,
                     ve.getMessage()
@@ -91,7 +86,6 @@ public class AuthController {
 
             // Création de la réponse erreur générique
             RegistrationResponseDto responseDto = new RegistrationResponseDto(
-                    null,
                     null,
                     false,
                     "Une erreur est survenue lors de la création du compte."
