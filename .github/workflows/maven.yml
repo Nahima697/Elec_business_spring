@@ -1,22 +1,41 @@
-name: CI/CD Spring Boot avec Render (tests inclus dans Dockerfile)
+name: CI/CD Spring Boot avec Render
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Récupérer le code
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
 
-      - name: Installer CA certificates
+      # 2️⃣ Vérifier que les secrets existent
+      - name: 🔒 Vérification des secrets
+        run: |
+          if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ]; then
+            echo "ERROR: RENDER_SERVICE_ID n'est pas défini !"
+            exit 1
+          fi
+          if [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
+            echo "ERROR: RENDER_API_KEY n'est pas défini !"
+            exit 1
+          fi
+
+      # 3️⃣ Build et tests via Dockerfile
+      - name: 🐳 Build Docker et tests
+        run: docker build --target build -t myapp-build .
+
+      # 4️⃣ Installer les certificats CA (pour curl HTTPS)
+      - name: 📜 Installer ca-certificates
         run: sudo apt-get update && sudo apt-get install -y ca-certificates
 
+      # 5️⃣ Déploiement Render
       - name: 🚀 Déclencher le déploiement Render
         run: |
-          curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+          curl -v -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
             -H "Accept: application/json" \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
