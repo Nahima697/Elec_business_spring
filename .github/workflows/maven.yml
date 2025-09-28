@@ -7,6 +7,11 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    services:
+      # Docker service pour Testcontainers
+      docker:
+        image: docker:24.0
+        options: --privileged
 
     steps:
       # 1️⃣ Checkout
@@ -32,9 +37,9 @@ jobs:
             exit 1
           fi
 
-      # 4️⃣ Maven build + tests (Testcontainers)
+      # 4️⃣ Maven build + tests avec Testcontainers
       - name: Maven build + tests
-        run: mvn clean verify
+        run: mvn clean verify -Dspring.profiles.active=test
 
       # 5️⃣ Build Dockerfile pour Render (skip tests)
       - name: Build Docker image
