@@ -103,11 +103,9 @@ jobs:
             --url https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys \
             --header 'accept: application/json' \
             --header 'content-type: application/json' \
-            --header "Authorization: ${{ secrets.RENDER_API_KEY }}" \
+            --header "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             --data '{
               "clearCache": "do_not_clear",
               "commitId": "string",
               "imageUrl": "string"
             }'
-
-
