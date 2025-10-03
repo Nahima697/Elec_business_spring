@@ -10,6 +10,27 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:  # 
+      SPRING_PROFILES_ACTIVE: prod
+
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USERNAME: elec_business_user
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      JWT_SECRET: ${{ secrets.JWT_SECRET}}
+      JWT_EXPIRATION: 3600000
+
+      MAIL_HOST: smtp.gmail.com
+      MAIL_PORT: 587
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME}}
+      MAIL_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+
+      REDIS_HOST: ${{ secrets.REDIS_HOST}}
+      REDIS_PORT: ${{ secrets.REDIS_PORT}}
+
+      EMAIL_VERIFICATION_REQUIRED: true
+
+      URL_FRONT: ${{ secrets.URL_FRONT}}
 
     steps:
       # 1️⃣ Checkout
