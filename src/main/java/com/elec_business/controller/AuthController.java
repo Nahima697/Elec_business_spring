@@ -27,7 +27,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,8 +35,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
-    private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
     private final EmailVerificationService emailVerificationService;
     private final AuthService authService;
     private final UserRegistrationService userRegistrationService;
@@ -47,7 +44,7 @@ public class AuthController {
     @Value("${app.auth.email-verification-required:true}")
     private boolean emailVerificationRequired;
 
-    @Value("${URL_FRONT}")
+    @Value("${app.auth.frontend.url}")
     private String FRONT_URL;
 
     @PostMapping("/register")

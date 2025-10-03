@@ -22,7 +22,6 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Définir le profil prod et charger les variables d'environnement
-# Render permet de définir ces variables dans l'UI → pas besoin de copier .env
 ENV SPRING_PROFILES_ACTIVE=prod
 
 # Commande pour lancer l'application
