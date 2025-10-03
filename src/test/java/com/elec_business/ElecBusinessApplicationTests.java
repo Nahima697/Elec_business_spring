@@ -1,13 +1,14 @@
-// package com.elec_business.elec_business;
+ package com.elec_business;
 
-// import org.junit.jupiter.api.Test;
-// import org.springframework.boot.test.context.SpringBootTest;
+ import org.junit.jupiter.api.Test;
+ import org.springframework.boot.test.context.SpringBootTest;
 
-// @SpringBootTest
-// class ElecBusinessApplicationTests {
+ @SpringBootTest(properties = "spring.profiles.active=test")
+ class ElecBusinessApplicationTests {
 
-// 	@Test
-// 	void contextLoads() {
-// 	}
+ 	@Test
+ 	void contextLoads() {
+        // TODO document why this method is empty
+    }
 
-// }
+ }
