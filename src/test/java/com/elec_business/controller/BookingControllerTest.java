@@ -1,27 +1,22 @@
 package com.elec_business.controller;
 
 import com.elec_business.TestDataLoader;
-import com.elec_business.config.TestConfig;
 import com.elec_business.controller.dto.BookingRequestDto;
 import com.elec_business.controller.dto.BookingResponseDto;
 import com.elec_business.entity.Booking;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
-import com.elec_business.repository.TimeSlotRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -39,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Testcontainers
-@Import(TestConfig.class)
 @Transactional
 @ActiveProfiles("test")
  class BookingControllerTest {

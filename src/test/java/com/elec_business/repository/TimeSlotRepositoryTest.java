@@ -1,16 +1,15 @@
 package com.elec_business.repository;
 
-import com.elec_business.config.TestConfig;
 import com.elec_business.entity.*;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -28,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-@Import(TestConfig.class)
+@ActiveProfiles("test")
 class TimeSlotRepositoryTest {
 
     @Container
@@ -47,8 +46,6 @@ class TimeSlotRepositoryTest {
     @Autowired
     private ChargingStationRepository chargingStationRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -75,11 +72,12 @@ class TimeSlotRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         // Création rôle et utilisateur
         UserRole roleUser = userRoleRepository.save(new UserRole(null, "ROLE_USER"));
         User user1 = userRepository.save(new User(
-                null, "user1", "user1@test.com", passwordEncoder.encode("password123"),
+                null, "user1", "user1@test.com", encoder.encode("password123"),
                 "0600000001", true, true, null, roleUser,
                 Instant.now(), Instant.now(), Instant.now(),
                 null, null, null
