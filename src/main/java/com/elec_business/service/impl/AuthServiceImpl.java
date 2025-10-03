@@ -1,7 +1,5 @@
 package com.elec_business.service.impl;
 
-import com.elec_business.controller.dto.LoginCredentialsDTO;
-import com.elec_business.controller.dto.LoginResponseDTO;
 import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.entity.RefreshToken;
 import com.elec_business.entity.User;
@@ -11,6 +9,7 @@ import com.elec_business.security.jwt.JwtUtil;
 import com.elec_business.service.AuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,15 +30,29 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepo;
 
     @Override
-    public LoginResponseDTO login(LoginCredentialsDTO credentials) {
+    public User authenticateUser(String username, String password) {
         Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        credentials.getEmail(),
-                        credentials.getPassword()));
-        User user = (User) authentication.getPrincipal();
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+        return (User) authentication.getPrincipal();
+    }
 
-        String token = jwtUtil.generateToken(user.getUsername());
-        return new LoginResponseDTO(token, mapper.toDTO(user));
+    public ResponseCookie createRefreshTokenCookie(User user) {
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(user);
+        refreshToken.setExpiresAt(LocalDateTime.now().plusDays(30));
+        tokenRepository.save(refreshToken);
+
+        return ResponseCookie.from("refresh-token", refreshToken.getId())
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/api/refresh-token")
+                .build();
+    }
+    @Override
+    public String generateJwtToken(User user) {
+        return jwtUtil.generateToken(user.getUsername());
     }
 
     @Override
@@ -51,7 +64,15 @@ public class AuthServiceImpl implements AuthService {
         tokenRepository.save(refreshToken);
         return refreshToken.getId();
     }
-
+    @Override
+    public ResponseCookie createRefreshTokenCookie(String refreshToken) {
+        return ResponseCookie.from("refresh-token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/api/refresh-token")
+                .build();
+    }
     @Override
     public TokenPair validateRefreshToken(String token) {
         RefreshToken refreshToken = tokenRepository.findById(token).orElseThrow();

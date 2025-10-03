@@ -1,9 +1,7 @@
 package com.elec_business.controller;
 
+import com.elec_business.controller.dto.*;
 import com.elec_business.security.jwt.JwtUtil;
-import com.elec_business.controller.dto.RegistrationDto;
-import com.elec_business.controller.dto.RegistrationResponseDto;
-import com.elec_business.controller.dto.UserRegisterDto;
 import com.elec_business.entity.User;
 import com.elec_business.security.exception.EmailNotVerifiedException;
 import com.elec_business.controller.mapper.UserMapper;
@@ -120,47 +118,33 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-        if (user.getUsername() == null || user.getPassword() == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Missing username or password."));
-        }
-
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginCredentialsDTO loginDto) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-            );
+            // Authentifie l'utilisateur via le service
+            User user = authService.authenticateUser(loginDto.getUsername(), loginDto.getPassword());
 
-            if (authentication.isAuthenticated()) {
-                Map<String, Object> authData = new HashMap<>();
-                authData.put("token", jwtUtil.generateToken(user.getUsername()));
-                authData.put("type", "Bearer");
-                String refreshToken = authService.generateRefreshToken(user.getId());
-                ResponseCookie refreshCookie = generateCookie(refreshToken);
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                        .body(authData);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("error", "Authentication failed."));
-            }
+            // Génère le JWT
+            String jwt = authService.generateJwtToken(user);
+
+            // Génère le refresh token cookie
+            String refreshToken = authService.generateRefreshToken(user.getId());
+            ResponseCookie refreshCookie= authService.createRefreshTokenCookie(refreshToken);
+            // Crée la réponse DTO
+            LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toDTO(user));
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .body(responseDto);
 
         } catch (AuthenticationException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof EmailNotVerifiedException) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(Map.of("error", "Email not verified."));
-            }
-
-            log.warn("Authentication failed for user: {}", user.getUsername(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid username or password."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
-            log.error("Unexpected error during login", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Unexpected error during login."));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-        @GetMapping("/me")
+
+
+    @GetMapping("/me")
         public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal User currentUser){
             if (currentUser == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

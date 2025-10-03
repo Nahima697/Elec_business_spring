@@ -1,5 +1,6 @@
 package com.elec_business.controller.dto;
 
+import com.elec_business.entity.ChargingLocation;
 import com.elec_business.service.UrlBuilder;
 import jakarta.validation.constraints.NotNull;
 
@@ -16,7 +17,8 @@ public record ChargingStationResponseDto(
         Instant createdAt,
         BigDecimal lng,
         BigDecimal lat,
-        String imageUrl) {
+        String imageUrl,
+        LocationDTO locationDTO) {
     public UrlBuilder getUrls() {
         return new UrlBuilder(imageUrl);
     }
