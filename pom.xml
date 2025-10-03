@@ -182,7 +182,7 @@
 				<filtering>true</filtering>
 				<excludes>
 					<exclude>application.properties</exclude>
-					<exclude>**/*.properties</exclude> <!-- pour éviter les autres aussi -->
+					<exclude>**/*.properties</exclude>
 				</excludes>
 			</resource>
 		</resources>
@@ -192,6 +192,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -222,6 +223,39 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+
+			<!-- Plugin Surefire pour gérer l'exécution des tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M7</version>
+				<configuration>
+					<skipTests>true</skipTests> <!-- désactive tests par défaut -->
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>testcontainers</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<testcontainers.enabled>true</testcontainers.enabled>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>run-tests</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<skipTests>false</skipTests> <!-- permet d’exécuter les tests -->
+			</properties>
+		</profile>
+	</profiles>
 </project>
