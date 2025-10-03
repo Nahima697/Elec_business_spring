@@ -96,11 +96,18 @@ jobs:
       - name: Installer CA certificates
         run: sudo apt-get update && sudo apt-get install -y ca-certificates
 
-      # 🔟 Déploiement Render
+      # 🔟 Déploiement Render via API
       - name: Trigger deploy on Render.com
         run: |
-            curl -v -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{}'
+          curl --request POST \
+            --url https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys \
+            --header 'accept: application/json' \
+            --header 'content-type: application/json' \
+            --header "Authorization: ${{ secrets.RENDER_API_KEY }}" \
+            --data '{
+              "clearCache": "do_not_clear",
+              "commitId": "string",
+              "imageUrl": "string"
+            }'
+
 
