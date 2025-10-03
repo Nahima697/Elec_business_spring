@@ -6,6 +6,7 @@ import io.hypersistence.utils.hibernate.type.range.Range;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +23,13 @@ public class TestDataLoader {
     @Autowired
     EntityManager em;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     public List<ChargingStation> stations = new ArrayList<>();
     public List<User> users = new ArrayList<>();
     public List<Booking> bookings = new ArrayList<>();
 
     public record LoadResult(List<ChargingStation> stations, List<User> users, List<Booking> bookings) {}
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Transactional
     public LoadResult load() {
@@ -41,7 +41,7 @@ public class TestDataLoader {
 
         // USERS
         User user1 = new User(
-                null, "user1", "user1@test.com", passwordEncoder.encode("password123"),
+                null, "user1", "user1@test.com", encoder.encode("password123"),
                 "0600000001", true, true, null, roleUser,
                 Instant.now(), Instant.now(), Instant.now(),
                 null, null, null
@@ -49,7 +49,7 @@ public class TestDataLoader {
         em.persist(user1);
 
         User user2 = new User(
-                null, "user2", "user2@test.com", passwordEncoder.encode("password456"),
+                null, "user2", "user2@test.com", encoder.encode("password456"),
                 "0600000002", true, true, null, roleUser,
                 Instant.now(), Instant.now(), Instant.now(),
                 null, null, null
@@ -57,7 +57,7 @@ public class TestDataLoader {
         em.persist(user2);
 
         User user3 = new User(
-                null, "user3", "user3@test.com", passwordEncoder.encode("password789"),
+                null, "user3", "user3@test.com", encoder.encode("password789"),
                 "0600000003", true, true, null, roleUser,
                 Instant.now(), Instant.now(), Instant.now(),
                 null, null, null
