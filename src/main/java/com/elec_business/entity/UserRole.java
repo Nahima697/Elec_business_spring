@@ -14,8 +14,10 @@ import org.hibernate.annotations.ColumnDefault;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user_role", schema = "public", uniqueConstraints = {
+@Table(name = "user_role", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"})
 })
+
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
