@@ -22,11 +22,14 @@ WORKDIR /app
 # Copier le jar depuis l'étape build
 COPY --from=build /app/target/app.jar app.jar
 
-# Exposer le port utilisé par Spring Boot
+# Exposer le port 8080 (Spring Boot)
 EXPOSE 8080
 
-# Activer le profil prod
+# Définir le port Render
+ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
 
-# Définir l'entrée du conteneur
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Lancer Spring Boot en écoutant le port Render
+ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+
+
