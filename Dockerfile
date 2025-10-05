@@ -21,15 +21,12 @@ WORKDIR /app
 # Copier le jar depuis l'étape build
 COPY --from=build /app/target/app.jar app.jar
 
-# Exposer le port
+# Exposer le port attendu par Render
 EXPOSE 8080
 
 # Définir le port Render et le profil Spring
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
 
-# Passer toutes les variables d'environnement du conteneur à Java
-ENV JAVA_TOOL_OPTIONS="-Dspring.datasource.url=${DB_URL}"
-
-# Entrypoint Spring Boot
-ENTRYPOINT ["sh", "-c", "echo '🔍 DB_URL = ' $DB_URL && java -Dserver.port=${PORT} $JAVA_TOOL_OPTIONS -jar app.jar"]
+# Entrypoint Spring Boot, toutes les variables d'environnement sont transmises automatiquement
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
