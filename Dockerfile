@@ -29,7 +29,10 @@ EXPOSE 8080
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
 
+# Vérifier la variable DB_URL avant de lancer Spring Boot
+RUN echo "🔍 DB_URL = $DB_URL"
+
 # Lancer Spring Boot en écoutant le port Render
-ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "echo '🔍 DB_URL = ' $DB_URL && java -Dserver.port=${PORT} -jar app.jar"]
 
 

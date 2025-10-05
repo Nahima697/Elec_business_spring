@@ -100,12 +100,12 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Dotenv -->
-		<dependency>
-			<groupId>me.paulschwarz</groupId>
-			<artifactId>spring-dotenv</artifactId>
-			<version>4.0.0</version>
-		</dependency>
+<!--		&lt;!&ndash; Dotenv &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>me.paulschwarz</groupId>-->
+<!--			<artifactId>spring-dotenv</artifactId>-->
+<!--			<version>4.0.0</version>-->
+<!--		</dependency>-->
 
 		<!-- JJWT -->
 		<dependency>
