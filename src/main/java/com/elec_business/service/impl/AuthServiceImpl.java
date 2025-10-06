@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional
-    @Scheduled(fixedDelay = 24, timeUnit = TimeUnit.HOURS)
+    @Scheduled(initialDelay = 30000, fixedDelay = 86400000)
     void cleanExpiredTokens() {
         tokenRepository.deleteExpired();
     }
