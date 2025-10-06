@@ -34,3 +34,5 @@ build/
 ### Local Configuration ###
 .env
 .env.prod
+
+run-prod-local.bat
