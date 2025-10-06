@@ -54,12 +54,13 @@ public class AuthController {
             User registeredUser = userRegistrationService.registerUser(userMapper.toEntity(registrationDto));
 
             // 2. Envoi de l'email si nécessaire
-            if (emailVerificationRequired) {
+
+//            if (emailVerificationRequired) {
                 emailVerificationService.sendVerificationToken(
                         registeredUser.getId(),
                         registeredUser.getEmail()
                 );
-            }
+//            }
 
             // 3. Création de la réponse succès
             RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(registeredUser,emailVerificationRequired,
