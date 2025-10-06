@@ -53,22 +53,21 @@ public class AuthController {
             // 1. Création de l'utilisateur
             User registeredUser = userRegistrationService.registerUser(userMapper.toEntity(registrationDto));
 
-            // 2. Envoi de l'email systématiquement
-            emailVerificationService.sendVerificationToken(
-                    registeredUser.getId(),
-                    registeredUser.getEmail()
-            );
+            // 2. Envoi de l'email
+            emailVerificationRequired = true;
+                emailVerificationService.sendVerificationToken(
+                        registeredUser.getId(),
+                        registeredUser.getEmail()
+                );
 
             // 3. Création de la réponse succès
-            RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
-                    registeredUser,
-                    true,
-                    "Votre compte a été créé avec succès, vérifier votre email"
-            );
+            RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(registeredUser,emailVerificationRequired,
+                    "Votre compte a été créé avec succès vérifier votre email");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 
         } catch (ValidationException ve) {
+            // Création de la réponse erreur spécifique
             RegistrationResponseDto responseDto = new RegistrationResponseDto(
                     null,
                     false,
@@ -78,6 +77,8 @@ public class AuthController {
 
         } catch (Exception e) {
             log.error("Error during registration", e);
+
+            // Création de la réponse erreur générique
             RegistrationResponseDto responseDto = new RegistrationResponseDto(
                     null,
                     false,
@@ -86,7 +87,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
     }
-
 
 
     @GetMapping("/email/verify")
