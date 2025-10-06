@@ -39,7 +39,6 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
                         // ✅ Fichiers accessibles publiquement
                         .requestMatchers(
                                 "/thumbnail-*.jpg",
@@ -55,8 +54,7 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/api/doc/**"
+                                "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/charging_stations","/api/charging_locations").permitAll()
 
