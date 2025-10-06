@@ -54,7 +54,6 @@ public class AuthController {
             User registeredUser = userRegistrationService.registerUser(userMapper.toEntity(registrationDto));
 
             // 2. Envoi de l'email
-            emailVerificationRequired = true;
                 emailVerificationService.sendVerificationToken(
                         registeredUser.getId(),
                         registeredUser.getEmail()
