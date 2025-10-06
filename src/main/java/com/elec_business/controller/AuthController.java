@@ -61,7 +61,7 @@ public class AuthController {
                 );
 
             // 3. Création de la réponse succès
-            RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(registeredUser,emailVerificationRequired,
+            RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(registeredUser,
                     "Votre compte a été créé avec succès vérifier votre email");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
