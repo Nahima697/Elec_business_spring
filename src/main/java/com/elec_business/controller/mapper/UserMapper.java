@@ -9,7 +9,8 @@ public interface UserMapper {
     User toEntity(UserRegisterDto userRegisterDto);
     UserRegisterDto toDto(User appUser);
     UserDTO toDTO(User appUser);
-    RegistrationResponseDto toRegistrationResponseDto(User appUser,boolean emailVerified,String message);
+    @Mapping(target = "emailVerificationRequired", expression = "java(true)")
+    RegistrationResponseDto toRegistrationResponseDto(User user,String message);
     User toEntity(RegistrationDto dto);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User partialUpdate(UserRegisterDto userRegisterDto, @MappingTarget User appUser);
