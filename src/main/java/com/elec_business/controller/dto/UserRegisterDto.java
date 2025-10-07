@@ -1,5 +1,6 @@
 package com.elec_business.controller.dto;
 
+import com.elec_business.entity.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class UserRegisterDto {
     private String email;
     private Boolean emailVerified;
     private String phoneNumber;
+    private UserRole role;
 }
 
 
