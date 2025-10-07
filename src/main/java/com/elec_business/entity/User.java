@@ -71,23 +71,18 @@ public class User implements UserDetails {
     @Column(name = "phone_verif_at")
     private Instant phoneVerifiedAt;
 
-    private String emailVerifCode;
-
-    private String phoneVerifCode;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        User appUser = (User) o;
-        return Objects.equals(id, appUser.id) && Objects.equals(username, appUser.username) && Objects.equals(email, appUser.email) && Objects.equals(password, appUser.password) && Objects.equals(phoneNumber, appUser.phoneNumber) && Objects.equals(emailVerified, appUser.emailVerified) && Objects.equals(phoneVerified, appUser.phoneVerified) && Objects.equals(profilePictureUrl, appUser.profilePictureUrl) && Objects.equals(role, appUser.role) && Objects.equals(createdAt, appUser.createdAt) && Objects.equals(emailVerifiedAt, appUser.emailVerifiedAt) && Objects.equals(phoneVerifiedAt, appUser.phoneVerifiedAt) && Objects.equals(emailVerifCode, appUser.emailVerifCode) && Objects.equals(phoneVerifCode, appUser.phoneVerifCode) && Objects.equals(refreshTokens, appUser.refreshTokens);
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, email, password, phoneNumber, emailVerified, phoneVerified, profilePictureUrl, role, createdAt, emailVerifiedAt, phoneVerifiedAt, emailVerifCode, phoneVerifCode, refreshTokens);
+        return Objects.hashCode(id);
     }
 
     @Override
