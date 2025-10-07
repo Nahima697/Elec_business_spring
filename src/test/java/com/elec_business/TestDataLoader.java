@@ -23,7 +23,6 @@ public class TestDataLoader {
     @Autowired
     EntityManager em;
 
-
     public List<ChargingStation> stations = new ArrayList<>();
     public List<User> users = new ArrayList<>();
     public List<Booking> bookings = new ArrayList<>();
@@ -37,33 +36,50 @@ public class TestDataLoader {
         // ROLE
         UserRole roleUser = new UserRole(null, "ROLE_USER");
         em.persist(roleUser);
-        em.flush(); // <-- flush ici pour éviter le TransientObjectException
+        em.flush();
 
         // USERS
-        User user1 = new User(
-                null, "user1", "user1@test.com", encoder.encode("password123"),
-                "0600000001", true, true, null, roleUser,
-                Instant.now(), Instant.now(), Instant.now(),
-                null, null, null
-        );
+        User user1 = new User();
+        user1.setUsername("user1");
+        user1.setEmail("user1@test.com");
+        user1.setPassword(encoder.encode("password123"));
+        user1.setPhoneNumber("0600000001");
+        user1.setEmailVerified(true);
+        user1.setPhoneVerified(true);
+        user1.setRole(roleUser);
+        user1.setCreatedAt(Instant.now());
+        user1.setEmailVerifiedAt(Instant.now());
+        user1.setPhoneVerifiedAt(Instant.now());
         em.persist(user1);
 
-        User user2 = new User(
-                null, "user2", "user2@test.com", encoder.encode("password456"),
-                "0600000002", true, true, null, roleUser,
-                Instant.now(), Instant.now(), Instant.now(),
-                null, null, null
-        );
+
+        User user2 = new User();
+        user2.setUsername("user2");
+        user2.setEmail("user2@test.com");
+        user2.setPassword(encoder.encode("password223"));
+        user2.setPhoneNumber("0600000002");
+        user2.setEmailVerified(true);
+        user2.setPhoneVerified(true);
+        user2.setRole(roleUser);
+        user2.setCreatedAt(Instant.now());
+        user2.setEmailVerifiedAt(Instant.now());
+        user2.setPhoneVerifiedAt(Instant.now());
         em.persist(user2);
 
-        User user3 = new User(
-                null, "user3", "user3@test.com", encoder.encode("password789"),
-                "0600000003", true, true, null, roleUser,
-                Instant.now(), Instant.now(), Instant.now(),
-                null, null, null
-        );
+        em.persist(user2);
+
+        User user3 = new User();
+        user3.setUsername("user3");
+        user3.setEmail("user3@test.com");
+        user3.setPassword(encoder.encode("password323"));
+        user3.setPhoneNumber("0600000003");
+        user3.setEmailVerified(true);
+        user3.setPhoneVerified(true);
+        user3.setRole(roleUser);
+        user3.setCreatedAt(Instant.now());
+        user3.setEmailVerifiedAt(Instant.now());
+        user3.setPhoneVerifiedAt(Instant.now());
         em.persist(user3);
-        em.flush(); // flush des users pour être sûr qu'ils sont en base
 
         // LOCATION
         ChargingLocation location1 = new ChargingLocation(
