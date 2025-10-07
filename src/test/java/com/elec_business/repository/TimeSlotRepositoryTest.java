@@ -76,12 +76,18 @@ class TimeSlotRepositoryTest {
 
         // Création rôle et utilisateur
         UserRole roleUser = userRoleRepository.save(new UserRole(null, "ROLE_USER"));
-        User user1 = userRepository.save(new User(
-                null, "user1", "user1@test.com", encoder.encode("password123"),
-                "0600000001", true, true, null, roleUser,
-                Instant.now(), Instant.now(), Instant.now(),
-                null, null, null
-        ));
+        User user1 = new User();
+        user1.setUsername("user1");
+        user1.setEmail("user1@test.com");
+        user1.setPassword(encoder.encode("password123"));
+        user1.setPhoneNumber("0600000001");
+        user1.setEmailVerified(true);
+        user1.setPhoneVerified(true);
+        user1.setRole(roleUser);
+        user1.setCreatedAt(Instant.now());
+        user1.setEmailVerifiedAt(Instant.now());
+        user1.setPhoneVerifiedAt(Instant.now());
+
 
         // Création location
         ChargingLocation location1 = chargingLocationRepository.save(new ChargingLocation(
