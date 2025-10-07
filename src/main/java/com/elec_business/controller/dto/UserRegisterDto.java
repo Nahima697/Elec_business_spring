@@ -20,7 +20,7 @@ public class UserRegisterDto {
     private Boolean emailVerified;
     private String phoneNumber;
     @NotNull(message = "role_id ne peut pas être null")
-    private String roleId;
+    private Integer roleId;
 }
 
 
