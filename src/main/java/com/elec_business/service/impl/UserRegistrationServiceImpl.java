@@ -2,6 +2,7 @@ package com.elec_business.service.impl;
 
 import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.entity.User;
+import com.elec_business.entity.UserRole;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.UserRegistrationService;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,9 @@ public class UserRegistrationServiceImpl implements  UserRegistrationService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmailVerified(false);
+        UserRole role = new UserRole();
+        role.setId(1);
+        user.setRole(role);
 
         return userRepository.save(user);
     }
