@@ -33,11 +33,9 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     private String sendGridApiKey;
 
     @Async
-    public void sendVerificationToken(String userId, String email) {
+    public void sendVerificationToken(String userId, String email,String baseUrl) {
         try {
             final var token = otpService.generateAndStoreOtp(userId);
-            final String baseUrl =
-                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
             final var emailVerificationUrl =
                     baseUrl + "/api/email/verify?userId=%s&t=%s".formatted(userId, token);
 
