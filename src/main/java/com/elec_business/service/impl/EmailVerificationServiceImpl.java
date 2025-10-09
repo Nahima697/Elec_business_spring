@@ -4,6 +4,7 @@ import com.elec_business.entity.User;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.OtpService;
+import com.elec_business.service.exception.EmailNotSentException;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -31,37 +33,31 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     private String sendGridApiKey;
 
     @Async
-    public void sendVerificationToken(String userId, String email) throws IOException {
-        // Générer le token OTP
-        final var token = otpService.generateAndStoreOtp(userId);
-
-        final String baseUrl = "https://elec-business-spring.onrender.com";
-        final var emailVerificationUrl = baseUrl + "/api/email/verify?userId=%s&t=%s"
-                .formatted(userId, token);
-
-        // Construire l'email
-        Email from = new Email("noreply@electricity-business.com"); // Doit être une adresse vérifiée dans SendGrid
-        String subject = "Verify your email";
-        Email to = new Email(email);
-
-        String htmlContent = """
-                    <p>Click below to verify your email:</p>
-                    <a href="%s">Verify Email</a>
-                """.formatted(emailVerificationUrl);
-
-        Content content = new Content("text/html", htmlContent);
-        Mail mail = new Mail(from, subject, to, content);
-
-        // Envoyer via SendGrid
-        SendGrid sg = new SendGrid(sendGridApiKey);
-        Request request = new Request();
+    public void sendVerificationToken(String userId, String email) {
         try {
+            final var token = otpService.generateAndStoreOtp(userId);
+            final String baseUrl =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            final var emailVerificationUrl =
+                    baseUrl + "/api/email/verify?userId=%s&t=%s".formatted(userId, token);
+
+            Email from = new Email("noreply@electricity-business.com");
+            String subject = "Verify your email";
+            Email to = new Email(email);
+            Content content = new Content("text/html",
+                    "<p>Click below to verify your email:</p>" +
+                            "<a href=\"" + emailVerificationUrl + "\">Verify Email</a>");
+            Mail mail = new Mail(from, subject, to, content);
+
+            SendGrid sg = new SendGrid(sendGridApiKey);
+            Request request = new Request();
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             sg.api(request);
+
         } catch (IOException ex) {
-            throw ex;
+            throw new EmailNotSentException();
         }
     }
 
@@ -88,5 +84,4 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         userRepository.save(user);
         return user;
     }
-
 }

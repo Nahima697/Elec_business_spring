@@ -1,7 +1,7 @@
 package com.elec_business.security;
 
 import com.elec_business.entity.User;
-import com.elec_business.security.exception.EmailNotVerifiedException;
+import com.elec_business.service.exception.EmailNotVerifiedException;
 import com.elec_business.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

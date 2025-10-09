@@ -1,6 +1,6 @@
 package com.elec_business.security.jwt;
 
-import com.elec_business.security.exception.EmailNotVerifiedException;
+import com.elec_business.service.exception.EmailNotVerifiedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;

@@ -96,14 +96,11 @@
 			<version>1.18.36</version>
 			<scope>provided</scope>
 		</dependency>
-
-<!--		&lt;!&ndash; Dotenv &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>me.paulschwarz</groupId>-->
-<!--			<artifactId>spring-dotenv</artifactId>-->
-<!--			<version>4.0.0</version>-->
-<!--		</dependency>-->
-
+		<dependency>
+			<groupId>me.paulschwarz</groupId>
+			<artifactId>spring-dotenv</artifactId>
+			<version>4.0.0</version>
+		</dependency>
 		<!-- JJWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -124,10 +121,6 @@
 		</dependency>
 
 		<!-- Spring Boot Mail -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.sendgrid</groupId>
 			<artifactId>sendgrid-java</artifactId>
@@ -178,16 +171,22 @@
 	<build>
 		<finalName>app</finalName>
 		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<excludes>
-					<exclude>application.properties</exclude>
-					<exclude>**/*.properties</exclude>
-				</excludes>
-			</resource>
-		</resources>
-
+		<resource>
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>application.properties</include>
+			</includes>
+			<filtering>false</filtering>
+		</resource>
+		<!-- Prod : filtré pour injecter les variables d'environnement Render -->
+		<resource>
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>application-prod.properties</include>
+			</includes>
+			<filtering>true</filtering>
+		</resource>
+	</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -231,7 +230,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M7</version>
 				<configuration>
-					<skipTests>true</skipTests> <!-- désactive tests par défaut -->
+					<skipTests>true
+					</skipTests>
 				</configuration>
 			</plugin>
 
@@ -255,7 +255,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<skipTests>false</skipTests> <!-- permet d’exécuter les tests -->
+				<skipTests>false</skipTests>
 			</properties>
 		</profile>
 	</profiles>

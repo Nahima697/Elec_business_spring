@@ -1,4 +1,4 @@
-package com.elec_business.security.exception;
+package com.elec_business.service.exception;
 
 public class EmailNotVerifiedException extends RuntimeException {
 

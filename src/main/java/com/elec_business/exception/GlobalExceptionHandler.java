@@ -2,7 +2,7 @@ package com.elec_business.exception;
 
 import com.elec_business.business.exception.BookingNotFoundException;
 import com.elec_business.business.exception.InvalidBookingDurationException;
-import com.elec_business.security.exception.EmailNotVerifiedException;
+import com.elec_business.service.exception.EmailNotVerifiedException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.coyote.BadRequestException;
@@ -11,12 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -28,6 +32,16 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleEmailNotVerified(EmailNotVerifiedException ex, HttpServletRequest req) {
         log.warn("Email not verified: {}", ex.getMessage());
         return buildProblemDetail(HttpStatus.FORBIDDEN, "Email not verified", ex.getMessage(), req);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<Map<String, Object>> handleIOException(IOException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "error", "Email service unavailable",
+                "message", ex.getMessage()
+        ));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
