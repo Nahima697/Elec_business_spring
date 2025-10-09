@@ -1,9 +1,7 @@
 package com.elec_business.controller;
 
 import com.elec_business.controller.dto.*;
-import com.elec_business.security.jwt.JwtUtil;
 import com.elec_business.entity.User;
-import com.elec_business.security.exception.EmailNotVerifiedException;
 import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.AuthService;
@@ -20,13 +18,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -51,13 +48,15 @@ public class AuthController {
     public ResponseEntity<RegistrationResponseDto> register(@RequestBody @Valid RegistrationDto registrationDto) {
         try {
             // 1. Création de l'utilisateur
-            User registeredUser = userRegistrationService.registerUser(userMapper.toEntity(registrationDto));
+            User registeredUser = userRegistrationService.registerUser(
+                    userMapper.toEntity(registrationDto)
+            );
 
-            // 2. Envoi de l'email
-                emailVerificationService.sendVerificationToken(
-                        registeredUser.getId(),
-                        registeredUser.getEmail()
-                );
+            // 2. Envoi asynchrone de l'email (exception gérée dans le service)
+            emailVerificationService.sendVerificationToken(
+                    registeredUser.getId(),
+                    registeredUser.getEmail()
+            );
 
             // 3. Création de la réponse succès
             RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
@@ -65,28 +64,20 @@ public class AuthController {
                     "Votre compte a été créé avec succès, vérifier votre email"
             );
 
-
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 
         } catch (ValidationException ve) {
-            // Création de la réponse erreur spécifique
-            RegistrationResponseDto responseDto = new RegistrationResponseDto(
-                    null,
-                    false,
-                    ve.getMessage()
-            );
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseDto);
+            // Réponse erreur spécifique
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new RegistrationResponseDto(null, false, ve.getMessage()));
 
         } catch (Exception e) {
-            log.error("Error during registration", e);
-
-            // Création de la réponse erreur générique
-            RegistrationResponseDto responseDto = new RegistrationResponseDto(
-                    null,
-                    false,
-                    "Une erreur est survenue lors de la création du compte."
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+            // Réponse erreur générique
+            log.error("Erreur lors de la création du compte", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new RegistrationResponseDto(
+                            null, false, "Une erreur est survenue lors de la création du compte."
+                    ));
         }
     }
 
@@ -115,6 +106,7 @@ public class AuthController {
         return ResponseEntity.ok("Verification email resent.");
     }
 
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginCredentialsDTO loginDto) {
         try {
@@ -140,7 +132,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
     @GetMapping("/me")
         public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal User currentUser){
