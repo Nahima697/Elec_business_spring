@@ -4,13 +4,18 @@ import com.elec_business.entity.User;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.OtpService;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.sendgrid.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
 import java.time.Instant;
 import static org.springframework.http.HttpStatus.*;
 
@@ -22,27 +27,42 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     private final UserRepository userRepository;
 
-    private final JavaMailSender mailSender;
+    @Value("${sendgrid.api.key}")
+    private String sendGridApiKey;
 
     @Async
-    public void sendVerificationToken(String  userId, String email) {
+    public void sendVerificationToken(String userId, String email) throws IOException {
+        // Générer le token OTP
         final var token = otpService.generateAndStoreOtp(userId);
 
-        // Localhost URL with userId and OTP token
-        final var emailVerificationUrl =
-                "http://localhost:8080/api/email/verify?userId=%s&t=%s"
-                        .formatted(userId, token);
+        final String baseUrl = "https://elec-business-spring.onrender.com";
+        final var emailVerificationUrl = baseUrl + "/api/email/verify?userId=%s&t=%s"
+                .formatted(userId, token);
 
-        final var emailText =
-                "Click the link to verify your email: " + emailVerificationUrl;
+        // Construire l'email
+        Email from = new Email("noreply@electricity-business.com"); // Doit être une adresse vérifiée dans SendGrid
+        String subject = "Verify your email";
+        Email to = new Email(email);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Email Verification");
-        message.setFrom("System");
-        message.setText(emailText);
+        String htmlContent = """
+                    <p>Click below to verify your email:</p>
+                    <a href="%s">Verify Email</a>
+                """.formatted(emailVerificationUrl);
 
-        mailSender.send(message);
+        Content content = new Content("text/html", htmlContent);
+        Mail mail = new Mail(from, subject, to, content);
+
+        // Envoyer via SendGrid
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            sg.api(request);
+        } catch (IOException ex) {
+            throw ex;
+        }
     }
 
     @Transactional
