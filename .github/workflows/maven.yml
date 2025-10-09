@@ -87,6 +87,19 @@ jobs:
           name: html-test-reports
           path: |
             **/target/site
+            
+      # Sonarcube Analyse
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+          
+      - name: Build and analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Nahima697_Elec_business_spring
 
       # 8️⃣ Build Docker image
       - name: Build Docker image
