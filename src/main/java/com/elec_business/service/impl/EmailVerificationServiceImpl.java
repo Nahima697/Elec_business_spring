@@ -52,7 +52,9 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
-            sg.api(request);
+            Response response = sg.api(request);
+            System.out.println("SendGrid response: " + response.getStatusCode());
+            System.out.println("SendGrid body: " + response.getBody());
 
         } catch (IOException ex) {
             throw new EmailNotSentException();
