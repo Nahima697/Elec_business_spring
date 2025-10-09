@@ -41,7 +41,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
             Email from = new Email("noreply@electricity-business.com");
             String subject = "Verify your email";
-            Email to = new Email(email);
+            Email to = new Email("noreply@electricity-business.com");
             Content content = new Content("text/html",
                     "<p>Click below to verify your email:</p>" +
                             "<a href=\"" + emailVerificationUrl + "\">Verify Email</a>");
