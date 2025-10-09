@@ -18,6 +18,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<testcontainers.version>1.19.0</testcontainers.version>
+		<sonar.organization>nahima697</sonar.organization>
 	</properties>
 
 	<dependencies>
@@ -187,6 +188,7 @@
 			<filtering>true</filtering>
 		</resource>
 	</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -234,7 +236,6 @@
 					</skipTests>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 
