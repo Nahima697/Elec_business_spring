@@ -22,6 +22,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Map;
@@ -51,11 +52,12 @@ public class AuthController {
             User registeredUser = userRegistrationService.registerUser(
                     userMapper.toEntity(registrationDto)
             );
-
+           String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
             // 2. Envoi asynchrone de l'email (exception gérée dans le service)
             emailVerificationService.sendVerificationToken(
                     registeredUser.getId(),
-                    registeredUser.getEmail()
+                    registeredUser.getEmail(),
+                    baseUrl
             );
 
             // 3. Création de la réponse succès
@@ -85,8 +87,8 @@ public class AuthController {
     @GetMapping("/email/verify")
     public ResponseEntity<Void> verifyEmail(
             @RequestParam String userId, @RequestParam("t") String token) {
-        final var verifiedUser =
-                emailVerificationService.verifyEmail(userId, token);
+
+        emailVerificationService.verifyEmail(userId, token);
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header("Location", FRONT_URL + "/email-verified?success=true")
@@ -101,8 +103,8 @@ public class AuthController {
         if (user.isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid or already verified user.");
         }
-
-        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail());
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail(),baseUrl);
         return ResponseEntity.ok("Verification email resent.");
     }
 
