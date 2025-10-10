@@ -1,6 +1,5 @@
 package com.elec_business.service.impl;
 
-import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.entity.User;
 import com.elec_business.entity.UserRole;
 import com.elec_business.repository.UserRepository;
