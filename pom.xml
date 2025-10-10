@@ -89,14 +89,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- H2 Database for tests -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Lombok and Mapstruct -->
+		<!--Lombok and Mapstruct -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
