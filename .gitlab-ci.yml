@@ -46,6 +46,8 @@ test-maven:
 
   services:
     - name: postgres:17
+    - name: docker:dind
+      command: [ "--tls=false" ]
   cache:
     key:
       files:
