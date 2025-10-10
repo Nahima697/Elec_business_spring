@@ -13,21 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SPRING_PROFILES_ACTIVE: test
-  
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_DB: elec_test
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U test -d elec_test"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+      DOCKER_HOST: "tcp://docker:2375"
+      DOCKER_TLS_CERTDIR: ""
+      REDIS_URL: redis://localhost:6379
+      JWT_EXPIRATION: 3600000
+      EMAIL_VERIFICATION_REQUIRED: true
+      APP_AUTH_FRONTEND_URL: http://localhost:8100
 
     steps:
       - name: 📥 Checkout du code
@@ -46,13 +37,6 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
-      - name: Wait for PostgreSQL
-        run: |
-          until pg_isready -h localhost -p 5432 -U test; do
-            echo "Waiting for PostgreSQL..."
-            sleep 2
-          done
 
       - name: Run Maven Tests
         run: mvn test -Dspring.datasource.url=jdbc:postgresql://localhost:5432/elec_test -Dspring.datasource.username=test -Dspring.datasource.password=test
