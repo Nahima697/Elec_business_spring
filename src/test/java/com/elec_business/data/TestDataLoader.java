@@ -59,7 +59,6 @@ public class TestDataLoader {
         user1.setPhoneVerifiedAt(Instant.now());
         em.persist(user1);
 
-
         User user2 = new User();
         user2.setUsername("user2");
         user2.setEmail("user2@test.com");
