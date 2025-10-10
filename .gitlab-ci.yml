@@ -59,13 +59,16 @@ construction de l'application:
       - target/*.jar
 
 sonarcloud-check:
-  stage: analyse
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
   cache:
     key: "${CI_JOB_NAME}"
     paths:
-     - .sonar/cache
+      - .sonar/cache
   script:
     - sonar-scanner
+  only:
+    - merge_requests
+    - master
+    - develop
