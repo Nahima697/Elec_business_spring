@@ -25,14 +25,12 @@ variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0" 
 
-  #env
-  SPRING_PROFILES_ACTIVE: test
 
 test maven:
   stage: test
   image: maven:3-eclipse-temurin-21
   script:
-    - mvn test
+    - mvn test -Dspring.profiles.active=test
  
   cache:
     key:
