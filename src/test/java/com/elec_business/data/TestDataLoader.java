@@ -31,8 +31,17 @@ public class TestDataLoader {
     @Transactional
     public LoadResult load() {
 
-        // ROLE
-        UserRole roleUser = new UserRole(null, "ROLE_USER");
+        UserRole roleUser = null;
+        try {
+            roleUser = em.createQuery("SELECT r FROM UserRole r WHERE r.name = :name", UserRole.class)
+                    .setParameter("name", "ROLE_USER")
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            roleUser = new UserRole(null, "ROLE_USER");
+            em.persist(roleUser);
+            em.flush();
+        }
+
         em.persist(roleUser);
         em.flush();
 
