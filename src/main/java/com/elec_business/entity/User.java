@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @Column(name = "phone_verified")
     private Boolean phoneVerified;
 
-    @Column(name = "profile_picture_url", length = Integer.MAX_VALUE)
+    @Column(name = "profile_picture_url", columnDefinition = "TEXT")
     private String profilePictureUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
