@@ -61,7 +61,6 @@ construction de l'application:
       - target/*.jar
 
 sonarcloud-check:
-  stage: analyse
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
