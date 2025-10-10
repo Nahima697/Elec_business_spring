@@ -8,6 +8,7 @@ import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import net.bytebuddy.utility.dispatcher.JavaDispatcher;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import com.elec_business.config.TestcontainersConfiguration;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,6 +38,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestcontainersConfiguration.class)
 @ActiveProfiles("test")
  class BookingControllerTest {
+
+    static PostgreSQLContainer<?> db = new PostgreSQLContainer<>("postgres:17");
+    @DynamicPropertySource
+    static void injectDbProps(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", db::getJdbcUrl);
+        registry.add("spring.datasource.username", db::getUsername);
+        registry.add("spring.datasource.password", db::getPassword);
+    }
+
     @Autowired
     public TestDataLoader testDataLoader;
 
