@@ -86,8 +86,21 @@ sonarcloud-check:
 # Déploiement de l'API sur Render
 deploy-api:
   stage: deploy
-  image: alpine/curl:8.14.1
+  image: docker:20.10.16
+  services:
+    - name: docker:dind
+      command: ["--tls=false"]
   script:
+    # Construction de l'image Docker
+    - echo "Building Docker image"
+    - docker build -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
+
+    # Pousser l'image vers le registre Docker
+    - echo "Pushing Docker image to GitLab Container Registry"
+    - docker push ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA}
+
+    # Déployer l'image sur Render via l'API
+    - echo "Deploying to Render"
     - |
       curl --request POST \
        --url https://api.render.com/v1/services/${RENDER_API_SERVICE_ID}/deploys \
@@ -103,5 +116,6 @@ deploy-api:
   rules:
     - changes:
         paths:
-          - api/**/*
-    - if: '$CI_COMMIT_BRANCH == "main"'
+          - api/**/* # Déclencher ce job uniquement si les fichiers de l'API sont modifiés
+    - if: '$CI_COMMIT_BRANCH == "main"' # S'assurer que ce job s'exécute uniquement sur la branche main
+
