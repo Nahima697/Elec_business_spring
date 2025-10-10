@@ -69,16 +69,20 @@ sonarcloud-check:
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
-  script:
-    - sonar-scanner -Dsonar.projectKey=nahima-toumi697_Elec_business_spring -Dsonar.organization=nahima-toumi697 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
   cache:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
-  allow_failure: true
-  rules:
-    - if: '$CI_COMMIT_BRANCH =~ /^(main|develop)$/ || $CI_MERGE_REQUEST_ID'
-      when: always
+  script:
+    - sonar-scanner \
+        -Dsonar.projectKey=nahima-toumi697_Elec_business_spring \
+        -Dsonar.organization=nahima-toumi697 \
+        -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.login=$SONAR_TOKEN
+  only:
+    - merge_requests
+    - master
+    - develop
 
 # Déploiement de l'API sur Render
 deploy-api:
