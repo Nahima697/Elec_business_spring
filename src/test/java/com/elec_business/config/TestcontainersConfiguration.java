@@ -18,7 +18,7 @@ public class TestcontainersConfiguration {
                 .withDatabaseName("testdb")
                 .withUsername("test")
                 .withPassword("test")
-                .withInitScript("schema.sql");  // Pre-populate with test data
+                .withInitScript("init_postgres.sql");
     }
 
 }
