@@ -50,6 +50,7 @@ test-maven:
 
   script:
     - mvn clean test -Dspring.profiles.active=test
+  interruptible: true
   cache:
     key:
       files:
