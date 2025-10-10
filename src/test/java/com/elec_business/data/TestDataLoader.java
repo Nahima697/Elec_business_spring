@@ -154,14 +154,50 @@ public class TestDataLoader {
         em.persist(slot);
 
         /// BOOKING STATUS
-        BookingStatus pendingStatus = new BookingStatus(BookingStatusType.PENDING);
-        BookingStatus acceptedStatus = new BookingStatus(BookingStatusType.ACCEPTED);
-        BookingStatus rejectedStatus = new BookingStatus(BookingStatusType.REJECTED);
-        BookingStatus cancelledStatus = new BookingStatus(BookingStatusType.CANCELLED);
-        em.persist(pendingStatus);
-        em.persist(acceptedStatus);
-        em.persist(rejectedStatus);
-        em.persist(cancelledStatus);
+        BookingStatus pendingStatus;
+        BookingStatus acceptedStatus;
+        BookingStatus rejectedStatus;
+        BookingStatus cancelledStatus;
+
+        try {
+            pendingStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
+                    .setParameter("name", BookingStatusType.PENDING)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            pendingStatus = new BookingStatus(BookingStatusType.PENDING);
+            em.persist(pendingStatus);
+            em.flush();
+        }
+
+        try {
+            acceptedStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
+                    .setParameter("name", BookingStatusType.ACCEPTED)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            acceptedStatus = new BookingStatus(BookingStatusType.ACCEPTED);
+            em.persist(acceptedStatus);
+            em.flush();
+        }
+
+        try {
+            rejectedStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
+                    .setParameter("name", BookingStatusType.REJECTED)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            rejectedStatus = new BookingStatus(BookingStatusType.REJECTED);
+            em.persist(rejectedStatus);
+            em.flush();
+        }
+
+        try {
+            cancelledStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
+                    .setParameter("name", BookingStatusType.CANCELLED)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            cancelledStatus = new BookingStatus(BookingStatusType.CANCELLED);
+            em.persist(cancelledStatus);
+            em.flush();
+        }
 
         // Booking dans le futur
         Booking booking1 = new Booking();
