@@ -72,5 +72,5 @@ sonarcloud-check:
     - sonar-scanner
   only:
     - merge_requests
-    - master
+    - main
     - develop
