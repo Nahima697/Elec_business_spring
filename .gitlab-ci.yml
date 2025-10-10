@@ -39,15 +39,7 @@ test-maven:
   image: maven:3-eclipse-temurin-21
   script:
     - mvn test -Dspring.profiles.active=test
-  variables:
-    POSTGRES_DB: testdb
-    POSTGRES_USER: test
-    POSTGRES_PASSWORD: test
 
-  services:
-    - name: postgres:17
-    - name: docker:dind
-      command: [ "--tls=false" ]
   cache:
     key:
       files:
