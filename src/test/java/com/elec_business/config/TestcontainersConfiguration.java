@@ -15,7 +15,7 @@ public class TestcontainersConfiguration {
     @ServiceConnection
 
         // Ensures fresh container for each test run during development
-   static PostgreSQLContainer<?> postgresContainer() {
+    PostgreSQLContainer<?> postgresContainer() {
         return new PostgreSQLContainer<>("postgres:17")
                 .withDatabaseName("testdb")
                 .withUsername("test")

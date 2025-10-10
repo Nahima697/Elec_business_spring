@@ -39,14 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
  class BookingControllerTest {
 
-    static PostgreSQLContainer<?> db = new PostgreSQLContainer<>("postgres:17");
-    @DynamicPropertySource
-    static void injectDbProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", db::getJdbcUrl);
-        registry.add("spring.datasource.username", db::getUsername);
-        registry.add("spring.datasource.password", db::getPassword);
-    }
-
     @Autowired
     public TestDataLoader testDataLoader;
 
