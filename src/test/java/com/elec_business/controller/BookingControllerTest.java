@@ -1,5 +1,6 @@
 package com.elec_business.controller;
 
+import com.elec_business.config.TestDataConfig;
 import com.elec_business.data.TestDataLoader;
 import com.elec_business.controller.dto.BookingRequestDto;
 import com.elec_business.controller.dto.BookingResponseDto;
@@ -37,8 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import({TestcontainersConfiguration.class,TestcontainersConfiguration.class, com.elec_business.config.TestDataConfig.class})
-
+@Import({TestcontainersConfiguration.class, TestDataConfig.class})
 @ActiveProfiles("test")
  class BookingControllerTest {
 
