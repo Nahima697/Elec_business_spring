@@ -30,7 +30,7 @@ test maven:
   stage: test
   image: maven:3-eclipse-temurin-21
   script:
-    - mvn test -Dspring.profiles.active=test
+    - mvn test 
  
   cache:
     key:
@@ -49,7 +49,7 @@ construction de l'application:
   stage: build
   image: maven:3-eclipse-temurin-21
   script:
-    - mvn package
+    - /mvnw clean compile
   cache:
     key:
       files:
