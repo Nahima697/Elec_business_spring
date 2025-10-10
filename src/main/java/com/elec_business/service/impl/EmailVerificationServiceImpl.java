@@ -39,7 +39,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
             final var emailVerificationUrl =
                     baseUrl + "/api/email/verify?userId=%s&t=%s".formatted(userId, token);
 
-            Email from = new Email("ntoumi@stagiaire-humanbooster.com");
+            Email from = new Email("nahima.toumi697@gmail.com");
             String subject = "Verify your email";
             Email to = new Email("nahima.toumi697@gmail.com");
             Content content = new Content("text/html",
