@@ -45,11 +45,12 @@ test-maven:
     DOCKER_TLS_CERTDIR: ""
     REDIS_URL: redis://localhost:6379
     JWT_EXPIRATION: 3600000
-    EMAIL_VERIFICATION_REQUIRED: true
+    EMAIL_VERIFICATION_REQUIRED: false
     APP_AUTH_FRONTEND_URL: http://localhost:8100
 
   script:
     - mvn clean test -Dspring.profiles.active=test
+  interruptible: true
   cache:
     key:
       files:
