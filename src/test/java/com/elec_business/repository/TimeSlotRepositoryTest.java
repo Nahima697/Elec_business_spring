@@ -87,10 +87,7 @@ class TimeSlotRepositoryTest {
         user1.setCreatedAt(Instant.now());
         user1.setEmailVerifiedAt(Instant.now());
         user1.setPhoneVerifiedAt(Instant.now());
-
         userRepository.save(user1);
-
-
         // Création location
         ChargingLocation location1 = chargingLocationRepository.save(new ChargingLocation(
                 null, "1 rue Lyon", "69007", "Lyon", "France", "Lyon7", user1, new HashSet<>()
