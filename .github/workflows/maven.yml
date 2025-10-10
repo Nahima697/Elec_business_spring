@@ -22,6 +22,7 @@ jobs:
       DOCKER_HOST: tcp://localhost:2375
       DOCKER_TLS_CERTDIR: ""
       REDIS_URL: redis://localhost:6379
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
       JWT_EXPIRATION: 3600000
       EMAIL_VERIFICATION_REQUIRED: true
       APP_AUTH_FRONTEND_URL: http://localhost:8100
