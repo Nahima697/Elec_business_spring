@@ -47,7 +47,6 @@ test-maven:
     JWT_EXPIRATION: 3600000
     EMAIL_VERIFICATION_REQUIRED: false
     APP_AUTH_FRONTEND_URL: http://localhost:8100
-
   script:
     - mvn clean test -Dspring.profiles.active=test
   interruptible: true
@@ -67,31 +66,56 @@ test-maven:
 # Analyse Sonar après compilation et tests
 sonarcloud-check:
   stage: analyse
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  script:
-    - sonar-scanner
+  image: maven:3-openjdk-21
   cache:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
-  needs:
-    - build-app
-    - test-maven
-  rules:
-    - if: '$CI_COMMIT_BRANCH =~ /^(main|develop)$/ || $CI_MERGE_REQUEST_ID'
-      when: always
+  script:
+    - mvn clean verify sonar:sonar \
+        -Dsonar.projectKey=nahima-toumi697_Elec_business_spring \
+        -Dsonar.organization=nahima-toumi697 \
+        -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.login=$SONAR_TOKEN \
+        -Dsonar.branch.name=$CI_COMMIT_REF_NAME
+  only:
+    - merge_requests
+    - main
+    - develop
 
-# Déploiement
-deploy-app:
+# Déploiement de l'API sur Render
+deploy-api:
   stage: deploy
-  image: docker:latest
+  image: docker:20.10.16
   services:
     - name: docker:dind
       command: ["--tls=false"]
   script:
-    - echo "Déploiement de l'application"
+    # Construction de l'image Docker
+    - echo "Building Docker image"
+    - docker build -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
+
+    # Pousser l'image vers le registre Docker
+    - echo "Pushing Docker image to GitLab Container Registry"
+    - docker push ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA}
+
+    # Déployer l'image sur Render via l'API
+    - echo "Deploying to Render"
+    - |
+      curl --request POST \
+       --url https://api.render.com/v1/services/${RENDER_API_SERVICE_ID}/deploys \
+       --header 'accept: application/json' \
+       --header "authorization: Bearer ${RENDER_API_KEY}" \
+       --header 'content-type: application/json' \
+       --data "
+        {
+          \"clearCache\": \"do_not_clear\",
+          \"imageUrl\": \"${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA}\"
+        }
+        "
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
+    - changes:
+        paths:
+          - api/**/* # Déclencher ce job uniquement si les fichiers de l'API sont modifiés
+    - if: '$CI_COMMIT_BRANCH == "main"' # S'assurer que ce job s'exécute uniquement sur la branche main
+
