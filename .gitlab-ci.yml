@@ -16,7 +16,7 @@ variables:
   DOCKER_DRIVER: overlay2
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   GIT_DEPTH: "0"
-
+ 
 # Compilation
 build-app:
   stage: build
@@ -39,7 +39,13 @@ test-maven:
   image: maven:3-eclipse-temurin-21
   script:
     - mvn test -Dspring.profiles.active=test
+  variables:
+    POSTGRES_DB: testdb
+    POSTGRES_USER: test
+    POSTGRES_PASSWORD: test
 
+  services:
+    - name: postgres:17
   cache:
     key:
       files:
