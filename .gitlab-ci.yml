@@ -1,31 +1,40 @@
----
 stages:
-  - analyse
-  - test
   - build
+  - test
+  - analyse
   - deploy
 
-# DinD service is required for Testcontainers
+# DinD service pour Testcontainers si besoin
 services:
   - name: docker:dind
-    # explicitly disable tls to avoid docker startup interruption
     command: ["--tls=false"]
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
-  # Instruct Testcontainers to use the daemon of DinD, use port 2375 for non-tls
-  # connections.
   DOCKER_HOST: "tcp://docker:2375"
-  # Instruct Docker not to start over TLS.
   DOCKER_TLS_CERTDIR: ""
-  # Improve performance with overlayfs.
   DOCKER_DRIVER: overlay2
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  GIT_DEPTH: "0"
 
-  #Sonar Variable
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-  GIT_DEPTH: "0" 
+# Compilation
+build-app:
+  stage: build
+  image: maven:3-eclipse-temurin-21
+  script:
+    - mvn clean compile
+  cache:
+    key:
+      files:
+        - pom.xml
+    paths:
+      - .m2/repository
+  artifacts:
+    paths:
+      - target/
 
-test maven:
+# Tests
+test-maven:
   stage: test
   image: maven:3-eclipse-temurin-21
   script:
@@ -43,33 +52,21 @@ test maven:
       junit:
         - target/surefire-reports/TEST-*.xml
 
-construction de l'application:
-  stage: build
-  image: maven:3-eclipse-temurin-21
-  script:
-    - mvn package
-  cache:
-    key:
-      files:
-        - pom.xml
-    paths:
-      - .m2/repository
-  artifacts:
-    paths:
-      - target/*.jar
-
+# Analyse Sonar après compilation et tests
 sonarcloud-check:
   stage: analyse
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
+  script:
+    - sonar-scanner
   cache:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
-  script:
-    - sonar-scanner
-  only:
-    - merge_requests
-    - master
-    - develop
+  needs:
+    - build-app
+    - test-maven
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(main|develop)$/ || $CI_MERGE_REQUEST_ID'
+      when: always
