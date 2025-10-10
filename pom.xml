@@ -19,6 +19,7 @@
 		<java.version>21</java.version>
 		<testcontainers.version>1.21.3</testcontainers.version>
 		<sonar.organization>nahima697</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
