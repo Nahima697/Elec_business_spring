@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
+import com.elec_business.config.TestcontainersConfiguration;
 
 import java.math.BigDecimal;
 import java.time.Instant;
