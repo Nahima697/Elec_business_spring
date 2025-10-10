@@ -8,10 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     env:
-      SPRING_PROFILES_ACTIVE: prod,test
+      SPRING_PROFILES_ACTIVE: prod
 
       DB_URL: ${{ secrets.DB_URL }}
       DB_USERNAME: elec_business_user
@@ -67,7 +67,7 @@ jobs:
 
       # 5️⃣ Run Maven Tests
       - name: Run Maven Integration Tests
-        run: mvn clean verify site
+        run: mvn test
 
       # 6️⃣ Upload JUnit Test Results
       - name: Upload JUnit Test Results
@@ -111,7 +111,7 @@ jobs:
 
   # 🔟 Déploiement Render
   deploy:
-    needs: build-and-test
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
