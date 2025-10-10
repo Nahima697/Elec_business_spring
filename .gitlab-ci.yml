@@ -81,8 +81,7 @@ sonarcloud-check:
         -Dsonar.login=$SONAR_TOKEN
   only:
     - merge_requests
-    - master
-    - develop
+    - main
 
 # Déploiement de l'API sur Render
 deploy-api:
