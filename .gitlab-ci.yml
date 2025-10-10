@@ -4,7 +4,7 @@ stages:
   - analyse
   - deploy
 
-# DinD service pour Testcontainers si besoin
+# DinD service pour Testcontainers
 services:
   - name: docker:dind
     command: ["--tls=false"]
@@ -16,7 +16,7 @@ variables:
   DOCKER_DRIVER: overlay2
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   GIT_DEPTH: "0"
- 
+
 # Compilation
 build-app:
   stage: build
@@ -33,13 +33,18 @@ build-app:
     paths:
       - target/
 
-# Tests
+# Tests avec Testcontainers
 test-maven:
   stage: test
   image: maven:3-eclipse-temurin-21
+  services:
+    - name: docker:dind
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
   script:
-    - mvn test -Dspring.profiles.active=test
-
+    - mvn clean test -Dspring.profiles.active=test
   cache:
     key:
       files:
@@ -71,3 +76,16 @@ sonarcloud-check:
   rules:
     - if: '$CI_COMMIT_BRANCH =~ /^(main|develop)$/ || $CI_MERGE_REQUEST_ID'
       when: always
+
+# Déploiement
+deploy-app:
+  stage: deploy
+  image: docker:latest
+  services:
+    - name: docker:dind
+      command: ["--tls=false"]
+  script:
+    - echo "Déploiement de l'application"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
