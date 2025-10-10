@@ -38,7 +38,8 @@ test-maven:
   stage: test
   image: maven:3-eclipse-temurin-21
   script:
-    - mvn test
+    - mvn test -Dspring.profiles.active=test
+
   cache:
     key:
       files:
