@@ -1,13 +1,11 @@
-package com.elec_business;
+package com.elec_business.data;
 
 import com.elec_business.entity.*;
-import com.elec_business.repository.UserRepository;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
