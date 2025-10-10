@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SPRING_PROFILES_ACTIVE: test
+      DB_URL: jdbc:postgresql://localhost:5432/elec_test
+      DB_USERNAME: test
+      DB_PASSWORD: test
   
     steps:
       - name: 📥 Checkout du code
@@ -34,7 +37,7 @@ jobs:
 
       - name: Run Maven Tests
         run: mvn test
-
+      
       - name: Upload JUnit Test Results
         if: always()
         uses: actions/upload-artifact@v4
