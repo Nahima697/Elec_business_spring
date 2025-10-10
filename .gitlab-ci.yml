@@ -85,17 +85,3 @@ sonarcloud-check:
     - test-maven
   rules:
     - if: '$CI_COMMIT_BRANCH =~ /^(main|develop)$/ || $CI_MERGE_REQUEST_ID'
-      when: always
-
-# Déploiement
-deploy-app:
-  stage: deploy
-  image: docker:latest
-  services:
-    - name: docker:dind
-      command: ["--tls=false"]
-  script:
-    - echo "Déploiement de l'application"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
