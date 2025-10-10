@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -83,7 +84,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithUserDetails(value = "user2@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void createBooking_shouldCreateBookingSuccessfully() throws Exception {
         // Récupération de la station pour la réservation
         String stationId = stations.getFirst().getId();
@@ -109,7 +110,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
     @Test
-    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
         mvc.perform(post("/api/bookings/"+bookings.getFirst().getId()+"/accept")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +119,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void rejectBooking_shouldRejectBookingSuccessfully() throws Exception {
         mvc.perform(post("/api/bookings/" + bookings.getFirst().getId() + "/reject")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -127,7 +128,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
         mvc.perform(get("/api/bookings/" + bookings.getFirst().getId()))
                 .andExpect(status().isOk())
@@ -142,7 +143,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void putShouldUpdateBooking() throws Exception {
         LocalDateTime start = LocalDateTime.now().plusHours(3);
         LocalDateTime end = start.plusHours(4);
@@ -164,9 +165,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 });
     }
 
-
     @Test
-    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void putShouldFailOnValidationError() throws Exception {
         BookingRequestDto requestDto = new BookingRequestDto(); // vide = validation error
 
@@ -177,7 +177,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void putShouldThrow404IfNotExist() throws Exception {
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = start.plusHours(2);
@@ -194,7 +194,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
     // a voir si je supprime le booking ou si je met le statut annulé
     @Test
-    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
     void deleteShouldDeleteBookingSuccessfully() throws Exception {
         mvc.perform(delete("/api/bookings/" + bookings.getFirst().getId()))
                 .andExpect(status().isNoContent());
