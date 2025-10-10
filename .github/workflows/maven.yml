@@ -13,10 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SPRING_PROFILES_ACTIVE: test
-      DB_URL: jdbc:postgresql://localhost:5432/elec_test
-      DB_USERNAME: test
-      DB_PASSWORD: test
   
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: elec_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d elec_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
@@ -35,9 +47,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U test; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
       - name: Run Maven Tests
-        run: mvn test
-      
+        run: mvn test -Dspring.datasource.url=jdbc:postgresql://localhost:5432/elec_test -Dspring.datasource.username=test -Dspring.datasource.password=test
+
       - name: Upload JUnit Test Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -123,4 +142,4 @@ jobs:
           fi
 
       - name: Build Docker image
-        run: docker build -t myapp --targe
+        run: docker build -t myapp --target prod .
