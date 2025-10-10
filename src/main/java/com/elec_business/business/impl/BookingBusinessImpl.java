@@ -174,7 +174,6 @@ public class BookingBusinessImpl implements BookingBusiness {
         return booking;
     }
 
-
     // Récupération de toutes les réservations
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll().stream()
@@ -187,6 +186,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     }
 
     // Mise à jour d'une réservation par le locataire
+    @Transactional
     public Booking updateBooking(String  id,Booking booking, User currentUser) throws AccessDeniedBookingException {
        Booking updateBooking = bookingRepository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
@@ -215,6 +215,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     }
 
     // Suppression d'une réservation
+    @Transactional
     public void deleteBooking(String id) {
         bookingRepository.deleteBookingById(id);
     }
