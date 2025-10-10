@@ -16,7 +16,7 @@ public class TestcontainersConfiguration {
 
         // Ensures fresh container for each test run during development
     PostgreSQLContainer<?> postgresContainer() {
-        return new PostgreSQLContainer<>("postgres:17-alpine")
+        return new PostgreSQLContainer<>("postgres:17")
                 .withDatabaseName("testdb")
                 .withUsername("test")
                 .withPassword("test")
