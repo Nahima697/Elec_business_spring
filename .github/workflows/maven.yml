@@ -19,6 +19,7 @@ jobs:
       JWT_EXPIRATION: 3600000
       EMAIL_VERIFICATION_REQUIRED: true
       APP_AUTH_FRONTEND_URL: http://localhost:8100
+      SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
 
     steps:
       - name: 📥 Checkout du code
