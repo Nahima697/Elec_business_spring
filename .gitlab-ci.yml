@@ -1,0 +1,54 @@
+---
+stages:
+  - test
+  - build
+  - deploy
+
+# DinD service is required for Testcontainers
+services:
+  - name: docker:dind
+    # explicitly disable tls to avoid docker startup interruption
+    command: ["--tls=false"]
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  # Instruct Testcontainers to use the daemon of DinD, use port 2375 for non-tls
+  # connections.
+  DOCKER_HOST: "tcp://docker:2375"
+  # Instruct Docker not to start over TLS.
+  DOCKER_TLS_CERTDIR: ""
+  # Improve performance with overlayfs.
+  DOCKER_DRIVER: overlay2
+
+test maven:
+  stage: test
+  image: maven:3-eclipse-temurin-21
+  script:
+    - mvn test
+  cache:
+    key:
+      files:
+        - pom.xml
+    paths:
+      - .m2/repository
+  artifacts:
+    paths:
+      - target/
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+
+construction de l'application:
+  stage: build
+  image: maven:3-eclipse-temurin-21
+  script:
+    - mvn package
+  cache:
+    key:
+      files:
+        - pom.xml
+    paths:
+      - .m2/repository
+  artifacts:
+    paths:
+      - target/*.jar
