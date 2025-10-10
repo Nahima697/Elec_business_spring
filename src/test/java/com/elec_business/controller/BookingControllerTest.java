@@ -37,7 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(TestcontainersConfiguration.class)
+@Import({TestcontainersConfiguration.class,TestcontainersConfiguration.class, com.elec_business.config.TestDataConfig.class})
+
 @ActiveProfiles("test")
  class BookingControllerTest {
 
@@ -55,14 +56,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     List<ChargingStation> stations = new ArrayList<>();
 
     @BeforeEach
-     void setUp() throws Exception {
-        TestDataLoader.LoadResult result = testDataLoader.load();
-        users = result.users();
-        stations = result.stations();
-        bookings = result.bookings();
-        assertFalse(users.isEmpty(), "users should not be empty after loading test data");
-        assertFalse(stations.isEmpty(), "stations should not be empty after loading test data");
-        assertFalse(bookings.isEmpty(), "bookings should not be empty after loading test data");
+    void setUp() {
+        users = testDataLoader.users;
+        stations = testDataLoader.stations;
+        bookings = testDataLoader.bookings;
+    }
+    @Test
+    void checkUserExists() {
+        assertTrue(testDataLoader.users.stream().anyMatch(u -> u.getEmail().equals("user1@test.com")));
     }
 
     @Test
