@@ -66,15 +66,14 @@ test-maven:
 # Analyse Sonar après compilation et tests
 sonarcloud-check:
   stage: analyse
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
+  image: maven:3-eclipse-temurin-21
   cache:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
+      - .m2/repository
   script:
-    - sonar-scanner
+    - mvn verify sonar:sonar -Dsonar.login=$SONAR_TOKEN
   only:
     - merge_requests
     - main
