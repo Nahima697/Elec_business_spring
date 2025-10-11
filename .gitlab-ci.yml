@@ -86,7 +86,6 @@ sonarcloud-check:
     - main
     - develop
 
-
 # Déploiement de l'API sur Render
 deploy-api:
   stage: deploy
@@ -118,8 +117,5 @@ deploy-api:
         }
         "
   rules:
-    - changes:
-        paths:
-          - api/**/* # Déclencher ce job uniquement si les fichiers de l'API sont modifiés
     - if: '$CI_COMMIT_BRANCH == "main"' # S'assurer que ce job s'exécute uniquement sur la branche main
 
