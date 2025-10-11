@@ -65,6 +65,7 @@ test-maven:
 
 # Analyse Sonar après compilation et tests
 sonarcloud-check:
+  stage: analyse
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
