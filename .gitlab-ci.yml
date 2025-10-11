@@ -67,21 +67,25 @@ test-maven:
 sonarcloud-check:
   stage: analyse
   image: maven:3-eclipse-temurin-21
+  variables:
+    SONAR_TOKEN: $SONAR_TOKEN  
   cache:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
+      - .m2/repository
   script:
-    - mvn clean verify sonar:sonar \
-        -Dsonar.projectKey=nahima-toumi697_Elec_business_spring \
-        -Dsonar.organization=nahima-toumi697 \
+    - mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
         -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.organization=nahima-toumi697 \
+        -Dsonar.projectKey=nahima-toumi697_Elec_business_spring \
         -Dsonar.login=$SONAR_TOKEN \
         -Dsonar.branch.name=$CI_COMMIT_REF_NAME
   only:
     - merge_requests
     - main
     - develop
+
 
 # Déploiement de l'API sur Render
 deploy-api:
