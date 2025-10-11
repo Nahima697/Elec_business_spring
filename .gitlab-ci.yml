@@ -79,7 +79,7 @@ sonarcloud-check:
       -Dsonar.projectKey=nahima-toumi697_Elec_business_spring \
       -Dsonar.organization=nahima-toumi697 \
       -Dsonar.host.url=https://sonarcloud.io \
-      -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+      -Dsonar.token=$SONAR_TOKEN \
   only:
     - merge_requests
     - main
