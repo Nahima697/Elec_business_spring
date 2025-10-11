@@ -72,6 +72,13 @@ sonarcloud-check:
     paths:
       - .sonar/cache
       - .m2/repository
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
+    REDIS_URL: redis://localhost:6379
+    JWT_EXPIRATION: 3600000
+    EMAIL_VERIFICATION_REQUIRED: false
+    APP_AUTH_FRONTEND_URL: http://localhost:8100
   script:
     - mvn verify sonar:sonar -Dsonar.login=$SONAR_TOKEN
   only:
