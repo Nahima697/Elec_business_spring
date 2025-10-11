@@ -18,10 +18,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<testcontainers.version>1.21.3</testcontainers.version>
-		<sonar.organization>nahima-toumi697</sonar.organization>
-		<sonar.projectKey>nahima-toumi697_Elec_business_spring</sonar.projectKey>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-	</properties>
+		<sonar.organization>nahima-toumi697</sonar.organization></properties>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -200,12 +197,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.9.0.2155</version>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
