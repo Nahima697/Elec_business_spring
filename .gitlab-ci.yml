@@ -105,7 +105,7 @@ deploy-api:
   script:
     # Construction de l'image Docker en passant la clé SendGrid
     - echo "Building Docker image"
-    - docker build --build-arg SENDGRID_API_KEY=${SENDGRID_API_KEY} -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
+    - docker build --build -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
 
     # Pousser l'image vers le registre Docker
     - echo "Pushing Docker image to GitLab Container Registry"
