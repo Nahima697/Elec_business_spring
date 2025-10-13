@@ -18,9 +18,6 @@ FROM eclipse-temurin:21-jre AS prod
 
 WORKDIR /app
 
-# Arguments pour variables sensibles
-ARG SENDGRID_API_KEY
-
 # Copier le jar depuis l'étape build
 COPY --from=build /app/target/app.jar app.jar
 
@@ -30,7 +27,7 @@ EXPOSE 8080
 # Définir le port Render et le profil Spring
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
-ENV SENDGRID_API_KEY=${SENDGRID_API_KEY}
+
 
 # Entrypoint Spring Boot
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
