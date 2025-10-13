@@ -62,7 +62,9 @@ test-maven:
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
-      
+      coverage_report:
+        coverage_format: "jacoco"
+        path: target/site/jacoco/jacoco.xml  
 
 # Analyse Sonar après compilation et tests
 sonarcloud-check:
@@ -80,10 +82,8 @@ sonarcloud-check:
     JWT_EXPIRATION: 3600000
     EMAIL_VERIFICATION_REQUIRED: false
     APP_AUTH_FRONTEND_URL: http://localhost:8100
-  script:
-      - mvn sonar:sonar \
-          -Dsonar.java.coveragePlugin=jacoco \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+  script: 
+    - mvn verify sonar:sonar -Dsonar.login=$SONAR_TOKEN
   only:
     - merge_requests
     - main
