@@ -14,7 +14,7 @@ RUN mvn clean package -DskipTests -DfinalName=app
 RUN ls -l /app/target
 
 # === Étape 2 : Runtime avec JRE 21 ===
-FROM eclipse-temurin:21-jre AS runtime
+FROM eclipse-temurin:21-jre AS prod
 
 WORKDIR /app
 
