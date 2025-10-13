@@ -100,10 +100,12 @@ deploy-api:
   services:
     - name: docker:dind
       command: ["--tls=false"]
+  variables:
+    SPRING_PROFILES_ACTIVE: prod
   script:
-    # Construction de l'image Docker
+    # Construction de l'image Docker en passant la clé SendGrid
     - echo "Building Docker image"
-    - docker build -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
+    - docker build --build-arg SENDGRID_API_KEY=${SENDGRID_API_KEY} -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
 
     # Pousser l'image vers le registre Docker
     - echo "Pushing Docker image to GitLab Container Registry"
@@ -124,4 +126,5 @@ deploy-api:
         }
         "
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"' # S'assurer que ce job s'exécute uniquement sur la branche main
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
