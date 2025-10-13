@@ -16,6 +16,10 @@ variables:
   DOCKER_DRIVER: overlay2
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   GIT_DEPTH: "0"
+  REDIS_URL: redis://localhost:6379
+  JWT_EXPIRATION: 3600000
+  EMAIL_VERIFICATION_REQUIRED: false
+  APP_AUTH_FRONTEND_URL: http://localhost:8100
 
 # Compilation
 build-app:
@@ -62,6 +66,9 @@ test-maven:
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
+      coverage_report:
+        coverage_format: "jacoco"
+        path: target/site/jacoco/jacoco.xml  
 
 # Analyse Sonar après compilation et tests
 sonarcloud-check:
@@ -79,13 +86,12 @@ sonarcloud-check:
     JWT_EXPIRATION: 3600000
     EMAIL_VERIFICATION_REQUIRED: false
     APP_AUTH_FRONTEND_URL: http://localhost:8100
-  script:
+  script: 
     - mvn verify sonar:sonar -Dsonar.login=$SONAR_TOKEN
   only:
     - merge_requests
     - main
     - develop
-
 
 # Déploiement de l'API sur Render
 deploy-api:
@@ -94,10 +100,12 @@ deploy-api:
   services:
     - name: docker:dind
       command: ["--tls=false"]
+  variables:
+    SPRING_PROFILES_ACTIVE: prod
   script:
-    # Construction de l'image Docker
+    # Construction de l'image Docker en passant la clé SendGrid
     - echo "Building Docker image"
-    - docker build -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
+    - docker build --build-arg SENDGRID_API_KEY=${SENDGRID_API_KEY} -t ${CI_REGISTRY_IMAGE}/api:${CI_COMMIT_SHORT_SHA} --target prod .
 
     # Pousser l'image vers le registre Docker
     - echo "Pushing Docker image to GitLab Container Registry"
@@ -118,4 +126,5 @@ deploy-api:
         }
         "
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"' # S'assurer que ce job s'exécute uniquement sur la branche main
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
