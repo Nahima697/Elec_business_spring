@@ -124,6 +124,7 @@ jobs:
       URL_FRONT: ${{ secrets.URL_FRONT }}
       DOCKER_HOST: tcp://localhost:2375
       DOCKER_TLS_CERTDIR: ""
+      SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
 
     steps:
       - name: 📥 Checkout du code
@@ -143,6 +144,10 @@ jobs:
           fi
           if [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
             echo "ERROR: RENDER_API_KEY n'est pas défini !"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SENDGRID_API_KEY }}" ]; then
+            echo "ERROR: SENDGRID_API_KEY n'est pas défini !"
             exit 1
           fi
 
