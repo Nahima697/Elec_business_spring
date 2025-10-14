@@ -34,5 +34,6 @@ build/
 ### Local Configuration ###
 .env
 .env.prod
+.env.test
 
 run-prod-local.bat
