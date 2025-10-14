@@ -9,14 +9,12 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 
 @TestConfiguration(proxyBeanMethods = false)
 public class TestcontainersConfiguration {
-
     @Bean
     @Primary
     @ServiceConnection
-
         // Ensures fresh container for each test run during development
     PostgreSQLContainer<?> postgresContainer() {
-        return new PostgreSQLContainer<>("postgres:17-alpine")
+        return new PostgreSQLContainer<>("postgres:17")
                 .withDatabaseName("testdb")
                 .withUsername("test")
                 .withPassword("test")

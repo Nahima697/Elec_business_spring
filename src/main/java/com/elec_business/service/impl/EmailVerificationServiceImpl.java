@@ -29,7 +29,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     private final UserRepository userRepository;
 
-    @Value("${sendgrid.api.key}")
+    @Value("${sendgrid.api.key:dummy-key}")
     private String sendGridApiKey;
 
     @Async

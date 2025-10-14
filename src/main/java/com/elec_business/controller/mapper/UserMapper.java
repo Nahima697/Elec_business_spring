@@ -9,7 +9,7 @@ public interface UserMapper {
     @Mapping(source = "roleId", target = "role.id")
     User toEntity(UserRegisterDto userRegisterDto);
     UserRegisterDto toDto(User appUser);
-    UserDTO toDTO(User appUser);
+    UserDTO toUserDto(User appUser);
     @Mapping(target = "emailVerificationRequired", expression = "java(true)")
     RegistrationResponseDto toRegistrationResponseDto(UserDTO user,String message);
     User toEntity(RegistrationDto dto);

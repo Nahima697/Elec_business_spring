@@ -60,7 +60,7 @@ public class AuthController {
 
             // 3. Création de la réponse succès
             RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
-                    userMapper.toDTO(registeredUser),
+                    userMapper.toUserDto(registeredUser),
                     "Votre compte a été créé avec succès, vérifier votre email"
             );
 
@@ -120,7 +120,7 @@ public class AuthController {
             String refreshToken = authService.generateRefreshToken(user.getId());
             ResponseCookie refreshCookie= authService.createRefreshTokenCookie(refreshToken);
             // Crée la réponse DTO
-            LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toDTO(user));
+            LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toUserDto(user));
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())

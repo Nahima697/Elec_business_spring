@@ -1,5 +1,6 @@
 package com.elec_business.controller;
 
+import com.elec_business.config.TestSecurityConfig;
 import com.elec_business.data.TestDataLoader;
 import com.elec_business.controller.dto.BookingRequestDto;
 import com.elec_business.controller.dto.BookingResponseDto;
@@ -7,17 +8,15 @@ import com.elec_business.entity.Booking;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,11 +30,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @AutoConfigureMockMvc
-@Import(TestcontainersConfiguration.class)
+@Import({TestcontainersConfiguration.class, TestSecurityConfig.class})
 @ActiveProfiles("test")
  class BookingControllerTest {
+
     @Autowired
     public TestDataLoader testDataLoader;
 
@@ -61,7 +61,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user2@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void createBooking_shouldCreateBookingSuccessfully() throws Exception {
         // Récupération de la station pour la réservation
         String stationId = stations.getFirst().getId();
@@ -86,7 +86,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
         mvc.perform(post("/api/bookings/"+bookings.getFirst().getId()+"/accept")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +95,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void rejectBooking_shouldRejectBookingSuccessfully() throws Exception {
         mvc.perform(post("/api/bookings/" + bookings.getFirst().getId() + "/reject")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +104,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user1@test.com")
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
         mvc.perform(get("/api/bookings/" + bookings.getFirst().getId()))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldUpdateBooking() throws Exception {
         LocalDateTime start = LocalDateTime.now().plusHours(3);
         LocalDateTime end = start.plusHours(4);
@@ -142,7 +142,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldFailOnValidationError() throws Exception {
         BookingRequestDto requestDto = new BookingRequestDto(); // vide = validation error
 
@@ -153,7 +153,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldThrow404IfNotExist() throws Exception {
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = start.plusHours(2);
@@ -170,7 +170,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
     // a voir si je supprime le booking ou si je met le statut annulé
     @Test
-    @WithMockUser(username = "user1", roles = {"ROLE_USER"})
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+
     void deleteShouldDeleteBookingSuccessfully() throws Exception {
         mvc.perform(delete("/api/bookings/" + bookings.getFirst().getId()))
                 .andExpect(status().isNoContent());
