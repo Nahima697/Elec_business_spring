@@ -27,7 +27,7 @@ EXPOSE 8080
 # Définir le port Render et le profil Spring
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
-ARG SENDGRID_API_KEY
-ENV SENDGRID_API_KEY=${SENDGRID_API_KEY}
+ENV SENDGRID_API_KEY=dummy-key
+
 # Entrypoint Spring Boot
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
