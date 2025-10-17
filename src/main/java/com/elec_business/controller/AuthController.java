@@ -50,7 +50,7 @@ public class AuthController {
             User registeredUser = userRegistrationService.registerUser(
                     userMapper.toEntity(registrationDto)
             );
-           String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
             // 2. Envoi asynchrone de l'email (exception gérée dans le service)
             emailVerificationService.sendVerificationToken(
                     registeredUser.getId(),
@@ -60,11 +60,7 @@ public class AuthController {
 
             // 3. Création de la réponse succès
             RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
-<<<<<<< HEAD
                     userMapper.toUserDto(registeredUser),
-=======
-                    userMapper.toDTO(registeredUser),
->>>>>>> 1939fc473334638ae29f95a7d0395f966f490996
                     "Votre compte a été créé avec succès, vérifier votre email"
             );
 
@@ -84,7 +80,6 @@ public class AuthController {
                     ));
         }
     }
-
 
     @GetMapping("/email/verify")
     public ResponseEntity<Void> verifyEmail(
@@ -124,11 +119,8 @@ public class AuthController {
             String refreshToken = authService.generateRefreshToken(user.getId());
             ResponseCookie refreshCookie= authService.createRefreshTokenCookie(refreshToken);
             // Crée la réponse DTO
-<<<<<<< HEAD
+
             LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toUserDto(user));
-=======
-            LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toDTO(user));
->>>>>>> 1939fc473334638ae29f95a7d0395f966f490996
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
@@ -142,12 +134,12 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-        public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal User currentUser){
-            if (currentUser == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-              return ResponseEntity.ok(userMapper.toDto(currentUser));
+    public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal User currentUser){
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        return ResponseEntity.ok(userMapper.toDto(currentUser));
+    }
 
     @PostMapping("/api/refresh-token")
     public ResponseEntity<String> refreshToken(@CookieValue(name = "refresh-token") String token) {
@@ -172,7 +164,7 @@ public class AuthController {
     }
 
     private ResponseCookie generateCookie(String refreshToken) {
-       return ResponseCookie.from("refresh-token", refreshToken)
+        return ResponseCookie.from("refresh-token", refreshToken)
                 .httpOnly(true)
                 .secure(true)
                 .sameSite(SameSiteCookies.NONE.toString())
