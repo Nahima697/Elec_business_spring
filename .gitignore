@@ -37,3 +37,4 @@ build/
 .env.test
 
 run-prod-local.bat
+deploy.sh

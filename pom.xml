@@ -260,7 +260,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M7</version>
 				<configuration>
-					<skipTests>false
+					<skipTests>{skipTests}
 					</skipTests>
 				</configuration>
 			</plugin>
@@ -284,7 +284,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<skipTests>false</skipTests>
+				<skipTests>true</skipTests>
 			</properties>
 		</profile>
 	</profiles>

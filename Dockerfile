@@ -8,7 +8,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build le jar sans tests
-RUN mvn clean package -DskipTests -DfinalName=app
+RUN mvn  package -Dmaven.test.skip -DfinalName=app
 
 # Vérifier que le jar est bien créé
 RUN ls -l /app/target
@@ -18,6 +18,7 @@ FROM eclipse-temurin:21-jre AS prod
 
 WORKDIR /app
 
+
 # Copier le jar depuis l'étape build
 COPY --from=build /app/target/app.jar app.jar
 
@@ -26,8 +27,7 @@ EXPOSE 8080
 
 # Définir le port Render et le profil Spring
 ENV PORT=8080
-ENV SPRING_PROFILES_ACTIVE=prod
-ENV SENDGRID_API_KEY=dummy-key
+ENV SPRING_PROFILES_ACTIVE=pr
 
 # Entrypoint Spring Boot
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
