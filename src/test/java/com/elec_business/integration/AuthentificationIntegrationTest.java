@@ -1,5 +1,6 @@
 package com.elec_business.integration;
 
+<<<<<<< HEAD
 import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.repository.RefreshTokenRepository;
 import com.elec_business.repository.UserRepository;
@@ -29,6 +30,12 @@ public class AuthentificationIntegrationTest {
     void setUp() throws Exception {
 
     }
+=======
+import org.junit.jupiter.api.Test;
+
+
+public class AuthentificationIntegrationTest {
+>>>>>>> 1939fc473334638ae29f95a7d0395f966f490996
     @Test
     void test() {}
 }

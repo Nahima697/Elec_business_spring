@@ -73,7 +73,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
                 .orElseThrow(() ->
                         new ResponseStatusException(GONE,
                                 "User account has been deleted or deactivated"));
-     boolean userEmailVerified = user.getEmailVerified();
+        boolean userEmailVerified = user.getEmailVerified();
         if (userEmailVerified) {
             throw new ResponseStatusException(BAD_REQUEST,
                     "Email is already verified");
