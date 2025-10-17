@@ -18,13 +18,8 @@
 	<properties>
 		<java.version>21</java.version>
 		<testcontainers.version>1.21.3</testcontainers.version>
-<<<<<<< HEAD
 		<sonar.organization>116918479 </sonar.organization>
 		<sonar.projectKey>hb-cda_elec-business-spring</sonar.projectKey>
-=======
-		<sonar.organization>nahima697</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
->>>>>>> 1939fc473334638ae29f95a7d0395f966f490996
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -182,26 +177,22 @@
 	<build>
 		<finalName>app</finalName>
 		<resources>
-		<resource>
-			<directory>src/main/resources</directory>
-			<includes>
-				<include>application.properties</include>
-			</includes>
-			<filtering>false</filtering>
-		</resource>
-		<!-- Prod : filtré pour injecter les variables d'environnement Render -->
-		<resource>
-			<directory>src/main/resources</directory>
-			<includes>
-				<include>application-prod.properties</include>
-			</includes>
-			<filtering>true</filtering>
-		</resource>
-	</resources>
-<<<<<<< HEAD
-=======
-
->>>>>>> 1939fc473334638ae29f95a7d0395f966f490996
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>application.properties</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<!-- Prod : filtré pour injecter les variables d'environnement Render -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>application-prod.properties</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -227,7 +218,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
@@ -270,11 +260,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M7</version>
 				<configuration>
-<<<<<<< HEAD
-					<skipTests>{skipTests}
-=======
 					<skipTests>false
->>>>>>> 1939fc473334638ae29f95a7d0395f966f490996
 					</skipTests>
 				</configuration>
 			</plugin>
@@ -298,11 +284,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-<<<<<<< HEAD
 				<skipTests>true</skipTests>
-=======
-				<skipTests>false</skipTests>
->>>>>>> 1939fc473334638ae29f95a7d0395f966f490996
 			</properties>
 		</profile>
 	</profiles>
