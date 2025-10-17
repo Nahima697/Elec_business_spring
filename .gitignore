@@ -34,3 +34,4 @@ build/
 ### Local Configuration ###
 .env
 deploy.sh
+.env.prod
