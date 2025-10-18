@@ -32,7 +32,6 @@ EXPOSE 8080
 # Définir le port Render et le profil Spring
 ENV PORT=8080
 
-ENV SPRING_PROFILES_ACTIVE=pr
 
 # Entrypoint Spring Boot
 ENV SPRING_PROFILES_ACTIVE=prod
