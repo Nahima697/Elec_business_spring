@@ -82,9 +82,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:8100", "capacitor://localhost", "http://localhost"));
+        config.setAllowedOrigins(List.of("http://localhost:8100", "capacitor://localhost", "http://localhost", "https://elec-business-spring.onrender.com"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "x-authentication-token"));
+        config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization", "x-authentication-token"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
