@@ -46,6 +46,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
                     "<p>Click below to verify your email:</p>" +
                             "<a href=\"" + emailVerificationUrl + "\">Verify Email</a>");
             Mail mail = new Mail(from, subject, to, content);
+            mail.setSandboxMode(false);
 
             SendGrid sg = new SendGrid(sendGridApiKey);
             Request request = new Request();
