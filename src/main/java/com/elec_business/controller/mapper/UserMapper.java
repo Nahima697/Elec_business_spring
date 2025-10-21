@@ -2,12 +2,21 @@ package com.elec_business.controller.mapper;
 
 import com.elec_business.controller.dto.*;
 import com.elec_business.entity.User;
+import com.elec_business.entity.UserRole;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
-    @Mapping(source = "roleId", target = "role.id")
+    default UserRole mapRoleId(Integer roleId) {
+        if (roleId == null) return null;
+        UserRole role = new UserRole();
+        role.setId(roleId);
+        return role;
+    }
+
+    @Mapping(source = "roleId", target = "role", qualifiedByName = "mapRoleId")
     User toEntity(UserRegisterDto userRegisterDto);
+    ;
     UserRegisterDto toDto(User appUser);
 
     UserDTO toUserDto(User appUser);
