@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+ import com.sendgrid.helpers.mail.MailSettings;
 import java.io.IOException;
 import java.time.Instant;
 import static org.springframework.http.HttpStatus.*;
@@ -46,7 +46,11 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
                     "<p>Click below to verify your email:</p>" +
                             "<a href=\"" + emailVerificationUrl + "\">Verify Email</a>");
             Mail mail = new Mail(from, subject, to, content);
-            mail.setSandboxMode(false);
+
+            MailSettings mailSettings = new MailSettings();
+            mailSettings.setSandboxMode(new BooleanSetting().setEnable(false));
+            mail.setMailSettings(mailSettings);
+
 
             SendGrid sg = new SendGrid(sendGridApiKey);
             Request request = new Request();
