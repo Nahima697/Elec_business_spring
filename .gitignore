@@ -35,3 +35,6 @@ build/
 .env
 deploy.sh
 .env.prod
+run-prod-local.bat
+replacements.txt
+ repo-backup.git/
