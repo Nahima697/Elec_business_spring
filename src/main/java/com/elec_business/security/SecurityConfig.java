@@ -36,6 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -61,6 +62,7 @@ public class SecurityConfig {
                         // 🔐 Le reste nécessite authentification
                         .anyRequest().authenticated()
                 )
+            
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
