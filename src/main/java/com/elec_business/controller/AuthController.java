@@ -105,7 +105,6 @@ public class AuthController {
         return ResponseEntity.ok("Verification email resent.");
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginCredentialsDTO loginDto) {
         try {

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
-    @Value("${email-verification.required}")
+    @Value("${app.auth.email-verification-required:true}")
     private boolean emailVerificationRequired;
 
     @Override
