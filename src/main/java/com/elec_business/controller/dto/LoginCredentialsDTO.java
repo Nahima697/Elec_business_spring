@@ -8,7 +8,5 @@ public class LoginCredentialsDTO {
     @NotBlank
     private String username;
     @NotBlank
-    private String email;
-    @NotBlank
     private String password;
 }

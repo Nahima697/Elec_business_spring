@@ -7,6 +7,7 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
+    @Named("mapRoleId")
     default UserRole mapRoleId(Integer roleId) {
         if (roleId == null) return null;
         UserRole role = new UserRole();
@@ -16,7 +17,7 @@ public interface UserMapper {
 
     @Mapping(source = "roleId", target = "role", qualifiedByName = "mapRoleId")
     User toEntity(UserRegisterDto userRegisterDto);
-    ;
+
     UserRegisterDto toDto(User appUser);
 
     UserDTO toUserDto(User appUser);
