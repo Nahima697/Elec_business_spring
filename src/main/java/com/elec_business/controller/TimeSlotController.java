@@ -8,10 +8,12 @@ import com.elec_business.entity.TimeSlot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @RestController
@@ -48,6 +50,14 @@ public class TimeSlotController {
     ) {
         Page<TimeSlotResponseDto> slots =timeSlotMapper.toDtoPage(timeSlotBusiness.getAvailableSlotsByPeriod(stationId, start, end, pageable));
         return ResponseEntity.ok(slots);
+    }
+    @GetMapping("/station/{station_id}/day")
+    public ResponseEntity<List<TimeSlotResponseDto>> getSlotsForDay(
+            @PathVariable("station_id") String stationId,
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        List<TimeSlot> slots = timeSlotBusiness.getSlotsFiltered(stationId, date);
+        return ResponseEntity.ok(timeSlotMapper.toDtoList(slots));
     }
 
 }
