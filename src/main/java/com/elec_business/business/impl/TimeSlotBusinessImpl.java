@@ -8,12 +8,14 @@ import com.elec_business.entity.TimeSlot;
 import com.elec_business.repository.TimeSlotRepository;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.repository.ChargingStationRepository;
+import com.elec_business.repository.specification.TimeSlotSpecification;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -60,8 +62,6 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
             timeSlotRepository.saveAll(slots);
         }
     }
-
-
     public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules) {
         List<TimeSlot> generatedSlots = new ArrayList<>();
 
@@ -91,7 +91,6 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
         timeSlotRepository.saveAll(generatedSlots);
     }
 
-
     public void purgeOldTimeSlots() {
         timeSlotRepository.deleteByStartTimeBefore(LocalDateTime.now());
     }
@@ -100,9 +99,24 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
         return timeSlotRepository.findByStationId(stationId, pageable);
     }
 
-
     public Page<TimeSlot> getAvailableSlotsByPeriod(String stationId, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
         return timeSlotRepository.findAvailableSlotsPage(stationId, startTime, endTime, pageable);
     }
 
+    public List<TimeSlot> getSlotsFiltered(String stationId, LocalDate date) {
+
+        Specification<TimeSlot> spec = Specification.where(null);
+
+        if (stationId != null) {
+            spec = spec.and(TimeSlotSpecification.hasStationId(stationId));
+        }
+
+        if (date != null) {
+            spec = spec.and(TimeSlotSpecification.forDay(date));
+        }
+
+        spec = spec.and(TimeSlotSpecification.isAvailable());
+
+        return timeSlotRepository.findAll(spec);
+    }
 }

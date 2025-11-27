@@ -18,5 +18,5 @@ public interface TimeSlotBusiness {
     void purgeOldTimeSlots();
     Page<TimeSlot> getAvailableSlots(String stationId, Pageable pageable);
     Page<TimeSlot> getAvailableSlotsByPeriod(String stationId, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
-
+    List<TimeSlot> getSlotsFiltered(String stationId, LocalDate date);
 }
