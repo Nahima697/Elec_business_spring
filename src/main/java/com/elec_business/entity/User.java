@@ -56,9 +56,12 @@ public class User implements UserDetails {
     @Column(name = "profile_picture_url", columnDefinition = "TEXT")
     private String profilePictureUrl;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "role_id")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<UserRole> roles = new HashSet<>();
 
     @ColumnDefault("CURRENT_TIMESTAMP")
