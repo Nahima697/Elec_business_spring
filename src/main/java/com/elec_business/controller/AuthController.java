@@ -133,11 +133,11 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserRegisterDto> getCurrentUser (@AuthenticationPrincipal User currentUser){
+    public ResponseEntity<UserProfileDto> getCurrentUser(@AuthenticationPrincipal User currentUser) {
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(userMapper.toDto(currentUser));
+        return ResponseEntity.ok(userMapper.toUserProfileDto(currentUser));
     }
 
     @PostMapping("/api/refresh-token")

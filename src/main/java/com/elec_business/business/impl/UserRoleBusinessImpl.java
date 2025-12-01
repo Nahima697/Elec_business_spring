@@ -11,25 +11,37 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserRoleBusinessImpl implements UserRoleBusiness {
+
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
-    @Override
-      public void addRoleOwner(String id) {
 
-        //Verifier que l'utilisateur existe
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User introuvable"));
-        //Recuperer le role Owner
-        UserRole role = userRoleRepository.findByName("Owner");
-        user.setRole(role);
+    @Override
+    public void addRoleOwner(String id) {
+        addRole(id, "ROLE_OWNER");
     }
 
     @Override
     public void addRoleRenter(String id) {
+        addRole(id, "ROLE_RENTER");
+    }
 
-        //Verifier que l'utilisateur existe
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User introuvable"));
-        //Recuperer le role Renter
-        UserRole role = userRoleRepository.findByName("Renter");
-        user.setRole(role);
+    private void addRole(String userId, String roleName) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User introuvable"));
+
+        UserRole role = userRoleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role introuvable : " + roleName));
+
+        user.getRoles().add(role);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void removeRole(String userId, String roleName) {
+        User user = userRepository.findById(userId).orElseThrow();
+        UserRole role = userRoleRepository.findByName(roleName).orElseThrow();
+        user.getRoles().remove(role);
+        userRepository.save(user);
     }
 }

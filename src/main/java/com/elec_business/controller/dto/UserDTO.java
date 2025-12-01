@@ -1,15 +1,13 @@
 package com.elec_business.controller.dto;
 
-import com.elec_business.entity.UserRole;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-
 public class UserDTO {
     private String id;
     private String email;
+    private String username;
+    private List<UserRoleDTO> roles;
 }
