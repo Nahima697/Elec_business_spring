@@ -20,4 +20,5 @@ public interface BookingBusiness {
     List<Booking> getAllBookings();
     Booking updateBooking(String id,Booking booking, User currentUser);
     void deleteBooking(String id);
+    List<Booking> getMyBookings(User user);
 }

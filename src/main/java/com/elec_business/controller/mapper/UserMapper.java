@@ -6,6 +6,7 @@ import com.elec_business.entity.UserRole;
 import org.mapstruct.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(
@@ -14,11 +15,9 @@ import java.util.stream.Collectors;
 )
 public interface UserMapper {
 
-    /* ----------------------------
-          REGISTER → ENTITY
-       ---------------------------- */
-    @Mapping(source = "roleId", target = "roles",
-            expression = "java(java.util.List.of(mapRoleId(userRegisterDto.getRoleId())))")
+    /* REGISTER → ENTITY */
+    @Mapping(target = "roles",
+            expression = "java(java.util.Set.of(mapRoleId(userRegisterDto.getRoleId())))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "emailVerified", constant = "false")
     @Mapping(target = "createdAt", expression = "java(java.time.Instant.now())")
@@ -33,15 +32,15 @@ public interface UserMapper {
         return role;
     }
 
+    /* ENTITY → PROFILE DTO */
     @Mapping(source = "roles", target = "roles", qualifiedByName = "toUserRoleDTOList")
     UserProfileDto toUserProfileDto(User user);
 
-    @Mapping(target = "roles", ignore = true) // Car le registration ne donne pas encore de rôle
+    /* Registration */
+    @Mapping(target = "roles", ignore = true)
     User toEntity(RegistrationDto dto);
 
-    /* ----------------------------
-            ENTITY → DTO
-       ---------------------------- */
+    /* ENTITY → UserDTO (login) */
     @Mapping(source = "roles", target = "roles", qualifiedByName = "toUserRoleDTOList")
     UserDTO toUserDto(User user);
 
@@ -56,24 +55,19 @@ public interface UserMapper {
     }
 
     @Named("toUserRoleDTOList")
-    default java.util.List<UserRoleDTO> toUserRoleDTOList(java.util.List<UserRole> roles) {
-        if (roles == null) return java.util.List.of();
-
+    default List<UserRoleDTO> toUserRoleDTOList(Set<UserRole> roles) {
+        if (roles == null) return List.of();
         return roles.stream()
                 .map(this::toUserRoleDTO)
                 .toList();
     }
 
-    /* ----------------------------
-        PARTIAL UPDATE
-       ---------------------------- */
+    /* PARTIAL UPDATE */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "roles", ignore = true)
     User partialUpdate(UserRegisterDto userRegisterDto, @MappingTarget User appUser);
 
-    /* ----------------------------
-      REGISTRATION RESPONSE
-       ---------------------------- */
+    /* Registration Response */
     @Mapping(target = "emailVerificationRequired", expression = "java(true)")
     RegistrationResponseDto toRegistrationResponseDto(UserDTO user, String message);
 }

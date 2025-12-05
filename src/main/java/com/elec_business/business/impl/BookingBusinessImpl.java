@@ -40,6 +40,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     private final TimeSlotBusiness timeSlotBusiness;
 
     @Transactional
+    @Override
     public Booking createBooking(String stationId, LocalDateTime startDate, LocalDateTime endDate, User currentUser) {
 
         // Vérification de l'existence de la station
@@ -85,8 +86,8 @@ public class BookingBusinessImpl implements BookingBusiness {
         return savedBooking;
     }
 
-
     // Vérification de la disponibilité du créneau
+    @Override
     public void verifyAvailability(ChargingStation station, Booking booking) {
         boolean slotAvailable = timeSlotRepository.existsSlotInRange(
                 station.getId(),
@@ -110,8 +111,8 @@ public class BookingBusinessImpl implements BookingBusiness {
         }
     }
 
-
     // Calcul du prix total basé sur la durée de la réservation
+    @Override
     public BigDecimal calculateTotalPrice(ChargingStation station, Booking booking) {
         BigDecimal pricePerHour = station.getPrice();
         long durationInHours = Duration.between(booking.getStartDate(), booking.getEndDate()).toHours();
@@ -125,6 +126,7 @@ public class BookingBusinessImpl implements BookingBusiness {
 
     // Acceptation de la réservation
     @Transactional
+    @Override
     public Booking acceptBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(BookingNotFoundException::new);
@@ -152,6 +154,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     }
 
     @Transactional
+    @Override
     public Booking rejectBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(BookingNotFoundException::new);
@@ -175,18 +178,26 @@ public class BookingBusinessImpl implements BookingBusiness {
     }
 
     // Récupération de toutes les réservations
+    @Override
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll().stream()
                 .toList();
     }
 
     // Récupération d'une réservation par ID
+    @Override
     public Booking getBookingById(String  id) {
             return bookingRepository.findById(id).orElseThrow(BookingNotFoundException::new);
     }
 
+    @Override
+    public List<Booking> getMyBookings(User user) {
+        return bookingRepository.findByStationOwner(user.getId());
+    }
+
     // Mise à jour d'une réservation par le locataire
     @Transactional
+    @Override
     public Booking updateBooking(String  id,Booking booking, User currentUser) throws AccessDeniedBookingException {
        Booking updateBooking = bookingRepository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
@@ -216,6 +227,7 @@ public class BookingBusinessImpl implements BookingBusiness {
 
     // Suppression d'une réservation
     @Transactional
+    @Override
     public void deleteBooking(String id) {
         bookingRepository.deleteBookingById(id);
     }

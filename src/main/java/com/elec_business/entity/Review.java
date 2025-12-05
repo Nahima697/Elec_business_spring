@@ -1,6 +1,8 @@
 package com.elec_business.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,8 +32,15 @@ public class Review {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    @Column(name = "title", length = Integer.MAX_VALUE)
+    private String title;
+
     @Column(name = "comments", length = Integer.MAX_VALUE)
     private String comments;
+
+    @Column(name = "rating", nullable = false)
+    @Min(1) @Max(5)
+    private Integer rating;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")

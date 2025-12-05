@@ -62,7 +62,7 @@ public class BookingController {
     @GetMapping("/bookings")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingResponseDto> getAllBookings() {
-        return bookingMapper.toListResponseDto(bookingBusiness.getAllBookings());
+        return bookingMapper.toDtos(bookingBusiness.getAllBookings());
     }
 
     @GetMapping("/bookings/{id}")
@@ -76,5 +76,11 @@ public class BookingController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBooking(@PathVariable String id) {
         bookingBusiness.deleteBooking(id);
+    }
+
+    @GetMapping("/bookings/owner/me")
+    public List<BookingResponseDto> getMyStationsBookings(@AuthenticationPrincipal User user) {
+        List<Booking> bookings = bookingBusiness.getMyBookings(user);
+        return bookingMapper.toDtos(bookings);
     }
 }

@@ -57,7 +57,8 @@ class TimeSlotRepositoryTest  {
         user1.setPhoneNumber("0600000001");
         user1.setEmailVerified(true);
         user1.setPhoneVerified(true);
-        user1.setRole(roleUser);
+        user1.setRoles(new HashSet<>());
+        user1.getRoles().add(roleUser);
         user1.setCreatedAt(Instant.now());
         user1.setEmailVerifiedAt(Instant.now());
         user1.setPhoneVerifiedAt(Instant.now());

@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "booking_status")
-public class BookingStatus {
+public class  BookingStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

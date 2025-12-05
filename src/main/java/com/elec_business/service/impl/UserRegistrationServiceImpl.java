@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 @Service
 @RequiredArgsConstructor
 public class UserRegistrationServiceImpl implements  UserRegistrationService {
@@ -26,9 +29,16 @@ public class UserRegistrationServiceImpl implements  UserRegistrationService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmailVerified(false);
-        UserRole role = new UserRole();
-        role.setId(1);
-        user.setRole(role);
+        // Ajout du rôle "USER" par défaut (ID 1)
+        UserRole defaultRole = new UserRole();
+        defaultRole.setId(1);
+
+        // Initialiser la liste des rôles si nécessaire
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
+        }
+
+        user.getRoles().add(defaultRole);
 
         return userRepository.save(user);
     }

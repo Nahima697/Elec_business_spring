@@ -2,6 +2,7 @@ package com.elec_business.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @AllArgsConstructor

@@ -3,6 +3,7 @@ package com.elec_business.data;
 import com.elec_business.entity.*;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,9 +12,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class TestDataLoader {
@@ -31,93 +30,44 @@ public class TestDataLoader {
     @Transactional
     public LoadResult load() {
 
-        UserRole roleUser;
-        try {
-            roleUser = em.createQuery("SELECT r FROM UserRole r WHERE r.name = :name", UserRole.class)
-                    .setParameter("name", "ROLE_USER")
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            roleUser = new UserRole(null, "ROLE_USER");
-            em.persist(roleUser);
-            em.flush();
-        }
-
-        em.persist(roleUser);
+        // ================================
+        // 1) ROLES
+        // ================================
+        UserRole roleOwner = findOrCreateRole("OWNER");
+        UserRole roleRenter = findOrCreateRole("RENTER");
         em.flush();
 
-        // USER 1
-        User user1;
-        try {
-            user1 = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", "user1@test.com")
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            user1 = new User();
-            user1.setUsername("user1");
-            user1.setEmail("user1@test.com");
-            user1.setPassword(encoder.encode("password123"));
-            user1.setPhoneNumber("0600000001");
-            user1.setEmailVerified(true);
-            user1.setPhoneVerified(true);
-            user1.setRole(roleUser);
-            user1.setCreatedAt(Instant.now());
-            user1.setEmailVerifiedAt(Instant.now());
-            user1.setPhoneVerifiedAt(Instant.now());
-            em.persist(user1);
-            em.flush();
-        }
-
-        // USER 2
-        User user2;
-        try {
-            user2 = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", "user2@test.com")
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            user2 = new User();
-            user2.setUsername("user2");
-            user2.setEmail("user2@test.com");
-            user2.setPassword(encoder.encode("password223"));
-            user2.setPhoneNumber("0600000002");
-            user2.setEmailVerified(true);
-            user2.setPhoneVerified(true);
-            user2.setRole(roleUser);
-            user2.setCreatedAt(Instant.now());
-            user2.setEmailVerifiedAt(Instant.now());
-            user2.setPhoneVerifiedAt(Instant.now());
-            em.persist(user2);
-            em.flush();
-        }
-
-        // USER 3
-        User user3;
-        try {
-            user3 = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", "user3@test.com")
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            user3 = new User();
-            user3.setUsername("user3");
-            user3.setEmail("user3@test.com");
-            user3.setPassword(encoder.encode("password323"));
-            user3.setPhoneNumber("0600000003");
-            user3.setEmailVerified(true);
-            user3.setPhoneVerified(true);
-            user3.setRole(roleUser);
-            user3.setCreatedAt(Instant.now());
-            user3.setEmailVerifiedAt(Instant.now());
-            user3.setPhoneVerifiedAt(Instant.now());
-            em.persist(user3);
-            em.flush();
-        }
-
-        // LOCATION
-        ChargingLocation location1 = new ChargingLocation(
-                null, "1 rue Lyon", "69007", "Lyon", "France", "Lyon7", user1, new HashSet<>()
+        // ================================
+        // 2) USERS
+        // ================================
+        User user1 = findOrCreateUser(
+                "user1", "user1@test.com", "password123",
+                roleOwner, roleRenter
         );
+
+        User user2 = findOrCreateUser(
+                "user2", "user2@test.com", "password223",
+                roleRenter
+        );
+
+        User user3 = findOrCreateUser(
+                "user3", "user3@test.com", "password323",
+                roleOwner
+        );
+
+        // ================================
+        // 3) LOCATION
+        // ================================
+        ChargingLocation location1 = new ChargingLocation(
+                null, "1 rue Lyon", "69007", "Lyon", "France",
+                "Lyon7", user1, new HashSet<>()
+        );
+
         em.persist(location1);
 
-        // STATIONS
+        // ================================
+        // 4) STATIONS
+        // ================================
         ChargingStation station1 = new ChargingStation();
         station1.setName("Station A");
         station1.setDescription("Charge rapide 50kW");
@@ -141,9 +91,12 @@ public class TestDataLoader {
         station2.setLocation(location1);
         station2.setImageUrl(null);
         em.persist(station2);
-        em.flush(); // flush stations
 
-        // TIMESLOT
+        em.flush();
+
+        // ================================
+        // 5) TIMESLOT
+        // ================================
         LocalDateTime now = LocalDateTime.now();
         TimeSlot slot = new TimeSlot();
         slot.setStation(station1);
@@ -153,53 +106,15 @@ public class TestDataLoader {
         slot.setAvailability(Range.closed(slot.getStartTime(), slot.getEndTime()));
         em.persist(slot);
 
-        /// BOOKING STATUS
-        BookingStatus pendingStatus;
-        BookingStatus acceptedStatus;
-        BookingStatus rejectedStatus;
-        BookingStatus cancelledStatus;
+        // ================================
+        // 6) BOOKING STATUS
+        // ================================
+        BookingStatus pending = findOrCreateStatus(BookingStatusType.PENDING);
+        em.flush();
 
-        try {
-            pendingStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
-                    .setParameter("name", BookingStatusType.PENDING)
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            pendingStatus = new BookingStatus(BookingStatusType.PENDING);
-            em.persist(pendingStatus);
-            em.flush();
-        }
-
-        try {
-            acceptedStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
-                    .setParameter("name", BookingStatusType.ACCEPTED)
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            acceptedStatus = new BookingStatus(BookingStatusType.ACCEPTED);
-            em.persist(acceptedStatus);
-            em.flush();
-        }
-
-        try {
-            rejectedStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
-                    .setParameter("name", BookingStatusType.REJECTED)
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            rejectedStatus = new BookingStatus(BookingStatusType.REJECTED);
-            em.persist(rejectedStatus);
-            em.flush();
-        }
-
-        try {
-            cancelledStatus = em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :name", BookingStatus.class)
-                    .setParameter("name", BookingStatusType.CANCELLED)
-                    .getSingleResult();
-        } catch (jakarta.persistence.NoResultException e) {
-            cancelledStatus = new BookingStatus(BookingStatusType.CANCELLED);
-            em.persist(cancelledStatus);
-            em.flush();
-        }
-
-        // Booking dans le futur
+        // ================================
+        // 7) BOOKING
+        // ================================
         Booking booking1 = new Booking();
         booking1.setUser(user1);
         booking1.setStation(station1);
@@ -207,24 +122,74 @@ public class TestDataLoader {
         booking1.setEndDate(now.plusHours(4));
         booking1.setTotalPrice(new BigDecimal("0.50"));
         booking1.setCreatedAt(Instant.now());
-        booking1.setStatus(pendingStatus);
+        booking1.setStatus(pending);
+
         em.persist(booking1);
         em.flush();
 
-        // Ajout des objets dans les listes
-        users.clear();
-        users.add(user1);
-        users.add(user2);
-        users.add(user3);
-
-        stations.clear();
-        stations.add(station1);
-        stations.add(station2);
-
-        bookings.clear();
-        bookings.add(booking1);
+        // ================================
+        // 8) SAVE IN MEMORY
+        // ================================
+        users = List.of(user1, user2, user3);
+        stations = List.of(station1, station2);
+        bookings = List.of(booking1);
 
         return new LoadResult(stations, users, bookings);
     }
 
+
+    // ===========================================================
+    // HELPERS
+    // ===========================================================
+
+    private UserRole findOrCreateRole(String name) {
+        try {
+            return em.createQuery("SELECT r FROM UserRole r WHERE r.name = :n", UserRole.class)
+                    .setParameter("n", name)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            UserRole r = new UserRole(null, name);
+            em.persist(r);
+            return r;
+        }
+    }
+
+    private BookingStatus findOrCreateStatus(BookingStatusType type) {
+        try {
+            return em.createQuery("SELECT b FROM BookingStatus b WHERE b.name = :n", BookingStatus.class)
+                    .setParameter("n", type)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            BookingStatus b = new BookingStatus(type);
+            em.persist(b);
+            return b;
+        }
+    }
+
+    private User findOrCreateUser(String username, String email, String pwd, UserRole... roles) {
+        try {
+            return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+
+            User u = new User();
+            u.setUsername(username);
+            u.setEmail(email);
+            u.setPassword(encoder.encode(pwd));
+            u.setPhoneNumber("0600000000");
+            u.setEmailVerified(true);
+            u.setPhoneVerified(true);
+            u.setCreatedAt(Instant.now());
+            u.setEmailVerifiedAt(Instant.now());
+            u.setPhoneVerifiedAt(Instant.now());
+
+            // 🔥 Ici roles = HashSet
+            u.setRoles(new HashSet<>(Arrays.asList(roles)));
+
+            em.persist(u);
+            em.flush();
+            return u;
+        }
+    }
 }

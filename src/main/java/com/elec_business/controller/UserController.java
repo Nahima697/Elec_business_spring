@@ -51,5 +51,13 @@ public class UserController {
         userRoleBusiness.addRoleRenter(id);
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping("/{id}/roles/{roleName}")
+    public ResponseEntity<Void> removeRole(
+            @PathVariable String id,
+            @PathVariable String roleName
+    ) {
+        userRoleBusiness.removeRole(id, roleName);
+        return ResponseEntity.noContent().build();
+    }
 
 }
