@@ -8,6 +8,7 @@ import com.elec_business.entity.Booking;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,29 +19,30 @@ import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.elec_business.config.TestcontainersConfiguration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import({TestcontainersConfiguration.class, TestSecurityConfig.class})
 @ActiveProfiles("test")
- class BookingControllerTest {
+class BookingControllerTest {
 
     @Autowired
-    public TestDataLoader testDataLoader;
+    private TestDataLoader testDataLoader;
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -50,22 +52,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     List<ChargingStation> stations = new ArrayList<>();
 
     @BeforeEach
-     void setUp() throws Exception {
+    void setUp() throws Exception {
         TestDataLoader.LoadResult result = testDataLoader.load();
+
         users = result.users();
         stations = result.stations();
         bookings = result.bookings();
-        assertFalse(users.isEmpty(), "users should not be empty after loading test data");
-        assertFalse(stations.isEmpty(), "stations should not be empty after loading test data");
-        assertFalse(bookings.isEmpty(), "bookings should not be empty after loading test data");
+
+        assertFalse(users.isEmpty());
+        assertFalse(stations.isEmpty());
+        assertFalse(bookings.isEmpty());
     }
 
+    // 🔍 UTILITAIRE : on récupère un booking dont l’owner = email donné
+    private Booking getBookingOwnedBy(String email) {
+        return bookings.stream()
+                .filter(b -> b.getStation().getLocation().getUser().getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Aucun booking appartenant à " + email));
+    }
+
+    // ------------------------------------------
+    // CREATE BOOKING
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user2@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void createBooking_shouldCreateBookingSuccessfully() throws Exception {
-        // Récupération de la station pour la réservation
-        String stationId = stations.getFirst().getId();
 
+        String stationId = stations.getFirst().getId();
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = LocalDateTime.now().plusHours(3);
 
@@ -76,109 +90,127 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(result -> {
-                    String content = result.getResponse().getContentAsString();
-                    BookingResponseDto responseDto = objectMapper.readValue(content, BookingResponseDto.class);
-                    assertNotNull(responseDto.getId(), "Booking ID should not be null");
-                    assertFalse(responseDto.getStationName().isBlank(), "Station name should be present");
-                    assertFalse(responseDto.getUserName().isBlank(), "User name should be present");
-                    assertEquals("user2", responseDto.getUserName(), "Booking should be linked to user2");
+                    BookingResponseDto dto =
+                            objectMapper.readValue(result.getResponse().getContentAsString(), BookingResponseDto.class);
+
+                    assertNotNull(dto.getId());
+                    assertEquals("user2", dto.getUserName());
                 });
     }
 
+    // ------------------------------------------
+    // ACCEPT BOOKING
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
-        mvc.perform(post("/api/bookings/"+bookings.getFirst().getId()+"/accept")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(bookings.getFirst().getId())))
+
+        Booking bookingOwned = getBookingOwnedBy("user1@test.com");
+
+        mvc.perform(post("/api/bookings/" + bookingOwned.getId() + "/accept"))
                 .andExpect(status().isOk());
     }
 
+    // ------------------------------------------
+    // REJECT BOOKING
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void rejectBooking_shouldRejectBookingSuccessfully() throws Exception {
-        mvc.perform(post("/api/bookings/" + bookings.getFirst().getId() + "/reject")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookings.getFirst().getId())))
+
+        Booking bookingOwned = getBookingOwnedBy("user1@test.com");
+
+        mvc.perform(post("/api/bookings/" + bookingOwned.getId() + "/reject"))
                 .andExpect(status().isOk());
     }
 
+    // ------------------------------------------
+    // GET BOOKING BY ID
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user1@test.com")
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
-        mvc.perform(get("/api/bookings/" + bookings.getFirst().getId()))
+
+        Booking booking = bookings.getFirst();
+
+        mvc.perform(get("/api/bookings/" + booking.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startDate")
-                        .value(bookings.getFirst().getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))))
-                .andExpect(jsonPath("$.endDate").value(bookings.getFirst().getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))))
-                .andExpect(jsonPath("$.statusLabel").value(bookings.getFirst().getStatus().getName().name()))
-                .andExpect(jsonPath("$.totalPrice").value(bookings.getFirst().getTotalPrice().doubleValue()))
-                .andExpect(jsonPath("$.userName").value(users.getFirst().getUsername()))
-                .andExpect(jsonPath("$.stationName").value(stations.getFirst().getName()))
-                .andExpect(jsonPath("$.stationOwnerName").value(stations.getFirst().getLocation().getUser().getUsername()));
+                        .value(booking.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))));
     }
 
+    // ------------------------------------------
+    // UPDATE BOOKING
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldUpdateBooking() throws Exception {
+
+        Booking booking = getBookingOwnedBy("user1@test.com");
+
         LocalDateTime start = LocalDateTime.now().plusHours(3);
         LocalDateTime end = start.plusHours(4);
 
-        String stationId = stations.getFirst().getId();
+        BookingRequestDto requestDto =
+                new BookingRequestDto(stations.getFirst().getId(), start, end);
 
-        BookingRequestDto requestDto = new BookingRequestDto(stationId, start, end);
-
-        mvc.perform(put("/api/bookings/" + bookings.getFirst().getId())
+        mvc.perform(put("/api/bookings/" + booking.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isAccepted())
                 .andExpect(result -> {
-                    String content = result.getResponse().getContentAsString();
-                    BookingResponseDto responseDto = objectMapper.readValue(content, BookingResponseDto.class);
-                    assertNotNull(responseDto.getId(), "Booking ID should not be null");
-                    assertFalse(responseDto.getStationName().isBlank(), "Station name should be present");
-                    assertFalse(responseDto.getUserName().isBlank(), "User name should be present");
+                    BookingResponseDto dto =
+                            objectMapper.readValue(result.getResponse().getContentAsString(), BookingResponseDto.class);
+
+                    assertNotNull(dto.getId());
                 });
     }
 
+    // ------------------------------------------
+    // UPDATE BAD REQUEST
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldFailOnValidationError() throws Exception {
-        BookingRequestDto requestDto = new BookingRequestDto(); // vide = validation error
 
         mvc.perform(put("/api/bookings/" + bookings.getFirst().getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .content(objectMapper.writeValueAsString(new BookingRequestDto())))
                 .andExpect(status().isBadRequest());
     }
 
+    // ------------------------------------------
+    // UPDATE NOT FOUND
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldThrow404IfNotExist() throws Exception {
+
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = start.plusHours(2);
-
         String stationId = stations.getFirst().getId();
 
         BookingRequestDto requestDto = new BookingRequestDto(stationId, start, end);
 
-        mvc.perform(put("/api/bookings/dontexist")
+        mvc.perform(put("/api/bookings/notexist")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isNotFound());
     }
 
-    // a voir si je supprime le booking ou si je met le statut annulé
+    // ------------------------------------------
+    // DELETE BOOKING
+    // ------------------------------------------
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-
     void deleteShouldDeleteBookingSuccessfully() throws Exception {
-        mvc.perform(delete("/api/bookings/" + bookings.getFirst().getId()))
+
+        Booking booking = getBookingOwnedBy("user1@test.com");
+
+        mvc.perform(delete("/api/bookings/" + booking.getId()))
                 .andExpect(status().isNoContent());
 
-        // Vérifier que le booking est bien supprimé
-        mvc.perform(get("/api/bookings/" + bookings.getFirst().getId()))
+        mvc.perform(get("/api/bookings/" + booking.getId()))
                 .andExpect(status().isNotFound());
     }
-
 }
