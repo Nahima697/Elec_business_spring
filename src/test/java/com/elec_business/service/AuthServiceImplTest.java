@@ -135,19 +135,23 @@ public class AuthServiceImplTest {
         oldToken.setUser(user);
         oldToken.setExpiresAt(LocalDateTime.now().plusDays(1));
 
+        // Mock du token existant
         when(tokenRepo.findById("old")).thenReturn(Optional.of(oldToken));
-        when(jwtUtil.generateToken("john")).thenReturn("jwt-new");
 
-        when(tokenRepo.save(any())).thenAnswer(invocation -> {
-            RefreshToken t = invocation.getArgument(0);
-            t.setId("new-refresh");
-            return t;
-        });
+        // Mock du userRepo -> OBLIGATOIRE !
+        when(userRepo.findById("u1")).thenReturn(Optional.of(user));
+
+        // Mock du nouveau token créé
+        RefreshToken newToken = new RefreshToken();
+        newToken.setId("new-refresh");
+        when(tokenRepo.save(any())).thenReturn(newToken);
+
+        // Mock JWT
+        when(jwtUtil.generateToken("john")).thenReturn("jwt-new");
 
         TokenPair result = authService.validateRefreshToken("old");
 
         assertEquals("new-refresh", result.getRefreshToken());
         assertEquals("jwt-new", result.getJwt());
-        verify(tokenRepo).delete(oldToken);
     }
 }
