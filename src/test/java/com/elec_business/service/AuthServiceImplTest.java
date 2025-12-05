@@ -126,32 +126,32 @@ public class AuthServiceImplTest {
     // -----------------------------------------
     @Test
     void validateRefreshToken_shouldReturnNewTokens() {
+        // GIVEN
         User user = new User();
-        user.setId("u1");
-        user.setUsername("john");
+        user.setId("user-1");
+        user.setUsername("testUser");
 
-        RefreshToken oldToken = new RefreshToken();
-        oldToken.setId("old");
-        oldToken.setUser(user);
-        oldToken.setExpiresAt(LocalDateTime.now().plusDays(1));
+        RefreshToken oldRefresh = mock(RefreshToken.class);
 
-        // Mock du token existant
-        when(tokenRepo.findById("old")).thenReturn(Optional.of(oldToken));
+        when(tokenRepo.findById("old"))
+                .thenReturn(Optional.of(oldRefresh));
 
-        // Mock du userRepo -> OBLIGATOIRE !
-        when(userRepo.findById("u1")).thenReturn(Optional.of(user));
+        when(oldRefresh.isExpired()).thenReturn(false);
+        when(oldRefresh.getUser()).thenReturn(user);
 
-        // Mock du nouveau token créé
-        RefreshToken newToken = new RefreshToken();
-        newToken.setId("new-refresh");
-        when(tokenRepo.save(any())).thenReturn(newToken);
+        when(authService.generateRefreshToken("user-1"))
+                .thenReturn("new-refresh");
 
-        // Mock JWT
-        when(jwtUtil.generateToken("john")).thenReturn("jwt-new");
+        when(jwtUtil.generateToken("testUser"))
+                .thenReturn("jwt-new");
 
+        // WHEN
         TokenPair result = authService.validateRefreshToken("old");
 
+        // THEN
         assertEquals("new-refresh", result.getRefreshToken());
         assertEquals("jwt-new", result.getJwt());
+
+        verify(tokenRepo).delete(oldRefresh);
     }
 }
