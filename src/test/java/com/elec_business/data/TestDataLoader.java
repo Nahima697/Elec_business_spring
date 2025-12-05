@@ -132,6 +132,7 @@ public class TestDataLoader {
         // ================================
         users = List.of(user1, user2, user3);
         stations = List.of(station1, station2);
+        booking1.setUser(user2);
         bookings = List.of(booking1);
 
         return new LoadResult(stations, users, bookings);
@@ -184,7 +185,6 @@ public class TestDataLoader {
             u.setEmailVerifiedAt(Instant.now());
             u.setPhoneVerifiedAt(Instant.now());
 
-            // 🔥 Ici roles = HashSet
             u.setRoles(new HashSet<>(Arrays.asList(roles)));
 
             em.persist(u);
