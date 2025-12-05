@@ -13,12 +13,14 @@ import com.elec_business.business.eventlistener.BookingAcceptedEvent;
 import com.elec_business.business.exception.BookingNotFoundException;
 import com.elec_business.business.exception.InvalidBookingDurationException;
 import com.elec_business.business.exception.AccessDeniedBookingException;
+import com.elec_business.repository.specification.BookingSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -231,4 +233,19 @@ public class BookingBusinessImpl implements BookingBusiness {
     public void deleteBooking(String id) {
         bookingRepository.deleteBookingById(id);
     }
+
+    @Override
+    public List<Booking> searchBookings(
+            BookingStatusType status,
+            String ownerId,
+            String stationId
+    ) {
+        Specification<Booking> spec = Specification
+                .where(BookingSpecification.hasStatus(status))
+                .and(BookingSpecification.belongsToOwner(ownerId))
+                .and(BookingSpecification.forStation(stationId));
+
+        return bookingRepository.findAll(spec);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.elec_business.business.BookingBusiness;
 import com.elec_business.controller.dto.BookingRequestDto;
 import com.elec_business.controller.dto.BookingResponseDto;
 import com.elec_business.controller.mapper.BookingMapper;
+import com.elec_business.entity.BookingStatusType;
 import com.elec_business.entity.User;
 import com.elec_business.entity.Booking;
 import jakarta.validation.Valid;
@@ -83,4 +84,20 @@ public class BookingController {
         List<Booking> bookings = bookingBusiness.getMyBookings(user);
         return bookingMapper.toDtos(bookings);
     }
+
+    @GetMapping("/bookings/search")
+    public List<BookingResponseDto> searchBookings(
+            @RequestParam(required = false) BookingStatusType status,
+            @RequestParam(required = false) String stationId,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        List<Booking> bookings = bookingBusiness.searchBookings(
+                status,
+                currentUser.getId(),  // owner
+                stationId
+        );
+
+        return bookingMapper.toDtos(bookings);
+    }
+
 }

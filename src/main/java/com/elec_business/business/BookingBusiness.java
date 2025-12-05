@@ -1,5 +1,6 @@
 package com.elec_business.business;
 
+import com.elec_business.entity.BookingStatusType;
 import com.elec_business.entity.User;
 import com.elec_business.entity.Booking;
 import com.elec_business.entity.ChargingStation;
@@ -21,4 +22,9 @@ public interface BookingBusiness {
     Booking updateBooking(String id,Booking booking, User currentUser);
     void deleteBooking(String id);
     List<Booking> getMyBookings(User user);
+    List<Booking> searchBookings(
+            BookingStatusType status,
+            String ownerId,
+            String stationId
+    );
 }
