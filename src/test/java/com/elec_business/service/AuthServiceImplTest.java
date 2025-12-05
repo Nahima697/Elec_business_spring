@@ -7,16 +7,15 @@ import com.elec_business.repository.RefreshTokenRepository;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.security.jwt.JwtUtil;
 import com.elec_business.service.impl.AuthServiceImpl;
+import com.elec_business.service.impl.TokenPair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.elec_business.service.impl.TokenPair;
 import org.mockito.*;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -24,23 +23,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthServiceImplTest {
 
-    @Mock
-    private AuthenticationManager authManager;
-    @Mock
-    private JwtUtil jwtUtil;
-    @Mock
-    private UserMapper mapper;
-    @Mock
-    private RefreshTokenRepository tokenRepo;
-    @Mock
-    private UserRepository userRepo;
+    @Mock private AuthenticationManager authManager;
+    @Mock private JwtUtil jwtUtil;
+    @Mock private UserMapper mapper;
+    @Mock private RefreshTokenRepository tokenRepo;
+    @Mock private UserRepository userRepo;
 
-    @InjectMocks
     private AuthServiceImpl authService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        authService = Mockito.spy(new AuthServiceImpl(
+                authManager, jwtUtil, mapper, tokenRepo, userRepo
+        ));
     }
 
     // -----------------------------------------
@@ -68,6 +64,7 @@ public class AuthServiceImplTest {
     void generateJwtToken_shouldReturnToken() {
         User user = new User();
         user.setUsername("john");
+
         when(jwtUtil.generateToken("john")).thenReturn("jwt-token");
 
         String token = authService.generateJwtToken(user);
@@ -82,10 +79,6 @@ public class AuthServiceImplTest {
     void createRefreshTokenCookie_shouldCreateCookie() {
         User user = new User();
         user.setId("abc123");
-
-        RefreshToken token = new RefreshToken();
-        token.setId("token-999");
-        token.setUser(user);
 
         when(tokenRepo.save(any())).thenAnswer(invocation -> {
             RefreshToken t = invocation.getArgument(0);
@@ -131,19 +124,16 @@ public class AuthServiceImplTest {
         user.setId("user-1");
         user.setUsername("testUser");
 
-        RefreshToken oldRefresh = mock(RefreshToken.class);
+        RefreshToken oldToken = mock(RefreshToken.class);
 
-        when(tokenRepo.findById("old"))
-                .thenReturn(Optional.of(oldRefresh));
+        when(tokenRepo.findById("old")).thenReturn(Optional.of(oldToken));
+        when(oldToken.isExpired()).thenReturn(false);
+        when(oldToken.getUser()).thenReturn(user);
 
-        when(oldRefresh.isExpired()).thenReturn(false);
-        when(oldRefresh.getUser()).thenReturn(user);
+        // ⚠️ Très important : mocker la méthode du SPY !
+        doReturn("new-refresh").when(authService).generateRefreshToken("user-1");
 
-        when(authService.generateRefreshToken("user-1"))
-                .thenReturn("new-refresh");
-
-        when(jwtUtil.generateToken("testUser"))
-                .thenReturn("jwt-new");
+        when(jwtUtil.generateToken("testUser")).thenReturn("jwt-new");
 
         // WHEN
         TokenPair result = authService.validateRefreshToken("old");
@@ -151,7 +141,6 @@ public class AuthServiceImplTest {
         // THEN
         assertEquals("new-refresh", result.getRefreshToken());
         assertEquals("jwt-new", result.getJwt());
-
-        verify(tokenRepo).delete(oldRefresh);
+        verify(tokenRepo).delete(oldToken);
     }
 }
