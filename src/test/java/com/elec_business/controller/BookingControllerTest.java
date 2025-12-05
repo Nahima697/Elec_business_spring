@@ -40,8 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.Random.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-
-    class BookingControllerTest {
+class BookingControllerTest {
 
     @Autowired
     private TestDataLoader testDataLoader;
@@ -69,12 +68,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         assertFalse(bookings.isEmpty());
     }
 
-    // 🔍 UTILITAIRE : on récupère un booking dont l’owner = email donné
-    private Booking getBookingOwnedBy(String email) {
+    // 🔍 UTILITAIRE : Récupère un booking dont la STATION appartient à cet email (pour accept/reject)
+    private Booking getBookingForStationOwnedBy(String email) {
         return bookings.stream()
                 .filter(b -> b.getStation().getLocation().getUser().getEmail().equals(email))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Aucun booking appartenant à " + email));
+                .orElseThrow(() -> new IllegalStateException("Aucun booking pour station de " + email));
+    }
+
+    // 🔍 UTILITAIRE : Récupère un booking CRÉÉ par cet utilisateur (pour update/delete)
+    private Booking getBookingCreatedBy(String email) {
+        return bookings.stream()
+                .filter(b -> b.getUser().getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Aucun booking créé par " + email));
     }
 
     // ------------------------------------------
@@ -109,10 +116,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
+        // user1 accepte un booking fait sur SA station
+        Booking bookingForHisStation = getBookingForStationOwnedBy("user1@test.com");
 
-        Booking bookingOwned = getBookingOwnedBy("user1@test.com");
-
-        mvc.perform(post("/api/bookings/" + bookingOwned.getId() + "/accept"))
+        mvc.perform(post("/api/bookings/" + bookingForHisStation.getId() + "/accept"))
                 .andExpect(status().isOk());
     }
 
@@ -122,10 +129,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void rejectBooking_shouldRejectBookingSuccessfully() throws Exception {
+        // user1 rejette un booking fait sur SA station
+        Booking bookingForHisStation = getBookingForStationOwnedBy("user1@test.com");
 
-        Booking bookingOwned = getBookingOwnedBy("user1@test.com");
-
-        mvc.perform(post("/api/bookings/" + bookingOwned.getId() + "/reject"))
+        mvc.perform(post("/api/bookings/" + bookingForHisStation.getId() + "/reject"))
                 .andExpect(status().isOk());
     }
 
@@ -133,7 +140,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     // GET BOOKING BY ID
     // ------------------------------------------
     @Test
-    @WithUserDetails(value = "user1@test.com")
+    @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
 
         Booking booking = bookings.getFirst();
@@ -150,16 +157,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldUpdateBooking() throws Exception {
-
-        Booking booking = getBookingOwnedBy("user1@test.com");
+        // user1 modifie SON propre booking
+        Booking ownBooking = getBookingCreatedBy("user1@test.com");
 
         LocalDateTime start = LocalDateTime.now().plusHours(3);
         LocalDateTime end = start.plusHours(4);
 
         BookingRequestDto requestDto =
-                new BookingRequestDto(stations.getFirst().getId(), start, end);
+                new BookingRequestDto(ownBooking.getStation().getId(), start, end);
 
-        mvc.perform(put("/api/bookings/" + booking.getId())
+        mvc.perform(put("/api/bookings/" + ownBooking.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isAccepted())
@@ -209,13 +216,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     @Test
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void deleteShouldDeleteBookingSuccessfully() throws Exception {
+        // user1 supprime SON propre booking
+        Booking ownBooking = getBookingCreatedBy("user1@test.com");
 
-        Booking booking = getBookingOwnedBy("user1@test.com");
-
-        mvc.perform(delete("/api/bookings/" + booking.getId()))
+        mvc.perform(delete("/api/bookings/" + ownBooking.getId()))
                 .andExpect(status().isNoContent());
 
-        mvc.perform(get("/api/bookings/" + booking.getId()))
+        mvc.perform(get("/api/bookings/" + ownBooking.getId()))
                 .andExpect(status().isNotFound());
     }
 }

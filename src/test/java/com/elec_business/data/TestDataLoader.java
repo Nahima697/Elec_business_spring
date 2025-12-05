@@ -113,30 +113,42 @@ public class TestDataLoader {
         em.flush();
 
         // ================================
-// 7) BOOKING
-// ================================
+        // 7) BOOKINGS
+        // ================================
+
+        // Booking 1 : user2 loue la station de user1
         Booking booking1 = new Booking();
-        booking1.setUser(user2); // 👍 user2 est le locataire
+        booking1.setUser(user2);
         booking1.setStation(station1);
         booking1.setStartDate(now.plusHours(2));
         booking1.setEndDate(now.plusHours(4));
         booking1.setTotalPrice(new BigDecimal("0.50"));
         booking1.setCreatedAt(Instant.now());
         booking1.setStatus(pending);
-
         em.persist(booking1);
+
+        // Booking 2 : user1 loue la station2 (aussi de user1 pour simplifier)
+        Booking booking2 = new Booking();
+        booking2.setUser(user1);
+        booking2.setStation(station2);
+        booking2.setStartDate(now.plusHours(3));
+        booking2.setEndDate(now.plusHours(5));
+        booking2.setTotalPrice(new BigDecimal("0.36"));
+        booking2.setCreatedAt(Instant.now());
+        booking2.setStatus(pending);
+        em.persist(booking2);
+
         em.flush();
 
-// ================================
-// 8) SAVE IN MEMORY
-// ================================
+        // ================================
+        // 8) SAVE IN MEMORY
+        // ================================
         users = List.of(user1, user2, user3);
         stations = List.of(station1, station2);
-        bookings = List.of(booking1);
+        bookings = List.of(booking1, booking2); // ✅ Les deux bookings
 
         return new LoadResult(stations, users, bookings);
     }
-
 
     // ===========================================================
     // HELPERS
