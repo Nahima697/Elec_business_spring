@@ -27,7 +27,7 @@ public class TestDataLoader {
     public record LoadResult(List<ChargingStation> stations, List<User> users, List<Booking> bookings) {}
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    @Transactional
+    // ⚠️ PAS de @Transactional ici car on veut que les données persistent
     public LoadResult load() {
 
         // ================================
