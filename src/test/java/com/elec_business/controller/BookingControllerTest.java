@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +37,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({TestcontainersConfiguration.class, TestSecurityConfig.class})
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)  // Ordre déterministe
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional  // Rollback automatique après chaque test
 class BookingControllerTest {
 
     @Autowired
@@ -52,7 +55,7 @@ class BookingControllerTest {
     List<Booking> bookings = new ArrayList<>();
     List<ChargingStation> stations = new ArrayList<>();
 
-    @BeforeEach
+    @BeforeAll
     void setUp() throws Exception {
         TestDataLoader.LoadResult result = testDataLoader.load();
 
@@ -85,6 +88,7 @@ class BookingControllerTest {
     // CREATE BOOKING
     // ------------------------------------------
     @Test
+    @Order(1)
     @WithUserDetails(value = "user2@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void createBooking_shouldCreateBookingSuccessfully() throws Exception {
 
@@ -111,6 +115,7 @@ class BookingControllerTest {
     // ACCEPT BOOKING
     // ------------------------------------------
     @Test
+    @Order(2)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
         // user1 accepte un booking fait sur SA station
@@ -124,6 +129,7 @@ class BookingControllerTest {
     // REJECT BOOKING
     // ------------------------------------------
     @Test
+    @Order(3)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void rejectBooking_shouldRejectBookingSuccessfully() throws Exception {
         // user1 rejette un booking fait sur SA station
@@ -137,6 +143,7 @@ class BookingControllerTest {
     // GET BOOKING BY ID
     // ------------------------------------------
     @Test
+    @Order(4)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
 
@@ -152,6 +159,7 @@ class BookingControllerTest {
     // UPDATE BOOKING
     // ------------------------------------------
     @Test
+    @Order(5)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldUpdateBooking() throws Exception {
         // user1 modifie SON propre booking
@@ -179,6 +187,7 @@ class BookingControllerTest {
     // UPDATE BAD REQUEST
     // ------------------------------------------
     @Test
+    @Order(6)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldFailOnValidationError() throws Exception {
 
@@ -192,6 +201,7 @@ class BookingControllerTest {
     // UPDATE NOT FOUND
     // ------------------------------------------
     @Test
+    @Order(7)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldThrow404IfNotExist() throws Exception {
 
@@ -211,6 +221,7 @@ class BookingControllerTest {
     // DELETE BOOKING
     // ------------------------------------------
     @Test
+    @Order(8)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void deleteShouldDeleteBookingSuccessfully() throws Exception {
         // user1 supprime SON propre booking
