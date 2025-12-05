@@ -113,10 +113,10 @@ public class TestDataLoader {
         em.flush();
 
         // ================================
-        // 7) BOOKING
-        // ================================
+// 7) BOOKING
+// ================================
         Booking booking1 = new Booking();
-        booking1.setUser(user1);
+        booking1.setUser(user2); // 👍 user2 est le locataire
         booking1.setStation(station1);
         booking1.setStartDate(now.plusHours(2));
         booking1.setEndDate(now.plusHours(4));
@@ -127,12 +127,11 @@ public class TestDataLoader {
         em.persist(booking1);
         em.flush();
 
-        // ================================
-        // 8) SAVE IN MEMORY
-        // ================================
+// ================================
+// 8) SAVE IN MEMORY
+// ================================
         users = List.of(user1, user2, user3);
         stations = List.of(station1, station2);
-        booking1.setUser(user2);
         bookings = List.of(booking1);
 
         return new LoadResult(stations, users, bookings);
