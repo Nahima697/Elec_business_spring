@@ -1,6 +1,7 @@
 package com.elec_business.repository;
 
 import com.elec_business.entity.Booking;
+import com.elec_business.entity.BookingStatusType;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,14 +40,7 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
     ORDER BY b.createdAt DESC
 """)
     List<Booking> findByStationOwner(@Param("ownerId") String ownerId);
-    @Query("""
-    SELECT b FROM Booking b\s
-    WHERE b.station.location.user.id = :userId
-    AND b.station.id = :stationId
-    AND b.status.name= 'ACCEPTED'
-    IS NOT NULL
-""")
-    boolean existsByUserAndStationAndStatusAccepted(@Param("userId") String ownerId,@Param("stationId") String stationId );
+
 }
 
 
