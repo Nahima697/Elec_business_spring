@@ -37,9 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({TestcontainersConfiguration.class, TestSecurityConfig.class})
 @ActiveProfiles("test")
-@TestMethodOrder(MethodOrderer.Random.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class BookingControllerTest {
 
     @Autowired
