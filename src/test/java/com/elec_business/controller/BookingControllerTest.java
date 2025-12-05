@@ -55,6 +55,7 @@ class BookingControllerTest {
     List<ChargingStation> stations = new ArrayList<>();
 
     @BeforeAll
+    @Transactional
     void setUp() throws Exception {
         TestDataLoader.LoadResult result = testDataLoader.load();
 
