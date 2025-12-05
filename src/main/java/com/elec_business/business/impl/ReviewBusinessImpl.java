@@ -2,6 +2,7 @@ package com.elec_business.business.impl;
 
 import com.elec_business.business.ReviewBusiness;
 import com.elec_business.business.exception.BusinessException;
+import com.elec_business.entity.BookingStatusType;
 import com.elec_business.entity.Review;
 import com.elec_business.repository.BookingRepository;
 import com.elec_business.repository.ChargingStationRepository;
@@ -28,7 +29,11 @@ public class ReviewBusinessImpl implements ReviewBusiness {
     @Override
     public Review createReview(String title, String content, Integer rating, String userId, String stationId) {
 
-        boolean hasBooked = bookingRepository.existsByUserAndStationAndStatusAccepted(userId, stationId);
+        boolean hasBooked = bookingRepository.existsByStation_Location_User_IdAndStation_IdAndStatus_Name(
+                userId,
+                stationId,
+                BookingStatusType.ACCEPTED
+        );
 
         if (!hasBooked) {
             throw new BusinessException("You must have a completed booking to review this station.");

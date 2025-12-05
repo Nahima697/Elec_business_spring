@@ -40,6 +40,11 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
     ORDER BY b.createdAt DESC
 """)
     List<Booking> findByStationOwner(@Param("ownerId") String ownerId);
+    boolean existsByStation_Location_User_IdAndStation_IdAndStatus_Name(
+            String userId,
+            String stationId,
+            BookingStatusType status
+    );
 
 }
 
