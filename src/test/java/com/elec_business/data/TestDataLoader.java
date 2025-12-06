@@ -45,11 +45,13 @@ public class TestDataLoader {
         // ================================
         // 2) USERS
         // ================================
+        // user1 = OWNER (owns stations)
         User user1 = findOrCreateUser(
                 "user1", "user1@test.com", "password123",
                 roleOwner, roleRenter
         );
 
+        // user2 = RENTER (creates bookings)
         User user2 = findOrCreateUser(
                 "user2", "user2@test.com", "password223",
                 roleRenter
@@ -76,7 +78,7 @@ public class TestDataLoader {
         em.persist(location1);
 
         // ================================
-        // 4) STATIONS
+        // 4) STATIONS (owned by user1)
         // ================================
         ChargingStation station1 = new ChargingStation();
         station1.setName("Station A");
@@ -123,20 +125,37 @@ public class TestDataLoader {
         em.flush();
 
         // ================================
-        // 7) BOOKING UNIQUE
+        // 7) BOOKINGS
         // ================================
-        // 💡 On revient à la logique simple :
-        // - booking existant : user1 (locataire) sur station1 (propriétaire user1 aussi)
-        //   → ça simplifie les tests accept/reject/update (toujours user1).
+        // 💡 FIX: Create TWO bookings with different owner/renter combinations
+
+        // Booking 1: user2 rents from user1's station
+        // - Station owner: user1
+        // - Booking creator: user2
+        // Used for: accept/reject tests (user1 accepts/rejects user2's booking)
         Booking booking1 = new Booking();
-        booking1.setUser(user1);          // locataire = user1
-        booking1.setStation(station1);    // station appartenant à user1
+        booking1.setUser(user2);          // locataire = user2 (RENTER)
+        booking1.setStation(station1);    // station owned by user1
         booking1.setStartDate(now.plusHours(2));
         booking1.setEndDate(now.plusHours(4));
         booking1.setTotalPrice(new BigDecimal("0.50"));
         booking1.setCreatedAt(Instant.now());
         booking1.setStatus(pending);
         em.persist(booking1);
+
+        // Booking 2: user1 makes own booking on their own station
+        // - Station owner: user1
+        // - Booking creator: user1
+        // Used for: update/delete tests (user1 modifies their own booking)
+        Booking booking2 = new Booking();
+        booking2.setUser(user1);          // locataire = user1
+        booking2.setStation(station1);    // station also owned by user1
+        booking2.setStartDate(now.plusHours(5));
+        booking2.setEndDate(now.plusHours(7));
+        booking2.setTotalPrice(new BigDecimal("0.50"));
+        booking2.setCreatedAt(Instant.now());
+        booking2.setStatus(pending);
+        em.persist(booking2);
 
         em.flush();
 
@@ -145,7 +164,7 @@ public class TestDataLoader {
         // ================================
         users = List.of(user1, user2, user3);
         stations = List.of(station1, station2);
-        bookings = List.of(booking1);
+        bookings = List.of(booking1, booking2);
 
         return new LoadResult(stations, users, bookings);
     }
@@ -195,7 +214,6 @@ public class TestDataLoader {
             u.setEmailVerifiedAt(Instant.now());
             u.setPhoneVerifiedAt(Instant.now());
 
-            // 🔥 roles = HashSet comme dans ton entity
             u.setRoles(new HashSet<>(Arrays.asList(roles)));
 
             em.persist(u);
