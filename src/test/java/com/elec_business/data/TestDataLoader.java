@@ -119,9 +119,12 @@ public class TestDataLoader {
         em.persist(slot);
 
         // ================================
-        // 6) BOOKING STATUS
+        // 6) BOOKING STATUS - TOUS LES STATUTS
         // ================================
         BookingStatus pending = findOrCreateStatus(BookingStatusType.PENDING);
+        BookingStatus accepted = findOrCreateStatus(BookingStatusType.ACCEPTED);
+        BookingStatus rejected = findOrCreateStatus(BookingStatusType.REJECTED);
+        BookingStatus cancelled = findOrCreateStatus(BookingStatusType.CANCELLED);
         em.flush();
 
         // ================================
@@ -209,7 +212,7 @@ public class TestDataLoader {
 
     private User findOrCreateUser(String username, String email, String pwd, UserRole... roles) {
         try {
-            // 🔥 FIX: Utiliser LEFT JOIN FETCH pour charger les rôles
+
             return em.createQuery(
                             "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email",
                             User.class)
@@ -227,12 +230,14 @@ public class TestDataLoader {
             u.setEmailVerifiedAt(Instant.now());
             u.setPhoneVerifiedAt(Instant.now());
 
+            // 🔥 FIX: S'assurer que les rôles sont bien attachés
             Set<UserRole> roleSet = new HashSet<>(Arrays.asList(roles));
             u.setRoles(roleSet);
 
             em.persist(u);
             em.flush();
 
+            // 🔥 FIX: Rafraîchir pour charger les relations
             em.refresh(u);
             return u;
         }
