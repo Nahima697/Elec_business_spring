@@ -8,13 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,6 +28,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @Size(max = 100)
     @NotNull
     @Column(name = "username", nullable = false, length = 100)
@@ -47,8 +48,8 @@ public class User implements UserDetails {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
-    @Column(name = "email_verified",nullable = false)
-    private Boolean  emailVerified=false;
+    @Column(name = "email_verified", nullable = false)
+    private Boolean emailVerified = false;
 
     @Column(name = "phone_verified")
     private Boolean phoneVerified;
@@ -94,18 +95,33 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     @Override
-    public boolean isEnabled() { return emailVerified || phoneVerified; }
+    public boolean isEnabled() {
+        return emailVerified || phoneVerified;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        if (roles == null || roles.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .collect(Collectors.toSet());
     }
-
-
 }

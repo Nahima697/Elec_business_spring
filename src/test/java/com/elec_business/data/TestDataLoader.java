@@ -127,12 +127,9 @@ public class TestDataLoader {
         // ================================
         // 7) BOOKINGS
         // ================================
-        // 💡 FIX: Create TWO bookings with different owner/renter combinations
+        // 💡 FIX: Create MULTIPLE bookings with different owner/renter combinations
 
-        // Booking 1: user2 rents from user1's station
-        // - Station owner: user1
-        // - Booking creator: user2
-        // Used for: accept/reject tests (user1 accepts/rejects user2's booking)
+        // Booking 1: user2 rents from user1's station (for accept test)
         Booking booking1 = new Booking();
         booking1.setUser(user2);          // locataire = user2 (RENTER)
         booking1.setStation(station1);    // station owned by user1
@@ -143,28 +140,41 @@ public class TestDataLoader {
         booking1.setStatus(pending);
         em.persist(booking1);
 
-        // Booking 2: user1 makes own booking on their own station
-        // - Station owner: user1
-        // - Booking creator: user1
-        // Used for: update/delete tests (user1 modifies their own booking)
+        // Booking 2: user2 rents from user1's station (for reject test)
         Booking booking2 = new Booking();
-        booking2.setUser(user1);          // locataire = user1
-        booking2.setStation(station1);    // station also owned by user1
-        booking2.setStartDate(now.plusHours(5));
-        booking2.setEndDate(now.plusHours(7));
-        booking2.setTotalPrice(new BigDecimal("0.50"));
+        booking2.setUser(user2);          // locataire = user2 (RENTER)
+        booking2.setStation(station2);    // different station, also owned by user1
+        booking2.setStartDate(now.plusHours(3));
+        booking2.setEndDate(now.plusHours(5));
+        booking2.setTotalPrice(new BigDecimal("0.36"));
         booking2.setCreatedAt(Instant.now());
         booking2.setStatus(pending);
         em.persist(booking2);
 
+        // Booking 3: user1 makes own booking (for update/delete tests)
+        Booking booking3 = new Booking();
+        booking3.setUser(user1);          // locataire = user1
+        booking3.setStation(station1);    // station also owned by user1
+        booking3.setStartDate(now.plusHours(6));
+        booking3.setEndDate(now.plusHours(8));
+        booking3.setTotalPrice(new BigDecimal("0.50"));
+        booking3.setCreatedAt(Instant.now());
+        booking3.setStatus(pending);
+        em.persist(booking3);
+
         em.flush();
+
+        // 🔍 IMPORTANT: Refresh entities to ensure IDs are populated
+        em.refresh(booking1);
+        em.refresh(booking2);
+        em.refresh(booking3);
 
         // ================================
         // 8) STOCKER EN MEMOIRE
         // ================================
         users = List.of(user1, user2, user3);
         stations = List.of(station1, station2);
-        bookings = List.of(booking1, booking2);
+        bookings = List.of(booking1, booking2, booking3);
 
         return new LoadResult(stations, users, bookings);
     }
@@ -199,7 +209,10 @@ public class TestDataLoader {
 
     private User findOrCreateUser(String username, String email, String pwd, UserRole... roles) {
         try {
-            return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+            // 🔥 FIX: Utiliser LEFT JOIN FETCH pour charger les rôles
+            return em.createQuery(
+                            "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email",
+                            User.class)
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (NoResultException e) {
@@ -214,10 +227,13 @@ public class TestDataLoader {
             u.setEmailVerifiedAt(Instant.now());
             u.setPhoneVerifiedAt(Instant.now());
 
-            u.setRoles(new HashSet<>(Arrays.asList(roles)));
+            Set<UserRole> roleSet = new HashSet<>(Arrays.asList(roles));
+            u.setRoles(roleSet);
 
             em.persist(u);
             em.flush();
+
+            em.refresh(u);
             return u;
         }
     }
