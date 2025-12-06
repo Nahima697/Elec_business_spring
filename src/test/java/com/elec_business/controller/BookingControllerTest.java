@@ -54,7 +54,7 @@ class BookingControllerTest {
     List<Booking> bookings = new ArrayList<>();
     List<ChargingStation> stations = new ArrayList<>();
 
-    @BeforeEach
+    @BeforeAll
     void setUp() throws Exception {
         TestDataLoader.LoadResult result = testDataLoader.load();
 

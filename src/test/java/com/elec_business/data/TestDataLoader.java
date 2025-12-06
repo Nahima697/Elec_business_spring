@@ -25,9 +25,14 @@ public class TestDataLoader {
     public List<Booking> bookings = new ArrayList<>();
 
     public record LoadResult(List<ChargingStation> stations, List<User> users, List<Booking> bookings) {}
+
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-   @Transactional
+    /**
+     * ⚠️ Transactionnel : on a bien une transaction autour des persist().
+     * Appelé UNE FOIS par les tests (en @BeforeAll).
+     */
+    @Transactional
     public LoadResult load() {
 
         // ================================
@@ -56,13 +61,18 @@ public class TestDataLoader {
         );
 
         // ================================
-        // 3) LOCATION
+        // 3) LOCATION (propriétaire = user1)
         // ================================
         ChargingLocation location1 = new ChargingLocation(
-                null, "1 rue Lyon", "69007", "Lyon", "France",
-                "Lyon7", user1, new HashSet<>()
+                null,
+                "1 rue Lyon",
+                "69007",
+                "Lyon",
+                "France",
+                "Lyon7",
+                user1,
+                new HashSet<>()
         );
-
         em.persist(location1);
 
         // ================================
@@ -95,7 +105,7 @@ public class TestDataLoader {
         em.flush();
 
         // ================================
-        // 5) TIMESLOT
+        // 5) TIMESLOT (pour station1)
         // ================================
         LocalDateTime now = LocalDateTime.now();
         TimeSlot slot = new TimeSlot();
@@ -113,13 +123,14 @@ public class TestDataLoader {
         em.flush();
 
         // ================================
-        // 7) BOOKINGS
+        // 7) BOOKING UNIQUE
         // ================================
-
-        // Booking 1 : user2 loue la station de user1
+        // 💡 On revient à la logique simple :
+        // - booking existant : user1 (locataire) sur station1 (propriétaire user1 aussi)
+        //   → ça simplifie les tests accept/reject/update (toujours user1).
         Booking booking1 = new Booking();
-        booking1.setUser(user2);
-        booking1.setStation(station1);
+        booking1.setUser(user1);          // locataire = user1
+        booking1.setStation(station1);    // station appartenant à user1
         booking1.setStartDate(now.plusHours(2));
         booking1.setEndDate(now.plusHours(4));
         booking1.setTotalPrice(new BigDecimal("0.50"));
@@ -127,25 +138,14 @@ public class TestDataLoader {
         booking1.setStatus(pending);
         em.persist(booking1);
 
-        // Booking 2 : user1 loue la station2 (aussi de user1 pour simplifier)
-        Booking booking2 = new Booking();
-        booking2.setUser(user1);
-        booking2.setStation(station2);
-        booking2.setStartDate(now.plusHours(3));
-        booking2.setEndDate(now.plusHours(5));
-        booking2.setTotalPrice(new BigDecimal("0.36"));
-        booking2.setCreatedAt(Instant.now());
-        booking2.setStatus(pending);
-        em.persist(booking2);
-
         em.flush();
 
         // ================================
-        // 8) SAVE IN MEMORY
+        // 8) STOCKER EN MEMOIRE
         // ================================
         users = List.of(user1, user2, user3);
         stations = List.of(station1, station2);
-        bookings = List.of(booking1, booking2); // ✅ Les deux bookings
+        bookings = List.of(booking1);
 
         return new LoadResult(stations, users, bookings);
     }
@@ -184,7 +184,6 @@ public class TestDataLoader {
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (NoResultException e) {
-
             User u = new User();
             u.setUsername(username);
             u.setEmail(email);
@@ -196,6 +195,7 @@ public class TestDataLoader {
             u.setEmailVerifiedAt(Instant.now());
             u.setPhoneVerifiedAt(Instant.now());
 
+            // 🔥 roles = HashSet comme dans ton entity
             u.setRoles(new HashSet<>(Arrays.asList(roles)));
 
             em.persist(u);
