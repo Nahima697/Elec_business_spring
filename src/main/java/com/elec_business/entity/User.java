@@ -63,7 +63,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private  transient Set<UserRole> roles = new HashSet<>();
+    private Set<UserRole> roles = new HashSet<>();
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -76,7 +76,7 @@ public class User implements UserDetails {
     private Instant phoneVerifiedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private transient List<RefreshToken> refreshTokens = new ArrayList<>();
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
