@@ -47,7 +47,16 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Run Maven Tests
-        run: mvn test -Dspring.profiles.active=test
+        run: mvn clean test -Dspring.profiles.active=test
+
+      # 🔥 NOUVEAU: Sauvegarder les résultats de tests et le build pour SonarQube
+      - name: Cache Build Artifacts for SonarQube
+        uses: actions/cache@v3
+        with:
+          path: |
+            target/
+            **/target/
+          key: ${{ runner.os }}-build-${{ github.sha }}
 
       - name: Upload JUnit Test Results
         if: always()
@@ -73,12 +82,31 @@ jobs:
     steps:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 🔥 Important pour l'analyse complète de SonarQube
 
       - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 21
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # 🔥 NOUVEAU: Restaurer les résultats du build précédent
+      - name: Restore Build Artifacts
+        uses: actions/cache@v3
+        with:
+          path: |
+            target/
+            **/target/
+          key: ${{ runner.os }}-build-${{ github.sha }}
 
       - name: Cache SonarQube packages
         uses: actions/cache@v4
@@ -87,15 +115,18 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
+      # 🔥 CORRECTION: Ne pas utiliser "clean install", juste compiler sans tests
       - name: Run SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn clean install sonar:sonar -Dsonar.java.binaries=target/classes \
+          mvn verify sonar:sonar \
+            -DskipTests \
             -Dsonar.projectKey=Nahima697_Elec_business_spring \
-            -Dsonar.organization=Nahima697 \
+            -Dsonar.organization=nahima697 \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
   build:
     name: 🚀 Build & Deploy
