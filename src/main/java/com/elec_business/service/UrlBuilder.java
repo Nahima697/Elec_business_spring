@@ -31,6 +31,6 @@ public class  UrlBuilder {
      */
     public String getThumbnail() {
         return ServletUriComponentsBuilder.fromCurrentContextPath().toUriString() +
-                StaticResourcesConfig.uUPLOAD_URL_PREFIX+"thumbnail-" +  filename;
+                StaticResourcesConfig.UPLOAD_URL_PREFIX+"thumbnail-" +  filename;
     }
 }
