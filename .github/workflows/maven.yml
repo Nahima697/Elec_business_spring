@@ -52,6 +52,7 @@ jobs:
             -Dspring.profiles.active=test \
             -DJWT_SECRET=${{ secrets.JWT_SECRET }} \
             -DEMAIL_VERIFICATION_REQUIRED=false
+           mvn jacoco:report
 
       - name: Cache Build Artifacts for SonarQube
         uses: actions/cache@v3
