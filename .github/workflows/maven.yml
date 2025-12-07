@@ -159,16 +159,12 @@ jobs:
       - name: Build Docker image
         run: docker build -t myapp --target prod .
   
-      - name: Deploy to Render
+      - name: Deploy to Render with Deploy Hook
         run: |
-          echo "🚀 Triggering deployment on Render..."
-          curl --request POST \
-            --url https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys \
-            --header 'accept: application/json' \
-            --header "authorization: Bearer $RENDER_API_KEY" \
-            --header 'content-type: application/json' \
-            --data '{"clearCache":"do_not_clear"}'
-          echo "✅ Deployment triggered successfully!"
+          echo "Triggering Render deploy..."
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          echo "Deploy triggered!"
+
   
               }'
             echo "✅ Deployment triggered successfully!"
