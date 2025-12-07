@@ -1,7 +1,5 @@
 package com.elec_business.service;
 
-import com.elec_business.controller.dto.LoginCredentialsDTO;
-import com.elec_business.controller.dto.LoginResponseDTO;
 import com.elec_business.entity.User;
 import com.elec_business.service.impl.TokenPair;
 import org.springframework.http.ResponseCookie;

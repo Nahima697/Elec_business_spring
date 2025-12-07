@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Objects;
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor

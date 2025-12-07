@@ -2,7 +2,6 @@ package com.elec_business.controller.mapper;
 
 import com.elec_business.controller.dto.ChargingLocationRequestDto;
 import com.elec_business.controller.dto.ChargingLocationResponseDto;
-import com.elec_business.entity.User;
 import com.elec_business.entity.ChargingLocation;
 import org.mapstruct.Mapper;
 

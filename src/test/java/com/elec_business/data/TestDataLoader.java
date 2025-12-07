@@ -124,7 +124,6 @@ public class TestDataLoader {
         BookingStatus pending = findOrCreateStatus(BookingStatusType.PENDING);
         BookingStatus accepted = findOrCreateStatus(BookingStatusType.ACCEPTED);
         BookingStatus rejected = findOrCreateStatus(BookingStatusType.REJECTED);
-        BookingStatus cancelled = findOrCreateStatus(BookingStatusType.CANCELLED);
         em.flush();
 
         // ================================
