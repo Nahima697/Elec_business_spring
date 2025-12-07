@@ -47,7 +47,11 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Run Maven Tests
-        run: mvn clean test -Dspring.profiles.active=test
+        run: |
+          mvn clean test \
+            -Dspring.profiles.active=test \
+            -DJWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -DEMAIL_VERIFICATION_REQUIRED=false
 
       # 🔥 NOUVEAU: Sauvegarder les résultats de tests et le build pour SonarQube
       - name: Cache Build Artifacts for SonarQube
@@ -83,7 +87,7 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 🔥 Important pour l'analyse complète de SonarQube
+          fetch-depth: 0  # Important pour l'analyse complète de SonarQube
 
       - name: Setup Java 21
         uses: actions/setup-java@v3
@@ -99,7 +103,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # 🔥 NOUVEAU: Restaurer les résultats du build précédent
+      # 🔥 RESTAURER les résultats du build précédent
       - name: Restore Build Artifacts
         uses: actions/cache@v3
         with:
@@ -115,14 +119,13 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # 🔥 CORRECTION: Ne pas utiliser "clean install", juste compiler sans tests
+      # 🔥 SOLUTION: Utiliser le profil Maven "sonar" qui skip les tests
       - name: Run SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn verify sonar:sonar \
-            -DskipTests \
+          mvn compile sonar:sonar -Psonar \
             -Dsonar.projectKey=Nahima697_Elec_business_spring \
             -Dsonar.organization=nahima697 \
             -Dsonar.host.url=https://sonarcloud.io \
