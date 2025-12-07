@@ -3,10 +3,7 @@ package com.elec_business.controller.dto;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 public class TimeSlotRequestDto {

@@ -1,12 +1,10 @@
 package com.elec_business.controller.dto;
 
-import com.elec_business.entity.ChargingLocation;
 import com.elec_business.service.UrlBuilder;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.UUID;
 
 public record ChargingStationResponseDto(
         @NotNull String id,
