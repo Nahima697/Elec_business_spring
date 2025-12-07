@@ -20,7 +20,7 @@ import java.time.OffsetDateTime;
 public class NotificationBusinessImpl implements NotificationBusiness {
 
     private final NotificationRepository notificationRepository;
-    private static Logger log = LoggerFactory.getLogger(NotificationBusinessImpl.class);
+    private static  final Logger log = LoggerFactory.getLogger(NotificationBusinessImpl.class);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendNotificationBookingAccepted(Booking booking, User currentUser) {

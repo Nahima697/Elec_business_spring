@@ -3,7 +3,6 @@ package com.elec_business.business.impl;
 import com.elec_business.business.ChargingLocationBusiness;
 import com.elec_business.entity.User;
 import com.elec_business.repository.ChargingLocationRepository;
-import com.elec_business.entity.User;
 import com.elec_business.entity.ChargingLocation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

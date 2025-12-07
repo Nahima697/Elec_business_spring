@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +26,8 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
     private final ChargingStationRepository chargingStationRepository;
     private final FileStorageService fileStorageService;
     private final ChargingLocationRepository chargingLocationRepository;
+    private static final String ERR_STATION_NOT_FOUND = "Charging station not found";
+
 
     public ChargingStation createChargingStation(ChargingStation station, User currentUser, MultipartFile image) throws AccessDeniedException {
         ChargingLocation location = chargingLocationRepository.findById(station.getLocation().getId())
@@ -73,7 +74,7 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     public ChargingStation getChargingStationById(String id) {
         return chargingStationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Charging station not found"));
+                .orElseThrow(() -> new EntityNotFoundException(ERR_STATION_NOT_FOUND));
     }
 
     public List<ChargingStation> getByLocationId(String id) {
@@ -83,14 +84,14 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
     public ChargingStation getChargingStationByName(String name) {
         ChargingStation station = chargingStationRepository.findChargingStationByName(name);
         if (station == null) {
-            throw new EntityNotFoundException("Charging station not found");
+            throw new EntityNotFoundException(ERR_STATION_NOT_FOUND);
         }
         return station;
     }
 
     public ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser) throws AccessDeniedException {
         ChargingStation updateStation = chargingStationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Charging station not found"));
+                .orElseThrow(() -> new EntityNotFoundException(ERR_STATION_NOT_FOUND));
 
         if (!updateStation.getLocation().getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not allowed to update this station");
@@ -109,7 +110,7 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     public void deleteChargingStationById(String id, User currentUser) throws AccessDeniedException {
         ChargingStation station = chargingStationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Charging station not found"));
+                .orElseThrow(() -> new EntityNotFoundException(ERR_STATION_NOT_FOUND));
 
         if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not allowed to delete this station");

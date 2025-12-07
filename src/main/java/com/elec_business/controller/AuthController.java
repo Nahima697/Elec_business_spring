@@ -158,7 +158,7 @@ public class AuthController {
 
     @GetMapping("/api/protected")
     public String protec(@AuthenticationPrincipal User user) {
-        System.out.println("hola");
+
         return user.getEmail();
     }
 

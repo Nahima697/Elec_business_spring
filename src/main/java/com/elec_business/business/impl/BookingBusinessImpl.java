@@ -142,8 +142,6 @@ public class BookingBusinessImpl implements BookingBusiness {
 
         timeSlotBusiness.setTimeSlotAvailability(station.getId(), booking.getStartDate(), booking.getEndDate());
 
-//        bookingRepository.save(booking);
-// pas besoin de save avec Transactional
         eventPublisher.publishEvent(
                 new BookingAcceptedEvent(booking, booking.getUser())
         );

@@ -2,7 +2,6 @@ package com.elec_business.business.impl;
 
 import com.elec_business.business.AvailabilityRuleBusiness;
 import com.elec_business.controller.mapper.AvailabilityRuleMapper;
-import com.elec_business.controller.dto.AvailabilityRuleDto;
 import com.elec_business.entity.AvailabilityRule;
 import com.elec_business.repository.AvailabilityRuleRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
