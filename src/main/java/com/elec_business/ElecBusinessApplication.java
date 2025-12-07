@@ -10,13 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaRepositories(basePackages = "com.elec_business")
 @EnableScheduling
 public class ElecBusinessApplication {
-	@Value("${spring.datasource.url:NOT_FOUND}")
-	private String dbUrl;
-
-	@PostConstruct
-	public void logDbUrl() {
-		System.out.println("🔍 spring.datasource.url = " + dbUrl);
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(ElecBusinessApplication.class, args);

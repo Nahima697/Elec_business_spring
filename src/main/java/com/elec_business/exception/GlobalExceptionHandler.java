@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleConflict(DataIntegrityViolationException ex, HttpServletRequest req) {
         String message = ex.getMostSpecificCause().getMessage();
-        log.error("Unexpected error occurred", ex.getMessage() + " - " + message);
+        log.error("Unexpected error occurred", ex.getMessage() ,message);
         return buildProblemDetail(HttpStatus.CONFLICT, "Data integrity violation", message, req);
     }
 

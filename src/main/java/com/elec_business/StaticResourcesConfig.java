@@ -13,11 +13,11 @@ public class StaticResourcesConfig implements WebMvcConfigurer {
     @Value("${file.upload.folder}")
     private Path uploadFolder;
 
-    public static final String uploadUrlPrefix = "/uploads/";
+    public static final String UPLOAD_URL_PREFIX = "/uploads/";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(uploadUrlPrefix+"**")
+        registry.addResourceHandler(UPLOAD_URL_PREFIX +"**")
                 .addResourceLocations("file:"+uploadFolder);
     }
 }

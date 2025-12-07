@@ -7,7 +7,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * Classe utilitaire qu'on pourra assigner à des DTO ou autre pour faire en sorte de leur rajouter les liens
  * absolus vers leurs images
  */
-public class UrlBuilder {
+public class  UrlBuilder {
     private String filename;
 
     public UrlBuilder(String filename) {
@@ -22,7 +22,7 @@ public class UrlBuilder {
     public String getOriginal() {
 
         return ServletUriComponentsBuilder.fromCurrentContextPath().toUriString() +
-                StaticResourcesConfig.uploadUrlPrefix + filename;
+                StaticResourcesConfig.UPLOAD_URL_PREFIX  + filename;
     }
 
     /**
@@ -31,6 +31,6 @@ public class UrlBuilder {
      */
     public String getThumbnail() {
         return ServletUriComponentsBuilder.fromCurrentContextPath().toUriString() +
-                StaticResourcesConfig.uploadUrlPrefix +"thumbnail-" +  filename;
+                StaticResourcesConfig.uUPLOAD_URL_PREFIX+"thumbnail-" +  filename;
     }
 }
