@@ -16,8 +16,8 @@
 	<description>Elec Business Spring Boot</description>
 
     <properties>
-        <sonar.organization>hb-cda</sonar.organization>
-        <sonar.projectKey>hb-cda_elec-business-spring</sonar.projectKey>
+        <sonar.organization>nahima697</sonar.organization>
+        <sonar.projectKey>Nahima697_Elec_business_spring</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencyManagement>
