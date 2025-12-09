@@ -229,4 +229,9 @@ public class BookingBusinessImpl implements BookingBusiness {
     public void deleteBooking(String id) {
         bookingRepository.deleteBookingById(id);
     }
+
+    @Override
+    public List<Booking> getMyRentals(User user) {
+        return bookingRepository.findByUserId(user.getId());
+    }
 }

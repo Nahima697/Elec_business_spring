@@ -14,6 +14,7 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, String> {
 
     Booking findBookingById(String id);
+    List<Booking> findByUserId(String userId);
 
     void deleteBookingById(String id);
 

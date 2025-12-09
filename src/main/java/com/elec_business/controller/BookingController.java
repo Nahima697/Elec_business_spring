@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
-public class BookingController {
+public class   BookingController {
 
     private final BookingBusiness bookingBusiness;
     private final BookingMapper bookingMapper;
@@ -82,5 +82,11 @@ public class BookingController {
     public List<BookingResponseDto> getMyStationsBookings(@AuthenticationPrincipal User user) {
         List<Booking> bookings = bookingBusiness.getMyBookings(user);
         return bookingMapper.toDtos(bookings);
+    }
+
+    @GetMapping("/bookings/me")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookingResponseDto> getMyBookings(@AuthenticationPrincipal User user) {
+        return bookingMapper.toDtos(bookingBusiness.getMyRentals(user));
     }
 }
