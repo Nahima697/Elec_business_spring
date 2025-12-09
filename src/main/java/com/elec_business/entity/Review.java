@@ -32,6 +32,7 @@ public class Review {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+
     @Column(name = "title", length = Integer.MAX_VALUE)
     private String title;
 

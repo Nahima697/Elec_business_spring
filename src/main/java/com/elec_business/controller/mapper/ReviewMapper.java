@@ -4,6 +4,8 @@ import com.elec_business.controller.dto.ReviewResponseDTO;
 import com.elec_business.entity.Review;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ReviewMapper {
 
@@ -12,6 +14,9 @@ public interface ReviewMapper {
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "dateToString")
     ReviewResponseDTO toDto(Review review);
+     default List<ReviewResponseDTO> toListDto(List<Review> reviews) {
+         return reviews.stream().map(this::toDto).toList();
+     };
 
     @Named("dateToString")
     default String dateToString(java.time.OffsetDateTime date) {

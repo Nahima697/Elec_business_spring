@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 public record ChargingStationResponseDto(
         @NotNull String id,
@@ -16,7 +17,8 @@ public record ChargingStationResponseDto(
         BigDecimal lng,
         BigDecimal lat,
         String imageUrl,
-        LocationDTO locationDTO) {
+        LocationDTO locationDTO,
+        List<ReviewResponseDTO> reviewsDTO) {
     public UrlBuilder getUrls() {
         return new UrlBuilder(imageUrl);
     }

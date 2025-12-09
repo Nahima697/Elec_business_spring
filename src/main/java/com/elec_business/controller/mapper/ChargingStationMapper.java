@@ -7,11 +7,12 @@ import com.elec_business.controller.dto.ChargingStationRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses = ReviewMapper.class)
 public interface ChargingStationMapper {
     ChargingStation toEntity(ChargingStationRequestDto dto);
     ChargingStation toUpdateEntity(ChargingStationUpdateRequestDto dto);
     @Mapping(source = "location", target = "locationDTO")
     @Mapping(source = "location.user.id", target = "locationDTO.userId")
+    @Mapping(source="reviews",target = "reviewsDTO")
     ChargingStationResponseDto toDto(ChargingStation entity);
 }
