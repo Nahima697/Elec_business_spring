@@ -84,7 +84,7 @@ public class   BookingController {
         return bookingMapper.toDtos(bookings);
     }
 
-    @GetMapping("/bookings/me")
+    @GetMapping("/bookings/renter/me")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingResponseDto> getMyBookings(@AuthenticationPrincipal User user) {
         return bookingMapper.toDtos(bookingBusiness.getMyRentals(user));
