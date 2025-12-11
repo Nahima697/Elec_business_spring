@@ -27,8 +27,6 @@ public class ChargingStationRequestDto {
     @NotNull
     private BigDecimal price;
     @NotNull
-    private Instant createdAt;
-    @NotNull
     private BigDecimal lat;
     @NotNull
     private BigDecimal lng;
