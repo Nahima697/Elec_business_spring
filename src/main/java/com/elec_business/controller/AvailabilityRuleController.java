@@ -4,9 +4,11 @@ import com.elec_business.controller.dto.AvailabilityRuleDto;
 import com.elec_business.business.impl.AvailabilityRuleBusinessImpl;
 import com.elec_business.controller.mapper.AvailabilityRuleMapper;
 import com.elec_business.entity.AvailabilityRule;
+import com.elec_business.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +23,8 @@ public class AvailabilityRuleController {
     private final AvailabilityRuleMapper mapper;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody AvailabilityRuleDto dto) {
-        service.createRule(mapper.toEntity(dto));
+    public ResponseEntity<Void> create(@RequestBody AvailabilityRuleDto dto,@AuthenticationPrincipal User currentUser) {
+        service.createRule(mapper.toEntity(dto),currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

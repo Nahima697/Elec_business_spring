@@ -65,6 +65,9 @@ public class ChargingStation {
     @OneToMany(mappedBy = "station")
     List<Review> reviews;
 
+    @OneToMany(mappedBy = "chargingStation")
+    private List<AvailabilityRule> availabilityRules;
+
     @Column(name = "image_url", length = Integer.MAX_VALUE)
     public String getImageUrl() {
         return imageUrl;
