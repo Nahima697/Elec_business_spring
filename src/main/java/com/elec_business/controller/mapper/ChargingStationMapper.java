@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring",uses = ReviewMapper.class)
 public interface ChargingStationMapper {
+    @Mapping(source = "locationId", target = "location.id")
     ChargingStation toEntity(ChargingStationRequestDto dto);
     ChargingStation toUpdateEntity(ChargingStationUpdateRequestDto dto);
     @Mapping(source = "location", target = "locationDTO")
