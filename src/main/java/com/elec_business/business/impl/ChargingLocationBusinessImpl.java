@@ -18,7 +18,7 @@ public class ChargingLocationBusinessImpl implements ChargingLocationBusiness {
 
     public ChargingLocation createChargingLocation(ChargingLocation chargingLocation) {
 
-        return chargingLocation;
+        return chargingLocationRepository.save(chargingLocation);
     }
 
     public List<ChargingLocation> getAllChargingLocations() {
