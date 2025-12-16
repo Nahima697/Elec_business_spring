@@ -9,12 +9,15 @@ import com.elec_business.entity.ChargingLocation;
 import com.elec_business.service.FileStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.awt.print.Pageable;
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.List;
@@ -68,8 +71,8 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     }
 
-    public List<ChargingStation> getAllChargingStations() {
-        return chargingStationRepository.findAll();
+    public Page<ChargingStation> getAllChargingStations(Pageable pageable) {
+        return chargingStationRepository.findAll(pageable);
     }
 
     public ChargingStation getChargingStationById(String id) {

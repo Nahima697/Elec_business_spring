@@ -3,6 +3,7 @@ package com.elec_business.security;
 import com.elec_business.security.jwt.AuthEntryPointJwt;
 import com.elec_business.security.jwt.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.util.RateLimiter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -20,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.time.Duration;
 import java.util.List;
 
 @Configuration

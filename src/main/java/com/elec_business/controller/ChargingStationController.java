@@ -15,12 +15,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Pageable;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
@@ -77,12 +79,9 @@ public class ChargingStationController {
     }
 
     @GetMapping("/charging_stations")
-    public List<ChargingStationResponseDto> getAllChargingStations() {
-        return chargingStationBusiness.getAllChargingStations()
-                .stream()
-                .map(chargingStationMapper::toDto)
-                .toList();
-    }
+    public Page<ChargingStationResponseDto> getAllChargingStations(Pageable pageable) {
+        return chargingStationBusiness.getAllChargingStations(pageable).map(chargingStationMapper::toDto);
+    };
 
     @GetMapping("/charging_stations/location/{locationId}")
     public List<ChargingStationResponseDto> getChargingStationsByUser(@PathVariable String locationId) {

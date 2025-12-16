@@ -50,6 +50,9 @@ public class FileStorageService {
         if(file == null) {
            String filename = "default.png";
         }
+        if (file.getSize() > 10_000_000) {
+            throw new IllegalArgumentException("File too large");
+        }
 
         String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String filename = UUID.randomUUID() + extension;
