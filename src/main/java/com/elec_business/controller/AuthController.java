@@ -45,7 +45,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponseDto> register(@RequestBody @Valid RegistrationDto registrationDto) {
-        try {
+
             // 1. Création de l'utilisateur
             User registeredUser = userRegistrationService.registerUser(
                     userMapper.toEntity(registrationDto)
@@ -65,20 +65,6 @@ public class AuthController {
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
-
-        } catch (ValidationException ve) {
-            // Réponse erreur spécifique
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new RegistrationResponseDto(null, false, ve.getMessage()));
-
-        } catch (Exception e) {
-            // Réponse erreur générique
-            log.error("Erreur lors de la création du compte", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new RegistrationResponseDto(
-                            null, false, "Une erreur est survenue lors de la création du compte."
-                    ));
-        }
     }
 
     @GetMapping("/email/verify")

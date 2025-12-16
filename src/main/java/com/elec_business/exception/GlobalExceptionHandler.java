@@ -5,6 +5,7 @@ import com.elec_business.business.exception.InvalidBookingDurationException;
 import com.elec_business.service.exception.EmailNotVerifiedException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,11 @@ public class GlobalExceptionHandler {
         return buildProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error",
                 "Une erreur inattendue est survenue." + ex.getMessage(), req);
     }
-
+    @ExceptionHandler(ValidationException.class)
+    public ProblemDetail handleBusinessValidation(ValidationException ex, HttpServletRequest req) {
+        log.warn("Business validation failed: {}", ex.getMessage());
+        return buildProblemDetail(HttpStatus.CONFLICT, "Validation Conflict", ex.getMessage(), req);
+    }
     @ExceptionHandler(BookingNotFoundException.class)
     public ProblemDetail handleBookingNotFoundException(BookingNotFoundException ex,HttpServletRequest req) {
         log.error("BookingNotFoundError occured", ex);

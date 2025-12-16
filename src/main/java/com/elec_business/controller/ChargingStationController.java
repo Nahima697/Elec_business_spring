@@ -7,6 +7,12 @@ import com.elec_business.controller.dto.ChargingStationUpdateRequestDto;
 import com.elec_business.controller.mapper.ChargingStationMapper;
 import com.elec_business.entity.User;
 import com.elec_business.entity.ChargingStation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,10 +27,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "Charging Stations", description = "API de gestion des bornes de recharge")
 public class ChargingStationController {
 
     private final ChargingStationBusiness chargingStationBusiness;
     private final ChargingStationMapper chargingStationMapper;
+
+    @Operation(
+            summary = "Créer une nouvelle borne de recharge",
+            description = "Permet à un propriétaire de créer une borne de recharge avec une image. Nécessite le rôle OWNER."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Borne créée avec succès",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ChargingStationResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Données invalides (ex: image trop volumineuse, champs manquants)"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Non authentifié"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Accès refusé - vous n'êtes pas le propriétaire de cet emplacement"
+            )
+    })
 
     @PostMapping(value = "/charging_stations",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
