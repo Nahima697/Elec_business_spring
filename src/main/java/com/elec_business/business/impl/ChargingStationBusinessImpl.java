@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.List;
