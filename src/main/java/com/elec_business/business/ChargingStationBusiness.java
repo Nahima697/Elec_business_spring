@@ -5,7 +5,7 @@ import com.elec_business.entity.ChargingStation;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
