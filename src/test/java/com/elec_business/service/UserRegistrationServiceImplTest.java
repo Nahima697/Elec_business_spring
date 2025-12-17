@@ -56,7 +56,7 @@ class UserRegistrationServiceImplTest {
         // ASSERT
         assertNotNull(result);
         assertEquals("encodedPassword", result.getPassword()); 
-        assertFalse(result.isEmailVerified()); 
+        assertFalse(result.getEmailVerified());
         
         // Vérifie l'ajout du rôle par défaut (ID 1)
         assertNotNull(result.getRoles());
