@@ -44,59 +44,17 @@ class TimeSlotRepositoryTest  {
     private TimeSlot slot1;
     private TimeSlot slot2;
 
-    @BeforeEach
+   @BeforeEach
     void setUp() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        // 1. On charge toutes les données via le Loader (Users, Stations, Locations...)
+        TestDataLoader.LoadResult result = testDataLoader.load();
+        
+        // 2. On récupère la station A créée par le loader
+        this.station = result.stations().get(0); 
 
-        // Création rôle et utilisateur
-        UserRole roleUser = userRoleRepository.save(new UserRole(null, "ROLE_USER"));
-        User user1 = new User();
-        user1.setUsername("user1");
-        user1.setEmail("user1@test.com");
-        user1.setPassword(encoder.encode("password123"));
-        user1.setPhoneNumber("0600000001");
-        user1.setEmailVerified(true);
-        user1.setPhoneVerified(true);
-        user1.setRoles(new HashSet<>());
-        user1.getRoles().add(roleUser);
-        user1.setCreatedAt(Instant.now());
-        user1.setEmailVerifiedAt(Instant.now());
-        user1.setPhoneVerifiedAt(Instant.now());
-        userRepository.save(user1);
-        // Création location
-        ChargingLocation location1 = chargingLocationRepository.save(new ChargingLocation(
-                null, "1 rue Lyon", "69007", "Lyon", "France", "Lyon7", user1, new HashSet<>()
-        ));
-
-        // Création stations
-        ChargingStation station1 = new ChargingStation();
-        station1.setName("Station A");
-        station1.setDescription("Charge rapide 50kW");
-        station1.setPowerKw(new BigDecimal("50.00"));
-        station1.setPrice(new BigDecimal("0.25"));
-        station1.setCreatedAt(Instant.now());
-        station1.setLat(new BigDecimal("45.750000"));
-        station1.setLng(new BigDecimal("4.850000"));
-        station1.setLocation(location1);
-        station1.setImageUrl(null);
-        chargingStationRepository.save(station1);
-
-        ChargingStation station2 = new ChargingStation();
-        station2.setName("Station B");
-        station2.setDescription("Borne classique 22kW");
-        station2.setPowerKw(new BigDecimal("22.00"));
-        station2.setPrice(new BigDecimal("0.18"));
-        station2.setCreatedAt(Instant.now());
-        station2.setLat(new BigDecimal("45.751000"));
-        station2.setLng(new BigDecimal("4.851000"));
-        station2.setLocation(location1);
-        station2.setImageUrl(null);
-        chargingStationRepository.save(station2);
-
-        this.station = station1;
-
-        // Création de deux TimeSlots pour tests
+        // 3. On ajoute les TimeSlots spécifiques à ce test (le loader ne crée qu'un slot de base)
         LocalDateTime now = LocalDateTime.now();
+        
         slot1 = new TimeSlot();
         slot1.setStation(station);
         slot1.setStartTime(now.plusHours(1));
@@ -113,7 +71,6 @@ class TimeSlotRepositoryTest  {
         slot2.setAvailability(Range.closed(slot2.getStartTime(), slot2.getEndTime()));
         timeSlotRepository.save(slot2);
     }
-
     @Test
     void testFindByStationId() {
         List<TimeSlot> slots = timeSlotRepository.findByStationId(station.getId());
