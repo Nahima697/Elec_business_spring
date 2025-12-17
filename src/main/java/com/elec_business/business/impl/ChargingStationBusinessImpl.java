@@ -46,19 +46,16 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
         // Gestion de l'image
         try {
             String imageUrl;
-
-            if (station.getImageUrl() != null && !station.getImageUrl().isEmpty()) {
-                // Vérifie le type MIME
+            if (image != null && !image.isEmpty()) { 
+                
                 boolean isValidImage = fileStorageService.checkMediaType(image, "image");
                 if (!isValidImage) {
                     throw new IllegalArgumentException("Le fichier fourni n'est pas une image valide.");
                 }
 
-                // Upload + génération de miniature
                 imageUrl = fileStorageService.upload(image);
             } else {
                 imageUrl = "default.png";
-
             }
 
             station.setImageUrl(imageUrl);
