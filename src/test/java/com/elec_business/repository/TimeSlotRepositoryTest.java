@@ -21,13 +21,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(TestcontainersConfiguration.class)
+
+@Import({TestcontainersConfiguration.class, TestDataLoader.class})
 @DataJpaTest
 @ActiveProfiles("test")
 class TimeSlotRepositoryTest  {
 
     @Autowired
     private TimeSlotRepository timeSlotRepository;
+
+    @Autowired
+    private TestDataLoader testDataLoader;
 
     @Autowired
     private ChargingStationRepository chargingStationRepository;
