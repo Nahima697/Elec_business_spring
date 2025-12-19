@@ -8,6 +8,7 @@ import com.elec_business.controller.mapper.ChargingStationMapper;
 import com.elec_business.entity.User;
 import com.elec_business.entity.ChargingStation;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,79 +30,124 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Tag(name = "Charging Stations", description = "API de gestion des bornes de recharge")
+@Tag(name = "Charging Stations", description = "API de gestion des bornes de recharge (CRUD, Images, Recherche)")
 public class ChargingStationController {
 
     private final ChargingStationBusiness chargingStationBusiness;
     private final ChargingStationMapper chargingStationMapper;
 
+    // --- CREATE ---
     @Operation(
             summary = "Créer une nouvelle borne de recharge",
-            description = "Permet à un propriétaire de créer une borne de recharge avec une image. Nécessite le rôle OWNER."
+            description = "Permet à un propriétaire de créer une borne de recharge liée à un emplacement (Location). Nécessite l'upload d'une image."
     )
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Borne créée avec succès",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ChargingStationResponseDto.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Données invalides (ex: image trop volumineuse, champs manquants)"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Non authentifié"
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Accès refusé - vous n'êtes pas le propriétaire de cet emplacement"
-            )
+            @ApiResponse(responseCode = "201", description = "Borne créée avec succès",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ChargingStationResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Données invalides (image manquante, format incorrect)"),
+            @ApiResponse(responseCode = "403", description = "Accès refusé - Vous n'êtes pas le propriétaire de cet emplacement")
     })
-
-    @PostMapping(value = "/charging_stations",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/charging_stations", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ChargingStationResponseDto addChargingStation(@Valid   @ModelAttribute ChargingStationRequestDto dto,
-                                                         @AuthenticationPrincipal User currentUser, MultipartFile image) throws AccessDeniedException {
+    public ChargingStationResponseDto addChargingStation(
+            @Parameter(description = "Les données de la borne (JSON)", required = true)
+            @Valid @ModelAttribute ChargingStationRequestDto dto,
 
-       return chargingStationMapper.toDto(chargingStationBusiness.createChargingStation(chargingStationMapper.toEntity(dto), currentUser,image));
+            @Parameter(hidden = true) @AuthenticationPrincipal User currentUser,
 
+            @Parameter(description = "Fichier image de la borne (JPG, PNG, WEBP)", required = true)
+            @RequestPart(value = "image", required = false) MultipartFile image) throws AccessDeniedException {
+
+        return chargingStationMapper.toDto(
+                chargingStationBusiness.createChargingStation(chargingStationMapper.toEntity(dto), currentUser, image)
+        );
     }
 
+    // --- UPDATE ---
+    @Operation(
+            summary = "Mettre à jour une borne existante",
+            description = "Permet de modifier le nom, la description, le prix ou la puissance d'une borne. Seul le propriétaire peut faire cette action."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Borne mise à jour avec succès",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ChargingStationResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "Accès refusé - Vous n'êtes pas le propriétaire"),
+            @ApiResponse(responseCode = "404", description = "Borne introuvable")
+    })
     @PutMapping("/charging_stations/{id}")
-    public ChargingStationResponseDto updateStation(@PathVariable String id,
-                                                    @RequestBody @Valid ChargingStationUpdateRequestDto dto,@AuthenticationPrincipal User currentUser) throws AccessDeniedException {
+    public ChargingStationResponseDto updateStation(
+            @Parameter(description = "ID de la borne à modifier", required = true) @PathVariable String id,
+            @RequestBody @Valid ChargingStationUpdateRequestDto dto,
+            @Parameter(hidden = true) @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
 
-        return chargingStationMapper.toDto(chargingStationBusiness.updateChargingStation(id, chargingStationMapper.toUpdateEntity(dto), currentUser));
+        return chargingStationMapper.toDto(
+                chargingStationBusiness.updateChargingStation(id, chargingStationMapper.toUpdateEntity(dto), currentUser)
+        );
     }
 
+    // --- GET ALL (Paginé) ---
+    @Operation(
+            summary = "Lister toutes les bornes (Version Résumée)",
+            description = "Récupère une liste paginée des bornes. Retourne un format allégé (sans les avis) pour optimiser les performances de la liste."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Page de bornes récupérée")
+    })
     @GetMapping("/charging_stations")
-    public Page<ChargingStationResponseDto> getAllChargingStations(Pageable pageable) {
-        return chargingStationBusiness.getAllChargingStations(pageable).map(chargingStationMapper::toDto);
-    };
+    public Page<ChargingStationResponseDto> getAllChargingStations(
+            @Parameter(description = "Paramètres de pagination (page, size, sort)") Pageable pageable) {
+        return chargingStationBusiness.getAllChargingStations(pageable).map(chargingStationMapper::toSummaryDto);
+    }
 
+    // --- GET BY LOCATION ---
+    @Operation(
+            summary = "Lister les bornes d'un emplacement",
+            description = "Récupère toutes les bornes rattachées à un ChargingLocation spécifique."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste récupérée")
+    })
     @GetMapping("/charging_stations/location/{locationId}")
-    public List<ChargingStationResponseDto> getChargingStationsByUser(@PathVariable String locationId) {
+    public List<ChargingStationResponseDto> getChargingStationsByUser(
+            @Parameter(description = "ID de l'emplacement (Location)", required = true) @PathVariable String locationId) {
         return chargingStationBusiness.getByLocationId(locationId)
                 .stream()
                 .map(chargingStationMapper::toDto)
                 .toList();
     }
 
+    // --- GET ONE ---
+    @Operation(
+            summary = "Obtenir le détail d'une borne",
+            description = "Récupère les informations complètes d'une borne, y compris la liste des avis (Reviews)."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Détail de la borne récupéré",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ChargingStationResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Borne introuvable")
+    })
     @GetMapping("/charging_stations/{id}")
-    public ChargingStationResponseDto getStation(@PathVariable String id) {
+    public ChargingStationResponseDto getStation(
+            @Parameter(description = "ID de la borne", required = true) @PathVariable String id) {
         ChargingStation station = chargingStationBusiness.getChargingStationById(id);
         return chargingStationMapper.toDto(station);
     }
 
+    // --- DELETE ---
+    @Operation(
+            summary = "Supprimer une borne",
+            description = "Supprime définitivement une borne. Action irréversible réservée au propriétaire."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Borne supprimée avec succès"),
+            @ApiResponse(responseCode = "403", description = "Accès refusé"),
+            @ApiResponse(responseCode = "404", description = "Borne introuvable")
+    })
     @DeleteMapping("/charging_stations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteChargingStation(@PathVariable String id,
-                                      @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
+    public void deleteChargingStation(
+            @Parameter(description = "ID de la borne à supprimer", required = true) @PathVariable String id,
+            @Parameter(hidden = true) @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
         chargingStationBusiness.deleteChargingStationById(id, currentUser);
     }
-
 }

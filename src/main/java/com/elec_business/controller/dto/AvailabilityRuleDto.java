@@ -11,6 +11,7 @@ public class AvailabilityRuleDto {
     @NotNull(message = "L'ID de la station est obligatoire")
     private String stationId;
 
+    private String stationName;
     @NotNull
     private Integer dayOfWeek;
 
