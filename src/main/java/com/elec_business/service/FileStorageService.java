@@ -57,13 +57,20 @@ public class FileStorageService {
         String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String filename = UUID.randomUUID() + extension;
 
-
         try {
-            createThumbnail(file, filename);
+            // 1. Sauvegarde de l'image principale
             file.transferTo(uploadFolder.resolve(filename));
+
+            // 2. Création de la miniature
+            try {
+                createThumbnail(file, filename);
+            } catch (Exception e) {
+                logger.warn("Échec création miniature pour {}: {}", filename, e.getMessage());
+            }
+
         } catch (IllegalStateException | IOException e) {
             logger.error("Error transferring file to upload folder: {}", uploadFolder.resolve(filename), e);
-            throw new RuntimeException("Error transferring file to upload folder " + uploadFolder, e);
+            throw new RuntimeException("Error transferring file", e);
         }
 
         return filename;
@@ -82,10 +89,16 @@ public class FileStorageService {
     }
 
     public void createThumbnail(MultipartFile file, String filename) throws IOException {
+        String thumbnailFilename = "thumbnail-" + filename;
+        if (thumbnailFilename.toLowerCase().endsWith(".webp")) {
+            thumbnailFilename = thumbnailFilename.substring(0, thumbnailFilename.lastIndexOf(".")) + ".jpg";
+        }
+
         Thumbnails.of(file.getInputStream())
                 .crop(Positions.CENTER)
                 .size(300, 300)
-                .toFile(uploadFolder.resolve("thumbnail-" + filename).toFile());
+                .outputFormat("jpg")
+                .toFile(uploadFolder.resolve(thumbnailFilename).toFile());
     }
 
     public boolean checkMediaType(MultipartFile file, String expectedType) {
