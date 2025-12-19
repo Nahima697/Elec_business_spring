@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,13 +61,13 @@ public class ChargingStation {
     private String imageUrl;
 
     @OneToMany(mappedBy = "station")
-    List<TimeSlot> timeSlots;
+    List<TimeSlot> timeSlots = new ArrayList<>();
 
     @OneToMany(mappedBy = "station")
-    List<Review> reviews;
+    List<Review> reviews =new ArrayList<>();
 
     @OneToMany(mappedBy = "chargingStation")
-    private List<AvailabilityRule> availabilityRules;
+    private List<AvailabilityRule> availabilityRules=new ArrayList<>();
 
     @Column(name = "image_url", length = Integer.MAX_VALUE)
     public String getImageUrl() {
