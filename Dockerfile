@@ -22,9 +22,12 @@ WORKDIR /app
 
 FROM eclipse-temurin:21-jre AS runtime
 
-WORKDIR /ap
+WORKDIR /app
 # Copier le jar depuis l'étape build
 COPY --from=build /app/target/app.jar app.jar
+
+# Créer le répertoire uploads
+RUN mkdir uploads
 
 # Exposer le port attendu par Render
 EXPOSE 8080
