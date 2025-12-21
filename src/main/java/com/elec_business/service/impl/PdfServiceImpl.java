@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class PdfServiceImpl implements PdfService {
 
-    @Autowired
+    @Override
     public byte[] generateBookingReceipt(Booking booking) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Document document = new Document(PageSize.A4);
