@@ -10,6 +10,7 @@ import com.elec_business.service.FileStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DialectOverride;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
@@ -81,18 +82,11 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     @Override
     @Transactional
-    public List<ChargingStation> getByLocationId(String id, User currentUser) throws AccessDeniedException {
-
-        // 1. On récupère d'abord le lieu pour vérifier la sécurité
-        ChargingLocation location = chargingLocationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Location not found"));
-
-        // 2. SÉCURITÉ : On vérifie que le lieu appartient bien à l'utilisateur connecté
-        if (!location.getUser().getId().equals(currentUser.getId())) {
-            throw new AccessDeniedException("Vous n'avez pas le droit d'accéder aux bornes de ce lieu.");
+    public List<ChargingStation> getByLocationId(String id)  {
+        if (!chargingLocationRepository.existsById(id)) {
+            throw new EntityNotFoundException("Lieu introuvable");
         }
 
-        // 3. Si c'est bon, on retourne les stations
         return chargingStationRepository.findByLocation_Id(id);
     }
 
