@@ -67,7 +67,7 @@ class BookingControllerTest {
         assertFalse(bookings.isEmpty());
     }
 
-    // 🔍 UTILITAIRE : Récupère un booking dont la STATION appartient à cet email (pour accept/reject)
+    //  UTILITAIRE : Récupère un booking dont la STATION appartient à cet email (pour accept/reject)
     private Booking getBookingForStationOwnedBy(String email) {
         return bookings.stream()
                 .filter(b -> b.getStation().getLocation().getUser().getEmail().equals(email))
@@ -75,7 +75,7 @@ class BookingControllerTest {
                 .orElseThrow(() -> new IllegalStateException("Aucun booking pour station de " + email));
     }
 
-    // 🔍 UTILITAIRE : Récupère un booking CRÉÉ par cet utilisateur (pour update/delete)
+    //  UTILITAIRE : Récupère un booking CRÉÉ par cet utilisateur (pour update/delete)
     private Booking getBookingCreatedBy(String email) {
         return bookings.stream()
                 .filter(b -> b.getUser().getEmail().equals(email))
@@ -146,14 +146,17 @@ class BookingControllerTest {
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
 
-        Booking booking = bookings.getFirst();
+        Booking booking = bookings.stream()
+                .filter(b -> b.getUser().getEmail().equals("user1@test.com") ||
+                        b.getStation().getLocation().getUser().getEmail().equals("user1@test.com"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Aucune réservation accessible pour user1"));
 
         mvc.perform(get("/api/bookings/" + booking.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startDate")
                         .value(booking.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))));
     }
-
     // ------------------------------------------
     // UPDATE BOOKING
     // ------------------------------------------

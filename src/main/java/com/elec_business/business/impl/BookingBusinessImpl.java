@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -184,8 +185,17 @@ public class BookingBusinessImpl implements BookingBusiness {
 
     // Récupération d'une réservation par ID
     @Override
-    public Booking getBookingById(String  id) {
-            return bookingRepository.findById(id).orElseThrow(BookingNotFoundException::new);
+    public Booking getBookingById(String id, User currentUser) throws AccessDeniedException {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(BookingNotFoundException::new);
+
+        boolean isRenter = booking.getUser().getId().equals(currentUser.getId());
+        boolean isOwner = booking.getStation().getLocation().getUser().getId().equals(currentUser.getId());
+
+        if (!isRenter && !isOwner) {throw new AccessDeniedException("Vous n'avez pas les droits pour accéder à cette réservation.");
+        }
+
+        return booking;
     }
 
     @Override
@@ -212,7 +222,6 @@ public class BookingBusinessImpl implements BookingBusiness {
         updateBooking.setStation(chargingStationRepository.findById(booking.getStation().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Station not found")));
 
-
         // Vérification que le créneau est disponible sur la station
         verifyAvailability(updateBooking.getStation(), booking);
 
@@ -226,8 +235,12 @@ public class BookingBusinessImpl implements BookingBusiness {
     // Suppression d'une réservation
     @Transactional
     @Override
-    public void deleteBooking(String id) {
-        bookingRepository.deleteBookingById(id);
+    public void deleteBooking(String id, User currentUser) throws AccessDeniedException {
+        // 1. On charge la réservation en utilisant la méthode ci-dessus.
+        Booking booking = this.getBookingById(id, currentUser);
+
+        bookingRepository.delete(booking);
+        log.info("Booking {} deleted by user {}", id, currentUser.getId());
     }
 
     @Override
