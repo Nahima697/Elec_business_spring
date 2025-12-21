@@ -31,7 +31,7 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
     private final ChargingLocationRepository chargingLocationRepository;
     private static final String ERR_STATION_NOT_FOUND = "Charging station not found";
 
-
+    @Override
     public ChargingStation createChargingStation(ChargingStation station, User currentUser, MultipartFile image) throws AccessDeniedException {
         ChargingLocation location = chargingLocationRepository.findById(station.getLocation().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Location non trouvée"));
@@ -68,16 +68,31 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     }
 
+    @Override
     public Page<ChargingStation> getAllChargingStations(Pageable pageable) {
         return chargingStationRepository.findAll(pageable);
     }
 
+    @Override
     public ChargingStation getChargingStationById(String id) {
         return chargingStationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ERR_STATION_NOT_FOUND));
     }
 
-    public List<ChargingStation> getByLocationId(String id) {
+    @Override
+    @Transactional
+    public List<ChargingStation> getByLocationId(String id, User currentUser) throws AccessDeniedException {
+
+        // 1. On récupère d'abord le lieu pour vérifier la sécurité
+        ChargingLocation location = chargingLocationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Location not found"));
+
+        // 2. SÉCURITÉ : On vérifie que le lieu appartient bien à l'utilisateur connecté
+        if (!location.getUser().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("Vous n'avez pas le droit d'accéder aux bornes de ce lieu.");
+        }
+
+        // 3. Si c'est bon, on retourne les stations
         return chargingStationRepository.findByLocation_Id(id);
     }
 

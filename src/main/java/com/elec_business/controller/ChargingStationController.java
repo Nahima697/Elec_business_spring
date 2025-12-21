@@ -109,8 +109,8 @@ public class ChargingStationController {
     })
     @GetMapping("/charging_stations/location/{locationId}")
     public List<ChargingStationResponseDto> getChargingStationsByUser(
-            @Parameter(description = "ID de l'emplacement (Location)", required = true) @PathVariable String locationId) {
-        return chargingStationBusiness.getByLocationId(locationId)
+            @Parameter(description = "ID de l'emplacement (Location)", required = true) @PathVariable String locationId,@AuthenticationPrincipal User currentUser) throws AccessDeniedException {
+        return chargingStationBusiness.getByLocationId(locationId,currentUser)
                 .stream()
                 .map(chargingStationMapper::toDto)
                 .toList();
