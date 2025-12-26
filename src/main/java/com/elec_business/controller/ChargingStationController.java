@@ -112,7 +112,7 @@ public class ChargingStationController {
             @Parameter(description = "ID de l'emplacement (Location)", required = true) @PathVariable String locationId,@AuthenticationPrincipal User currentUser)  {
         return chargingStationBusiness.getByLocationId(locationId)
                 .stream()
-                .map(chargingStationMapper::toDto)
+                .map(chargingStationMapper::toSummaryDto)
                 .toList();
     }
 
