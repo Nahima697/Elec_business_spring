@@ -86,7 +86,6 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
         if (!chargingLocationRepository.existsById(id)) {
             throw new EntityNotFoundException("Lieu introuvable");
         }
-
         return chargingStationRepository.findByLocation_Id(id);
     }
 
