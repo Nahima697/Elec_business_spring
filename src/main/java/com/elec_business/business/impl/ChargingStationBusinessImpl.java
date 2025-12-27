@@ -76,8 +76,11 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     @Override
     public ChargingStation getChargingStationById(String id) {
-        return chargingStationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ERR_STATION_NOT_FOUND));
+        ChargingStation station =chargingStationRepository.findByIdWithDetails(id);
+        if(station == null) {
+            throw new EntityNotFoundException("Charging station not found");
+        }
+        return station;
     }
 
     @Override
