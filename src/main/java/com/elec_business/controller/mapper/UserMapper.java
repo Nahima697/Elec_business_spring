@@ -1,6 +1,7 @@
 package com.elec_business.controller.mapper;
 
 import com.elec_business.controller.dto.*;
+import com.elec_business.entity.BillingAddress;
 import com.elec_business.entity.User;
 import com.elec_business.entity.UserRole;
 import org.mapstruct.*;
@@ -34,6 +35,26 @@ public interface UserMapper {
     /* ENTITY → PROFILE DTO */
     @Mapping(source = "roles", target = "roles", qualifiedByName = "toUserRoleDTOList")
     UserProfileDto toUserProfileDto(User user);
+
+    @Mapping(source = "user.id", target = "id")
+    @Mapping(target = "addressLine", ignore = true)
+    @Mapping(target = "city", ignore = true)
+    @Mapping(target = "postalCode", ignore = true)
+    @Mapping(target = "country", ignore = true)
+    UserProfileDto toUserProfileWithDetailDto(User user, BillingAddress address);
+
+    @AfterMapping
+    default void enrichWithAddress(
+            BillingAddress address,
+            @MappingTarget UserProfileDto dto
+    ) {
+        if (address != null) {
+            dto.setAddressLine(address.getAddressLine());
+            dto.setCity(address.getCity());
+            dto.setPostalCode(address.getPostalCode());
+            dto.setCountry(address.getCountry());
+        }
+    }
 
     /* Registration */
     @Mapping(target = "roles", ignore = true)
