@@ -125,8 +125,8 @@ public class ChargingStationController {
             @ApiResponse(responseCode = "200", description = "Liste récupérée")
     })
     @GetMapping("/me")
-    public List<ChargingStationResponseDto>getMyStations(Pageable pageable) {
-        List<ChargingStation> stations = chargingStationBusiness.getMyStations();
+    public List<ChargingStationResponseDto>getMyStations(@AuthenticationPrincipal User currentUser) {
+        List<ChargingStation> stations = chargingStationBusiness.getMyStations(currentUser);
 
          List<ChargingStationResponseDto> dtos = stations.stream()
                 .map(chargingStationMapper::toDto)

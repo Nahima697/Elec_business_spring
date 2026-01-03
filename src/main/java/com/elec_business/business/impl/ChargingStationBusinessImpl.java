@@ -103,13 +103,10 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
     @Override
     @Transactional
-    public List<ChargingStation> getMyStations() {
-        // 1. Récupérer l'email de l'utilisateur connecté via Spring Security
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        // 2. Appeler le repo
-        return chargingStationRepository.findByOwnerEmail(email);
+    public List<ChargingStation> getMyStations(User currentUser) {
+        return chargingStationRepository.findByOwnerEmail(currentUser.getEmail());
     }
+
 
     public ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser) throws AccessDeniedException {
         ChargingStation updateStation = chargingStationRepository.findById(id)

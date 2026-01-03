@@ -2,6 +2,7 @@ package com.elec_business.repository;
 
 import com.elec_business.entity.AvailabilityRule;
 import com.elec_business.entity.ChargingStation;
+import com.elec_business.entity.User;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,5 +30,7 @@ public interface ChargingStationRepository  extends JpaRepository<ChargingStatio
     ChargingStation findByIdWithDetails(@Param("id")String id);
     @Query("SELECT s FROM ChargingStation s WHERE s.location.user.email = :email")
     List<ChargingStation> findByOwnerEmail(String email);
+    List<ChargingStation> findByUser(User user);
+
     Page<ChargingStation> findAll(Pageable pageable);
 }
