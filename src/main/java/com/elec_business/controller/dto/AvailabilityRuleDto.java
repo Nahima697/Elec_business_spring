@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 @Data
 public class AvailabilityRuleDto {
-
+    private String id;
     @NotNull(message = "L'ID de la station est obligatoire")
     private String stationId;
 

@@ -9,6 +9,7 @@ import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
 import com.elec_business.repository.AvailabilityRuleRepository;
 import com.elec_business.repository.ChargingStationRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,7 @@ public class AvailabilityRuleBusinessImpl implements AvailabilityRuleBusiness {
         );
     }
 
+    @Transactional
     public List<AvailabilityRule> getRules(String stationId) {
         return ruleRepo.findByChargingStation_Id(stationId)
                 .stream().toList();

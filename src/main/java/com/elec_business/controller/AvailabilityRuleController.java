@@ -29,8 +29,13 @@ public class AvailabilityRuleController {
     }
 
     @GetMapping("/{stationId}")
-    public List<AvailabilityRule> getByStation(@PathVariable String stationId) {
-        return service.getRules(stationId);
+    public ResponseEntity<List<AvailabilityRuleDto>> getByStation(@PathVariable String stationId) {
+        List<AvailabilityRuleDto> dtos = service.getRules(stationId)
+                .stream()
+                .map(mapper::toDto)
+                .toList();
+
+        return ResponseEntity.ok(dtos);
     }
 
     @DeleteMapping("/{id}")
