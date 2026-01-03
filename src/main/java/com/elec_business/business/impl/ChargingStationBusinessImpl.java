@@ -14,6 +14,7 @@ import org.hibernate.annotations.DialectOverride;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -98,6 +99,16 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
             throw new EntityNotFoundException(ERR_STATION_NOT_FOUND);
         }
         return station;
+    }
+
+    @Override
+    @Transactional
+    public List<ChargingStation> getMyStations() {
+        // 1. Récupérer l'email de l'utilisateur connecté via Spring Security
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // 2. Appeler le repo
+        return chargingStationRepository.findByOwnerEmail(email);
     }
 
     public ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser) throws AccessDeniedException {

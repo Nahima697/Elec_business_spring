@@ -27,6 +27,7 @@ public interface ChargingStationRepository  extends JpaRepository<ChargingStatio
             "LEFT JOIN FETCH loc.user " +
             "WHERE cs.id = :id")
     ChargingStation findByIdWithDetails(@Param("id")String id);
-    ChargingStation findByAvailabilityRulesContaining(AvailabilityRule availabilityRule);
+    @Query("SELECT s FROM ChargingStation s WHERE s.location.user.email = :email")
+    List<ChargingStation> findByOwnerEmail(String email);
     Page<ChargingStation> findAll(Pageable pageable);
 }

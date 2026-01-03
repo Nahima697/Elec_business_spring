@@ -116,6 +116,24 @@ public class ChargingStationController {
                 .toList();
     }
 
+    //--GET MY STATION ---
+    @Operation(
+            summary = "Lister les bornes d'un utilisateur",
+            description = "Récupère toutes les bornes rattachées à l'utilisateur connecté."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste récupérée")
+    })
+    @GetMapping("/me")
+    public List<ChargingStationResponseDto>getMyStations(Pageable pageable) {
+        List<ChargingStation> stations = chargingStationBusiness.getMyStations();
+
+         List<ChargingStationResponseDto> dtos = stations.stream()
+                .map(chargingStationMapper::toDto)
+                .toList();
+         return dtos;
+    }
+
     // --- GET ONE ---
     @Operation(
             summary = "Obtenir le détail d'une borne",
