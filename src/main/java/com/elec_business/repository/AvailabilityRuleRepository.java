@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface AvailabilityRuleRepository extends JpaRepository<AvailabilityRule, String> {
 
-    List<AvailabilityRule> findByChargingStation_Id(String chargingStationId);
+    @Query("SELECT r FROM AvailabilityRule r JOIN FETCH r.chargingStation WHERE r.chargingStation.id = :stationId")
+    List<AvailabilityRule> findByChargingStation_Id(String stationId);
 
     @Query("""
         SELECT COUNT(r) > 0 FROM AvailabilityRule r
