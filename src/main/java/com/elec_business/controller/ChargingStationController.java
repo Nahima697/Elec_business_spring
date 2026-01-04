@@ -124,7 +124,7 @@ public class ChargingStationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Liste récupérée")
     })
-    @GetMapping("/me")
+    @GetMapping("/charging_stations/me")
     public List<ChargingStationResponseDto>getMyStations(@AuthenticationPrincipal User currentUser) {
         List<ChargingStation> stations = chargingStationBusiness.getMyStations(currentUser);
 
