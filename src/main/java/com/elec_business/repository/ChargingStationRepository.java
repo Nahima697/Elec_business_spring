@@ -30,7 +30,6 @@ public interface ChargingStationRepository  extends JpaRepository<ChargingStatio
     ChargingStation findByIdWithDetails(@Param("id")String id);
     @Query("SELECT s FROM ChargingStation s WHERE s.location.user.email = :email")
     List<ChargingStation> findByOwnerEmail(String email);
-    List<ChargingStation> findByUser(User user);
 
     Page<ChargingStation> findAll(Pageable pageable);
 }
