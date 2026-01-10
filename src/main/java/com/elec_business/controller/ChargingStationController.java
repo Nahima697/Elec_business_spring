@@ -129,7 +129,7 @@ public class ChargingStationController {
         List<ChargingStation> stations = chargingStationBusiness.getMyStations(currentUser);
 
          List<ChargingStationResponseDto> dtos = stations.stream()
-                .map(chargingStationMapper::toDto)
+                .map(chargingStationMapper::toSummaryDto)
                 .toList();
          return dtos;
     }
