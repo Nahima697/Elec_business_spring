@@ -71,8 +71,7 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
             LocalDate currentDate = startDate;
 
             while (!currentDate.isAfter(endDate)) {
-                // 1. Vérifie si le jour correspond à la règle
-                if (currentDate.getDayOfWeek().getValue() == rule.getDayOfWeek()) {
+                if (currentDate.getDayOfWeek() == rule.getDayOfWeek()) {
                     LocalDateTime startDateTime = currentDate.atTime(rule.getStartTime());
                     LocalDateTime endDateTime = currentDate.atTime(rule.getEndTime());
 
@@ -94,11 +93,11 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
                         generatedSlots.add(slot);
                     }
                 }
+
                 currentDate = currentDate.plusDays(1);
             }
-        }
 
-        // Sauvegarde uniquement les NOUVEAUX slots
+            // Sauvegarde uniquement les NOUVEAUX slots
         if (!generatedSlots.isEmpty()) {
             timeSlotRepository.saveAll(generatedSlots);
             System.out.println("Génération planifiée : " + generatedSlots.size() + " nouveaux créneaux créés.");
