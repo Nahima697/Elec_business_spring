@@ -21,13 +21,13 @@ public class AvailabilityScheduler {
 
     @Scheduled(cron = "0 0 1 * * *") // tous les jours à 1h
     public void generateTimeSlotsNightly() {
-        // 🧹 1. Supprime les créneaux passés
+        //  1. Supprime les créneaux passés
         timeSlotService.purgeOldTimeSlots();
 
-        // 📅 2. Récupère toutes les règles
+        // 2. Récupère toutes les règles
         List<AvailabilityRule> rules = availabilityRuleRepository.findAll();
 
-        // ⚙️ 3. Génère les créneaux pour les 14 prochains jours
+        // 3. Génère les créneaux pour les 14 prochains jours
         timeSlotService.generateTimeSlotsFromAvailabilityRules(
                 LocalDate.now(),
                 LocalDate.now().plusDays(14),

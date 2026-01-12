@@ -62,6 +62,8 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
             timeSlotRepository.saveAll(slots);
         }
     }
+
+    @Transactional
     public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules) {
         List<TimeSlot> generatedSlots = new ArrayList<>();
 
@@ -69,26 +71,38 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
             LocalDate currentDate = startDate;
 
             while (!currentDate.isAfter(endDate)) {
+                // 1. Vérifie si le jour correspond à la règle
                 if (currentDate.getDayOfWeek().getValue() == rule.getDayOfWeek()) {
                     LocalDateTime startDateTime = currentDate.atTime(rule.getStartTime());
                     LocalDateTime endDateTime = currentDate.atTime(rule.getEndTime());
 
-                    TimeSlot slot = new TimeSlot();
-                    slot.setStation(rule.getChargingStation());
-                    slot.setStartTime(startDateTime);
-                    slot.setEndTime(endDateTime);
-                    slot.setIsAvailable(true); // facultatif si déjà true par défaut
+                    boolean exists = timeSlotRepository.existsSlotInRange(
+                            rule.getChargingStation().getId(),
+                            startDateTime,
+                            endDateTime,
+                            "[]"
+                    );
 
-                    slot.setAvailability(Range.closed(startDateTime, endDateTime));
+                    if (!exists) {
+                        TimeSlot slot = new TimeSlot();
+                        slot.setStation(rule.getChargingStation());
+                        slot.setStartTime(startDateTime);
+                        slot.setEndTime(endDateTime);
+                        slot.setIsAvailable(true);
+                        slot.setAvailability(Range.closed(startDateTime, endDateTime));
 
-                    generatedSlots.add(slot);
+                        generatedSlots.add(slot);
+                    }
                 }
-
                 currentDate = currentDate.plusDays(1);
             }
         }
 
-        timeSlotRepository.saveAll(generatedSlots);
+        // Sauvegarde uniquement les NOUVEAUX slots
+        if (!generatedSlots.isEmpty()) {
+            timeSlotRepository.saveAll(generatedSlots);
+            System.out.println("Génération planifiée : " + generatedSlots.size() + " nouveaux créneaux créés.");
+        }
     }
 
     public void purgeOldTimeSlots() {
