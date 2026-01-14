@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,44 +56,46 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
     }
 
     @Transactional
-    public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules) {
+    public void generateTimeSlotsFromAvailabilityRules(LocalDate startDate,
+                                                       LocalDate endDate,
+                                                       List<AvailabilityRule> rules) {
+
         List<TimeSlot> generatedSlots = new ArrayList<>();
 
         for (AvailabilityRule rule : rules) {
-            LocalDate currentDate = startDate;
 
-            while (!currentDate.isAfter(endDate)) {
-                if (currentDate.getDayOfWeek().getValue() == rule.getDayOfWeek()) {
+            DayOfWeek target = DayOfWeek.of(rule.getDayOfWeek());
 
-                    LocalDateTime startDateTime = currentDate.atTime(rule.getStartTime());
-                    LocalDateTime endDateTime = currentDate.atTime(rule.getEndTime());
+            LocalDate current = startDate.with(TemporalAdjusters.nextOrSame(target));
 
-                    // Vérification anti-doublon
-                    boolean exists = timeSlotRepository.existsSlotInRange(
-                            rule.getChargingStation().getId(),
-                            startDateTime,
-                            endDateTime,
-                            "[]"
-                    );
+            while (!current.isAfter(endDate)) {
 
-                    if (!exists) {
-                        TimeSlot slot = new TimeSlot();
-                        slot.setStation(rule.getChargingStation());
-                        slot.setStartTime(startDateTime);
-                        slot.setEndTime(endDateTime);
-                        slot.setIsAvailable(true);
-                        slot.setAvailability(Range.closed(startDateTime, endDateTime));
+                LocalDateTime start = current.atTime(rule.getStartTime());
+                LocalDateTime end = current.atTime(rule.getEndTime());
 
-                        generatedSlots.add(slot);
-                    }
+                boolean exists = timeSlotRepository.existsSlotInRange(
+                        rule.getChargingStation().getId(),
+                        start,
+                        end,
+                        "[]"
+                );
+
+                if (!exists) {
+                    TimeSlot slot = new TimeSlot();
+                    slot.setStation(rule.getChargingStation());
+                    slot.setStartTime(start);
+                    slot.setEndTime(end);
+                    slot.setIsAvailable(true);
+                    slot.setAvailability(Range.closed(start, end));
+                    generatedSlots.add(slot);
                 }
-                currentDate = currentDate.plusDays(1);
+
+                current = current.plusWeeks(1);
             }
         }
 
         if (!generatedSlots.isEmpty()) {
             timeSlotRepository.saveAll(generatedSlots);
-            System.out.println("Génération planifiée : " + generatedSlots.size() + " nouveaux créneaux créés.");
         }
     }
 
