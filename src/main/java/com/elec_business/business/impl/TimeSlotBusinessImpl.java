@@ -1,8 +1,6 @@
 package com.elec_business.business.impl;
 
-
 import com.elec_business.business.TimeSlotBusiness;
-import com.elec_business.controller.mapper.TimeSlotResponseMapper;
 import com.elec_business.entity.AvailabilityRule;
 import com.elec_business.entity.TimeSlot;
 import com.elec_business.repository.TimeSlotRepository;
@@ -10,7 +8,6 @@ import com.elec_business.entity.ChargingStation;
 import com.elec_business.repository.ChargingStationRepository;
 import com.elec_business.repository.specification.TimeSlotSpecification;
 import io.hypersistence.utils.hibernate.type.range.Range;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,32 +23,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TimeSlotBusinessImpl implements TimeSlotBusiness {
 
-
-    private  final TimeSlotRepository timeSlotRepository;
-
+    private final TimeSlotRepository timeSlotRepository;
     private final ChargingStationRepository chargingStationRepository;
 
     @Transactional
-
     public void addTimeSlot(String stationId, LocalDateTime startTime, LocalDateTime endTime) {
-        // Vérification de l'existence de la station
         ChargingStation station = chargingStationRepository.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException("Station introuvable"));
 
-        // Créer un TimeSlot
         TimeSlot timeSlot = new TimeSlot();
         timeSlot.setStation(station);
         timeSlot.setStartTime(startTime);
         timeSlot.setEndTime(endTime);
+        timeSlot.setIsAvailable(true);
+        timeSlot.setAvailability(Range.closed(startTime, endTime));
 
-        // Sauvegarder le créneau
-       timeSlotRepository.save(timeSlot);
-
+        timeSlotRepository.save(timeSlot);
     }
 
     @Transactional
     public void setTimeSlotAvailability(String stationId, LocalDateTime startTime, LocalDateTime endTime) {
-        // Récupérer tous les slots dans la plage donnée
         List<TimeSlot> slots = timeSlotRepository.findSlotsInRange(stationId, startTime, endTime, "[]");
 
         for (TimeSlot slot : slots) {
@@ -71,10 +62,12 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
             LocalDate currentDate = startDate;
 
             while (!currentDate.isAfter(endDate)) {
-                if (currentDate.getDayOfWeek() == rule.getDayOfWeek()) {
+                if (currentDate.getDayOfWeek().getValue() == rule.getDayOfWeek()) {
+
                     LocalDateTime startDateTime = currentDate.atTime(rule.getStartTime());
                     LocalDateTime endDateTime = currentDate.atTime(rule.getEndTime());
 
+                    // Vérification anti-doublon
                     boolean exists = timeSlotRepository.existsSlotInRange(
                             rule.getChargingStation().getId(),
                             startDateTime,
@@ -93,11 +86,10 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
                         generatedSlots.add(slot);
                     }
                 }
-
                 currentDate = currentDate.plusDays(1);
             }
+        }
 
-            // Sauvegarde uniquement les NOUVEAUX slots
         if (!generatedSlots.isEmpty()) {
             timeSlotRepository.saveAll(generatedSlots);
             System.out.println("Génération planifiée : " + generatedSlots.size() + " nouveaux créneaux créés.");
@@ -117,7 +109,6 @@ public class TimeSlotBusinessImpl implements TimeSlotBusiness {
     }
 
     public List<TimeSlot> getSlotsFiltered(String stationId, LocalDate date) {
-
         Specification<TimeSlot> spec = Specification.where(null);
 
         if (stationId != null) {
