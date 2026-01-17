@@ -199,6 +199,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     }
 
     @Override
+    @Transactional
     public List<Booking> getMyBookings(User user) {
         return bookingRepository.findByStationOwner(user.getId());
     }
