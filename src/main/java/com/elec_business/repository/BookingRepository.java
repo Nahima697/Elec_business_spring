@@ -41,6 +41,8 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
 
     @Query("""
     SELECT b FROM Booking b\s
+    LEFT JOIN FETCH b.station s
+    LEFT JOIN FETCH s.location
     WHERE b.station.location.user.id = :ownerId
     ORDER BY b.createdAt DESC
 """)
