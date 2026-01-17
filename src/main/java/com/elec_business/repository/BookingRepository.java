@@ -40,10 +40,12 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
             @Param("bookingId") String bookingId);
 
     @Query("""
-    SELECT b FROM Booking b\s
+    SELECT b FROM Booking b
     LEFT JOIN FETCH b.station s
-    LEFT JOIN FETCH s.location
-    WHERE b.station.location.user.id = :ownerId
+    LEFT JOIN FETCH s.location l
+    LEFT JOIN FETCH l.user
+    LEFT JOIN FETCH b.user
+    WHERE l.user.id = :ownerId
     ORDER BY b.createdAt DESC
 """)
     List<Booking> findByStationOwner(@Param("ownerId") String ownerId);
