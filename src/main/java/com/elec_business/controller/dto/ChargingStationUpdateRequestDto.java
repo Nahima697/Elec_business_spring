@@ -5,8 +5,6 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-
-
 public record ChargingStationUpdateRequestDto(
         @Size(max = 100, message = "Name cannot exceed 100 characters")
         String name,

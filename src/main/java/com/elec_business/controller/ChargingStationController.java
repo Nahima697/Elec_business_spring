@@ -83,7 +83,7 @@ public class ChargingStationController {
             @Parameter(description = "Nouvelle image (optionnel)")
             @RequestPart(value = "image", required = false) MultipartFile image) throws AccessDeniedException {
 
-        return chargingStationMapper.toDto(
+        return chargingStationMapper.toSummaryDto(
                 chargingStationBusiness.updateChargingStation(id, chargingStationMapper.toUpdateEntity(dto), currentUser, image)
         );
     }
