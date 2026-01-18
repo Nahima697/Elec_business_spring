@@ -15,13 +15,14 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
 
     Booking findBookingById(String id);
     @Query("""
-        SELECT b 
-        FROM Booking b 
-        LEFT JOIN FETCH b.station s 
-        LEFT JOIN FETCH s.location 
-        WHERE b.user.id = :userId
-    """)
+    SELECT b FROM Booking b
+    JOIN FETCH b.user u
+    LEFT JOIN FETCH b.station s
+    LEFT JOIN FETCH s.location l
+    WHERE b.user.id = :userId
+""")
     List<Booking> findByUserId(@Param("userId") String userId);
+
 
     void deleteBookingById(String id);
 
@@ -41,14 +42,16 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
 
     @Query("""
     SELECT b FROM Booking b
+    JOIN FETCH b.user u
     JOIN FETCH b.status
     JOIN FETCH b.station s
     JOIN FETCH s.location l
-    JOIN FETCH l.user u
-    WHERE u.id = :ownerId
+    JOIN FETCH l.user owner
+    WHERE owner.id = :ownerId
     ORDER BY b.createdAt DESC
 """)
     List<Booking> findByStationOwner(@Param("ownerId") String ownerId);
+
     boolean existsByStation_Location_User_IdAndStation_IdAndStatus_Name(
             String userId,
             String stationId,
