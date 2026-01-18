@@ -107,24 +107,40 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
         return chargingStationRepository.findByOwnerEmail(currentUser.getEmail());
     }
 
+    @Override
+    @Transactional
+    public ChargingStation updateChargingStation(String id, ChargingStation stationChanges, User currentUser, MultipartFile image) throws AccessDeniedException {
 
-    public ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser) throws AccessDeniedException {
-        ChargingStation updateStation = chargingStationRepository.findById(id)
+        ChargingStation existingStation = chargingStationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ERR_STATION_NOT_FOUND));
 
-        if (!updateStation.getLocation().getUser().getId().equals(currentUser.getId())) {
+        if (!existingStation.getLocation().getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not allowed to update this station");
         }
 
+        existingStation.setName(stationChanges.getName());
+        existingStation.setDescription(stationChanges.getDescription());
+        existingStation.setPowerKw(stationChanges.getPowerKw());
+        existingStation.setPrice(stationChanges.getPrice());
 
-        updateStation.setName(station.getName());
-        updateStation.setDescription(station.getDescription());
-        updateStation.setLocation(station.getLocation());
-        updateStation.setCreatedAt(Instant.now());
-        updateStation.setPowerKw(station.getPowerKw());
+        if(stationChanges.getLocation() != null) {
+            existingStation.setLocation(stationChanges.getLocation());
+        }
 
-        updateStation.setPrice(station.getPrice());
-        return chargingStationRepository.save(updateStation);
+        if (image != null && !image.isEmpty()) {
+            try {
+                boolean isValidImage = fileStorageService.checkMediaType(image, "image");
+                if (!isValidImage) {
+                    throw new IllegalArgumentException("Le fichier fourni n'est pas une image valide.");
+                }
+                String newImageUrl = fileStorageService.upload(image);
+                existingStation.setImageUrl(newImageUrl);
+
+            } catch (InvalidMediaTypeException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image format");
+            }
+        }
+        return chargingStationRepository.save(existingStation);
     }
 
     public void deleteChargingStationById(String id, User currentUser) throws AccessDeniedException {

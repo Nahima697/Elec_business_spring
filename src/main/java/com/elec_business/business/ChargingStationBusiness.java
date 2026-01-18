@@ -15,7 +15,7 @@ public interface ChargingStationBusiness {
     ChargingStation getChargingStationById(String id);
     List<ChargingStation> getByLocationId(String id);
     ChargingStation getChargingStationByName(String name);
-    ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser) throws AccessDeniedException;
+    ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser,MultipartFile image) throws AccessDeniedException;
     void deleteChargingStationById(String id,User currentUser) throws AccessDeniedException;
     List<ChargingStation> getMyStations(User currentUser);
 

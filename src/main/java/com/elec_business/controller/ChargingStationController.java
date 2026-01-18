@@ -66,7 +66,7 @@ public class ChargingStationController {
     // --- UPDATE ---
     @Operation(
             summary = "Mettre à jour une borne existante",
-            description = "Permet de modifier le nom, la description, le prix ou la puissance d'une borne. Seul le propriétaire peut faire cette action."
+            description = "Permet de modifier le nom, la description, le prix, la puissance et L'IMAGE d'une borne."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Borne mise à jour avec succès",
@@ -74,14 +74,17 @@ public class ChargingStationController {
             @ApiResponse(responseCode = "403", description = "Accès refusé - Vous n'êtes pas le propriétaire"),
             @ApiResponse(responseCode = "404", description = "Borne introuvable")
     })
-    @PutMapping("/charging_stations/{id}")
+    @PutMapping(value = "/charging_stations/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ChargingStationResponseDto updateStation(
             @Parameter(description = "ID de la borne à modifier", required = true) @PathVariable String id,
-            @RequestBody @Valid ChargingStationUpdateRequestDto dto,
-            @Parameter(hidden = true) @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
+            @Valid @ModelAttribute ChargingStationUpdateRequestDto dto,
+
+            @Parameter(hidden = true) @AuthenticationPrincipal User currentUser,
+            @Parameter(description = "Nouvelle image (optionnel)")
+            @RequestPart(value = "image", required = false) MultipartFile image) throws AccessDeniedException {
 
         return chargingStationMapper.toDto(
-                chargingStationBusiness.updateChargingStation(id, chargingStationMapper.toUpdateEntity(dto), currentUser)
+                chargingStationBusiness.updateChargingStation(id, chargingStationMapper.toUpdateEntity(dto), currentUser, image)
         );
     }
 
