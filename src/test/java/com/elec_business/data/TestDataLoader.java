@@ -27,11 +27,6 @@ public class TestDataLoader {
     public record LoadResult(List<ChargingStation> stations, List<User> users, List<Booking> bookings) {}
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    /**
-     * ⚠️ Transactionnel : on a bien une transaction autour des persist().
-     * Appelé UNE FOIS par les tests (en @BeforeAll).
-     */
     @Transactional
     public LoadResult load() {
 

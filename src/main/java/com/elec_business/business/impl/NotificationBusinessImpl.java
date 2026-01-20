@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 
 @Service
@@ -31,7 +32,7 @@ public class NotificationBusinessImpl implements NotificationBusiness {
         notif.setIsRead(false);
         notif.setCreatedAt(OffsetDateTime.now());
 
-        log.info("✅ Envoi de notification à {}", booking.getUser().getEmail());
+        log.info(" Envoi de notification à {}", booking.getUser().getEmail());
         notificationRepository.save(notif);
         notificationRepository.flush();
     }
@@ -45,9 +46,22 @@ public class NotificationBusinessImpl implements NotificationBusiness {
         notif.setIsRead(false);
         notif.setCreatedAt(OffsetDateTime.now());
 
-        log.info("✅ Envoi de notification à {}", booking.getUser().getEmail());
+        log.info(" Envoi de notification à {}", booking.getUser().getEmail());
         notificationRepository.save(notif);
         notificationRepository.flush();
+    }
+
+    @Override
+    public List<Notification> getMyNotifications(User user) {
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+    }
+
+    @Override
+    public void markAsRead(String id) {
+        notificationRepository.findById(id).ifPresent(n -> {
+            n.setIsRead(true);
+            notificationRepository.save(n);
+        });
     }
 
 }
