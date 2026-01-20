@@ -15,17 +15,17 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
 
     Booking findBookingById(String id);
     @Query("""
-    SELECT b 
+    SELECT b
     FROM Booking b
     JOIN FETCH b.user u
     JOIN FETCH b.status st
     JOIN FETCH b.station s
     JOIN FETCH s.location l
+    LEFT JOIN FETCH l.user owner
     WHERE u.id = :userId
     ORDER BY b.createdAt DESC
 """)
     List<Booking> findByUserId(@Param("userId") String userId);
-
 
 
     void deleteBookingById(String id);
