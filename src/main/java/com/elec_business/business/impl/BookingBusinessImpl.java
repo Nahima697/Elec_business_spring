@@ -186,7 +186,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     // Récupération d'une réservation par ID
     @Override
     public Booking getBookingById(String id, User currentUser) throws AccessDeniedException {
-        Booking booking = bookingRepository.findById(id)
+        Booking booking = bookingRepository.findByIdWithDetails(id)
                 .orElseThrow(BookingNotFoundException::new);
 
         boolean isRenter = booking.getUser().getId().equals(currentUser.getId());

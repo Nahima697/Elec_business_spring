@@ -9,9 +9,20 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, String> {
+    @Query("""
+        SELECT b 
+        FROM Booking b 
+        LEFT JOIN FETCH b.station s 
+        LEFT JOIN FETCH s.location l 
+        LEFT JOIN FETCH l.user owner
+        LEFT JOIN FETCH b.user renter
+        WHERE b.id = :id
+    """)
+    Optional<Booking> findByIdWithDetails(@Param("id") String id);
 
     Booking findBookingById(String id);
     @Query("""
