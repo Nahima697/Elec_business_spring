@@ -1,12 +1,6 @@
 package com.elec_business.business.impl;
 
 import com.elec_business.business.TimeSlotBusiness;
-import com.elec_business.business.eventlistener.BookingAcceptedEvent;
-import com.elec_business.business.eventlistener.BookingRejectedEvent;
-import com.elec_business.business.exception.AccessDeniedBookingException;
-import com.elec_business.business.exception.AccessDeniedStationException;
-import com.elec_business.business.exception.BookingNotFoundException;
-import com.elec_business.business.exception.InvalidBookingDurationException;
 import com.elec_business.entity.*;
 import com.elec_business.repository.BookingRepository;
 import com.elec_business.repository.BookingStatusRepository;
@@ -22,7 +16,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.math.BigDecimal;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,10 +69,6 @@ class BookingBusinessTest {
         verify(bookingRepository).save(any(Booking.class));
     }
 
-    // ... (Tes autres tests createBooking restent identiques) ...
-
-    // --- TESTS GET BOOKING (SECURISÉ) ---
-
     @Test
     void getBookingById_Success_AsRenter() throws AccessDeniedException {
         // ARRANGE
@@ -91,10 +80,10 @@ class BookingBusinessTest {
 
         Booking b = new Booking();
         b.setId("b1");
-        b.setUser(renter); // C'est le locataire
+        b.setUser(renter);
         b.setStation(station);
 
-        when(bookingRepository.findById("b1")).thenReturn(Optional.of(b));
+        when(bookingRepository.findByIdWithDetails("b1")).thenReturn(Optional.of(b));
 
         // ACT
         Booking result = bookingBusiness.getBookingById("b1", renter);
@@ -115,9 +104,9 @@ class BookingBusinessTest {
         Booking b = new Booking();
         b.setId("b1");
         b.setUser(renter);
-        b.setStation(station); // La station appartient au Owner
+        b.setStation(station);
 
-        when(bookingRepository.findById("b1")).thenReturn(Optional.of(b));
+        when(bookingRepository.findByIdWithDetails("b1")).thenReturn(Optional.of(b));
 
         // ACT
         Booking result = bookingBusiness.getBookingById("b1", owner);
@@ -131,7 +120,7 @@ class BookingBusinessTest {
         // ARRANGE
         User renter = new User(); renter.setId("renter-1");
         User owner = new User(); owner.setId("owner-1");
-        User hacker = new User(); hacker.setId("hacker-1"); // Tiers
+        User hacker = new User(); hacker.setId("hacker-1");
 
         ChargingLocation loc = new ChargingLocation(); loc.setUser(owner);
         ChargingStation station = new ChargingStation(); station.setLocation(loc);
@@ -141,7 +130,7 @@ class BookingBusinessTest {
         b.setUser(renter);
         b.setStation(station);
 
-        when(bookingRepository.findById("b1")).thenReturn(Optional.of(b));
+        when(bookingRepository.findByIdWithDetails("b1")).thenReturn(Optional.of(b));
 
         // ACT & ASSERT
         assertThrows(AccessDeniedException.class, () ->
@@ -163,9 +152,7 @@ class BookingBusinessTest {
         b.setId("b1");
         b.setUser(renter);
         b.setStation(station);
-
-        // Le findById est appelé par getBookingById interne
-        when(bookingRepository.findById("b1")).thenReturn(Optional.of(b));
+        when(bookingRepository.findByIdWithDetails("b1")).thenReturn(Optional.of(b));
 
         // ACT
         bookingBusiness.deleteBooking("b1", renter);
@@ -176,6 +163,7 @@ class BookingBusinessTest {
 
     @Test
     void deleteBooking_Fail_AccessDenied() {
+        // ARRANGE
         User renter = new User(); renter.setId("renter-1");
         User owner = new User(); owner.setId("owner-1");
         User hacker = new User(); hacker.setId("hacker");
@@ -188,8 +176,9 @@ class BookingBusinessTest {
         b.setUser(renter);
         b.setStation(station);
 
-        when(bookingRepository.findById("b1")).thenReturn(Optional.of(b));
+        when(bookingRepository.findByIdWithDetails("b1")).thenReturn(Optional.of(b));
 
+        // ACT & ASSERT
         assertThrows(AccessDeniedException.class, () ->
                 bookingBusiness.deleteBooking("b1", hacker)
         );
