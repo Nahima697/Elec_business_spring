@@ -14,10 +14,10 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, String> {
     @Query("""
-        SELECT b 
-        FROM Booking b 
-        LEFT JOIN FETCH b.station s 
-        LEFT JOIN FETCH s.location l 
+        SELECT b
+        FROM Booking b
+        LEFT JOIN FETCH b.station s
+        LEFT JOIN FETCH s.location l
         LEFT JOIN FETCH l.user owner
         LEFT JOIN FETCH b.user renter
         LEFT JOIN FETCH b.status status

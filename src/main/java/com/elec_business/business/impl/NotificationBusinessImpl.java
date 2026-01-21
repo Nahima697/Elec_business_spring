@@ -53,7 +53,7 @@ public class NotificationBusinessImpl implements NotificationBusiness {
 
     @Override
     public List<Notification> getMyNotifications(User user) {
-        return notificationRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+        return notificationRepository.findByUserId(user.getId());
     }
 
     @Override
