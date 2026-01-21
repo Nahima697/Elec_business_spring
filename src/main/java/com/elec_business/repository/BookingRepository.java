@@ -20,6 +20,7 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
         LEFT JOIN FETCH s.location l 
         LEFT JOIN FETCH l.user owner
         LEFT JOIN FETCH b.user renter
+        LEFT JOIN FETCH b.status status
         WHERE b.id = :id
     """)
     Optional<Booking> findByIdWithDetails(@Param("id") String id);
