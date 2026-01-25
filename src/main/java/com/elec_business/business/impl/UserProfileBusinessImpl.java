@@ -7,10 +7,12 @@ import com.elec_business.entity.BillingAddress;
 import com.elec_business.entity.User;
 import com.elec_business.repository.BillingAddressRepository;
 import com.elec_business.repository.UserRepository;
+import com.elec_business.service.FileStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class UserProfileBusinessImpl implements UserProfilBusiness {
     private final UserRepository userRepository;
     private final BillingAddressRepository billingAddressRepository;
     private final UserMapper userMapper;
+    private final FileStorageService fileStorageService;
     @Override
     @Transactional
     public UserProfileDto getProfile(String userId) {
@@ -59,17 +62,20 @@ public class UserProfileBusinessImpl implements UserProfilBusiness {
         return userMapper.toUserProfileWithDetailDto(user, address);
     }
 
-    private UserProfileDto mapToDto(User user, BillingAddress address) {
-        // 1. On mappe les infos de base du User via le mapper
-        UserProfileDto dto = userMapper.toUserProfileDto(user);
+    @Override
+    @Transactional
+    public UserProfileDto uploadAvatar(String userId, MultipartFile file) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // 2. On ajoute les infos de l'adresse manuellement si elle existe
-        if (address != null) {
-            dto.setAddressLine(address.getAddressLine());
-            dto.setCity(address.getCity());
-            dto.setPostalCode(address.getPostalCode());
-            dto.setCountry(address.getCountry());
-        }
-        return dto;
+        String fileUrl = fileStorageService.upload(file);
+
+        user.setProfilePictureUrl(fileUrl);
+        userRepository.save(user);
+
+        BillingAddress address = billingAddressRepository.findByUserId(userId);
+
+        return userMapper.toUserProfileWithDetailDto(user, address);
     }
 }
+
