@@ -43,6 +43,9 @@ public class AuthController {
     @Value("${app.auth.frontend.url}")
     private String FRONT_URL;
 
+    @Value("${application.api.url}")
+    private String BACKEND_URL;
+
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponseDto> register(@RequestBody @Valid RegistrationDto registrationDto) {
 
@@ -50,8 +53,7 @@ public class AuthController {
             User registeredUser = userRegistrationService.registerUser(
                     userMapper.toEntity(registrationDto)
             );
-            String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-            // 2. Envoi asynchrone de l'email (exception gérée dans le service)
+            String baseUrl = BACKEND_URL;
             emailVerificationService.sendVerificationToken(
                     registeredUser.getId(),
                     registeredUser.getEmail(),

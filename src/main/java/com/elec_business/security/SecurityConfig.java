@@ -42,13 +42,10 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // ✅ Fichiers accessibles publiquement
                         .requestMatchers(
                                 "/thumbnail-*.jpg",
                                 "/uploads/**"
                         ).permitAll()
-
-                        // ✅ Routes API publiques
                         .requestMatchers(
                                 "/api/login",
                                 "/api/register",
@@ -60,8 +57,6 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/charging_stations/**","/api/charging_locations/**").permitAll()
-
-                        // 🔐 Le reste nécessite authentification
                         .anyRequest().authenticated()
                 )
             
@@ -86,7 +81,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:8100", "capacitor://localhost", "http://localhost", "http://localhost:4200","https://elec-business-spring.onrender.com"));
+        config.setAllowedOrigins(List.of("http://localhost:8100", "capacitor://localhost", "http://localhost","https://localhost",
+                "capacitor://localhost", "http://localhost:4200","https://elec-business-spring.onrender.com"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization", "x-authentication-token"));
