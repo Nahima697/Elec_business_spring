@@ -33,6 +33,7 @@ public interface BookingMapper {
     default void fillExtraInfos(Booking booking, @MappingTarget BookingResponseDto.BookingResponseDtoBuilder builder) {
 
         if (booking.getStation() != null) {
+            builder.stationId(booking.getStation().getId());
             builder.stationName(booking.getStation().getName());
             if (booking.getStation().getLocation() != null &&
                     booking.getStation().getLocation().getUser() != null) {

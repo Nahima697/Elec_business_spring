@@ -20,7 +20,7 @@ public class BookingResponseDto {
     private LocalDateTime endDate;
 
     private BigDecimal totalPrice;
-
+    private String stationId;
     private String statusLabel;
     private String stationName;
     private String userName;
