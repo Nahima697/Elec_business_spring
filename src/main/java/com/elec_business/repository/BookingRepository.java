@@ -73,7 +73,11 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
             String stationId,
             BookingStatusType status
     );
-
+    boolean existsByUser_IdAndStation_IdAndStatus_Name(
+            String userId,
+            String stationId,
+            BookingStatusType status
+    );
 }
 
 
