@@ -29,7 +29,7 @@ public class ReviewBusinessImpl implements ReviewBusiness {
     @Override
     public Review createReview(String title, String content, Integer rating, String userId, String stationId) {
 
-        boolean hasBooked = bookingRepository.existsByUser_IdAndStation_IdAndStatus_Name(
+        boolean hasBooked = bookingRepository.existsAcceptedBooking(
                 userId,
                 stationId,
                 BookingStatusType.ACCEPTED

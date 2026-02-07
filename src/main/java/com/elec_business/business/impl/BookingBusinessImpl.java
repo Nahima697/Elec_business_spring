@@ -19,9 +19,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
-import java.nio.file.AccessDeniedException;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -116,13 +117,16 @@ public class BookingBusinessImpl implements BookingBusiness {
     @Override
     public BigDecimal calculateTotalPrice(ChargingStation station, Booking booking) {
         BigDecimal pricePerHour = station.getPrice();
-        long durationInHours = Duration.between(booking.getStartDate(), booking.getEndDate()).toHours();
+        long durationInMinutes = Duration.between(booking.getStartDate(), booking.getEndDate()).toMinutes();
 
-        if (durationInHours <= 0) {
+        if (durationInMinutes <= 0) {
             throw new InvalidBookingDurationException();
         }
 
-        return pricePerHour.multiply(BigDecimal.valueOf(durationInHours));
+        BigDecimal durationInHours = BigDecimal.valueOf(durationInMinutes)
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+
+        return pricePerHour.multiply(durationInHours);
     }
 
     // Acceptation de la réservation
