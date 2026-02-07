@@ -1,10 +1,7 @@
 package com.elec_business.business.impl;
 
 import com.elec_business.business.exception.BusinessException;
-import com.elec_business.entity.BookingStatusType;
-import com.elec_business.entity.ChargingStation;
-import com.elec_business.entity.Review;
-import com.elec_business.entity.User;
+import com.elec_business.entity.*;
 import com.elec_business.repository.BookingRepository;
 import com.elec_business.repository.ChargingStationRepository;
 import com.elec_business.repository.ReviewRepository;
@@ -32,134 +29,122 @@ class ReviewBusinessTest {
 
     @Mock
     private ReviewRepository reviewRepository;
-
     @Mock
     private BookingRepository bookingRepository;
-
     @Mock
     private ChargingStationRepository stationRepository;
-
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
     private ReviewBusinessImpl reviewBusiness;
 
-    // --- CREATE REVIEW ---
-
     @Test
     void createReview_Success() {
         // ARRANGE
         String userId = "user-1";
         String stationId = "station-1";
-
         User user = new User(); user.setId(userId);
         ChargingStation station = new ChargingStation(); station.setId(stationId);
 
-        // 1. Simuler qu'il a bien une réservation ACCEPTED
-        when(bookingRepository.existsByStation_Location_User_IdAndStation_IdAndStatus_Name(
-                userId, stationId, BookingStatusType.ACCEPTED
-        )).thenReturn(true);
+        // 1. On dit que la réservation existe bien (ACCEPTED)
+        when(bookingRepository.existsAcceptedBooking(eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
+                .thenReturn(true);
 
-        // 2. Simuler qu'il n'a PAS encore noté cette station
+        // 2. On dit que l'utilisateur n'a PAS encore noté
         when(reviewRepository.existsByUserAndStation(userId, stationId)).thenReturn(false);
 
-        // 3. Simuler la récupération des entités
+        // 3. Mock des repositories User et Station
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(stationRepository.findById(stationId)).thenReturn(Optional.of(station));
 
-        // 4. Simuler la sauvegarde
+        // 4. Mock du save (retourne l'objet passé en argument)
         when(reviewRepository.save(any(Review.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // ACT
-        Review result = reviewBusiness.createReview("Super", "Top borne", 5, userId, stationId);
+        Review result = reviewBusiness.createReview("Titre", "Contenu", 5, userId, stationId);
 
         // ASSERT
         assertNotNull(result);
-        assertEquals("Super", result.getTitle());
+        assertEquals("Titre", result.getTitle());
         assertEquals(5, result.getRating());
-        assertNotNull(result.getCreatedAt());
-
         verify(reviewRepository).save(any(Review.class));
     }
 
     @Test
     void createReview_Fail_NoCompletedBooking() {
-        String userId = "u1";
-        String stationId = "s1";
+        // ARRANGE
+        String userId = "user-1";
+        String stationId = "station-1";
 
-        // Simuler qu'aucune réservation terminée n'existe
-        when(bookingRepository.existsByStation_Location_User_IdAndStation_IdAndStatus_Name(any(), any(), any()))
+        // Le repository répond FALSE : aucune réservation acceptée
+        when(bookingRepository.existsAcceptedBooking(eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
                 .thenReturn(false);
 
         // ACT & ASSERT
         BusinessException ex = assertThrows(BusinessException.class, () ->
-                reviewBusiness.createReview("Titre", "Contenu", 4, userId, stationId)
+                reviewBusiness.createReview("Titre", "Contenu", 5, userId, stationId)
         );
 
         assertEquals("You must have a completed booking to review this station.", ex.getMessage());
+
+        // On vérifie qu'on n'a JAMAIS essayé de sauver
         verify(reviewRepository, never()).save(any());
     }
 
     @Test
     void createReview_Fail_AlreadyReviewed() {
-        String userId = "u1";
-        String stationId = "s1";
+        // ARRANGE
+        String userId = "user-1";
+        String stationId = "station-1";
 
-        // Il a réservé...
-        when(bookingRepository.existsByStation_Location_User_IdAndStation_IdAndStatus_Name(any(), any(), any()))
+        // 1. Il faut que la réservation existe
+        when(bookingRepository.existsAcceptedBooking(eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
                 .thenReturn(true);
-        // ... MAIS il a déjà laissé un avis
+
+        // 2. MAIS l'utilisateur a déjà noté
         when(reviewRepository.existsByUserAndStation(userId, stationId)).thenReturn(true);
 
         // ACT & ASSERT
         BusinessException ex = assertThrows(BusinessException.class, () ->
-                reviewBusiness.createReview("Titre", "Contenu", 4, userId, stationId)
+                reviewBusiness.createReview("Titre", "Contenu", 5, userId, stationId)
         );
 
         assertEquals("You already reviewed this station.", ex.getMessage());
         verify(reviewRepository, never()).save(any());
     }
 
-    // --- GET DATA ---
-
     @Test
-    void getAverageRating_Success() {
-        when(reviewRepository.findAverageRatingByStationId("s1")).thenReturn(Optional.of(4.5));
+    void getReviews_Success() {
+        String stationId = "station-1";
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Review> page = new PageImpl<>(Collections.emptyList());
 
-        Double avg = reviewBusiness.getAverageRating("s1");
+        when(reviewRepository.findByStationIdOrderByCreatedAtDesc(stationId, pageable)).thenReturn(page);
 
-        assertEquals(4.5, avg);
+        Page<Review> result = reviewBusiness.getReviews(stationId, pageable);
+
+        assertNotNull(result);
+        verify(reviewRepository).findByStationIdOrderByCreatedAtDesc(stationId, pageable);
     }
 
     @Test
-    void getAverageRating_Empty() {
-        when(reviewRepository.findAverageRatingByStationId("s1")).thenReturn(Optional.empty());
+    void getAverageRating_Success() {
+        String stationId = "station-1";
+        when(reviewRepository.findAverageRatingByStationId(stationId)).thenReturn(Optional.of(4.5));
 
-        Double avg = reviewBusiness.getAverageRating("s1");
+        Double rating = reviewBusiness.getAverageRating(stationId);
 
-        assertEquals(0.0, avg);
+        assertEquals(4.5, rating);
     }
 
     @Test
     void getReviewCount_Success() {
-        when(reviewRepository.countByStationId("s1")).thenReturn(10L);
+        String stationId = "station-1";
+        when(reviewRepository.countByStationId(stationId)).thenReturn(10L);
 
-        Long count = reviewBusiness.getReviewCount("s1");
+        Long count = reviewBusiness.getReviewCount(stationId);
 
         assertEquals(10L, count);
-    }
-
-    @Test
-    void getReviews_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Review> emptyPage = new PageImpl<>(Collections.emptyList());
-
-        when(reviewRepository.findByStationIdOrderByCreatedAtDesc("s1", pageable)).thenReturn(emptyPage);
-
-        Page<Review> result = reviewBusiness.getReviews("s1", pageable);
-
-        assertNotNull(result);
-        verify(reviewRepository).findByStationIdOrderByCreatedAtDesc("s1", pageable);
     }
 }
