@@ -21,24 +21,26 @@ import java.util.List;
 public class AvailabilityRuleBusinessImpl implements AvailabilityRuleBusiness {
 
     private final AvailabilityRuleRepository ruleRepo;
-    private final AvailabilityRuleMapper mapper;
     private final TimeSlotBusinessImpl timeSlotService;
     private final ChargingStationRepository chargingStationRepository;
 
     @Override
+    @Transactional
     public void createRule(AvailabilityRule rule, User currentUser) {
 
-        // 1. On récupère l'ID de la station directement depuis l'objet rule
+        // 1. Récupération ID station
         String stationId = rule.getChargingStation().getId();
 
-        // 2. On va chercher la station en base de données
+        // 2. Récupération Station
         ChargingStation station = chargingStationRepository.findById(stationId)
                 .orElseThrow(StationNotFoundException::new);
 
-        // 3. Vérification de sécurité
+        // 3. Sécurité (Propriétaire)
         if (!station.getLocation().getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedStationException();
         }
+
+        // 4. Vérification Conflit
         boolean hasConflict = ruleRepo.existsOverlappingRule(
                 station.getId(),
                 rule.getDayOfWeek(),
@@ -49,24 +51,23 @@ public class AvailabilityRuleBusinessImpl implements AvailabilityRuleBusiness {
         if (hasConflict) {
             throw new IllegalArgumentException("Une règle existe déjà sur ce créneau horaire pour ce jour !");
         }
-        // 4. On rattache la station complète à la règle
+
+        // 5. Rattachement
         rule.setChargingStation(station);
 
-        // 5. Sauvegarde
-        ruleRepo.save(rule);
+        AvailabilityRule savedRule = ruleRepo.save(rule);
 
-        // 6. Génération des créneaux
+        // 7. Génération des créneaux (Sur la règle sauvegardée)
         timeSlotService.generateTimeSlotsFromAvailabilityRules(
                 LocalDate.now(),
-                LocalDate.now().plusDays(14),
-                List.of(rule)
+                LocalDate.now().plusDays(30),
+                List.of(savedRule)
         );
     }
 
     @Transactional
     public List<AvailabilityRule> getRules(String stationId) {
-        return ruleRepo.findByChargingStation_Id(stationId)
-                .stream().toList();
+        return ruleRepo.findByChargingStation_Id(stationId);
     }
 
     public void deleteRule(String id) {

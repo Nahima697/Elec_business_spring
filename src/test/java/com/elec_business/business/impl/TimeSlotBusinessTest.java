@@ -7,6 +7,7 @@ import com.elec_business.repository.ChargingStationRepository;
 import com.elec_business.repository.TimeSlotRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,24 +39,20 @@ class TimeSlotBusinessTest {
     @InjectMocks
     private TimeSlotBusinessImpl timeSlotBusiness;
 
-    // --- TEST: addTimeSlot ---
     @Test
     void addTimeSlot_Success() {
-        // ARRANGE
         String stationId = "station-1";
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = start.plusHours(2);
-        
+
         ChargingStation station = new ChargingStation();
         station.setId(stationId);
 
         when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
-        when(timeSlotRepository.save(any(TimeSlot.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(timeSlotRepository.existsSlotInRange(any(), any(), any(), any())).thenReturn(false);
 
-        // ACT
         timeSlotBusiness.addTimeSlot(stationId, start, end);
 
-        // ASSERT
         verify(timeSlotRepository).save(any(TimeSlot.class));
     }
 
@@ -67,34 +64,29 @@ class TimeSlotBusinessTest {
 
         when(chargingStationRepository.findById(stationId)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> 
-            timeSlotBusiness.addTimeSlot(stationId, start, end)
+        assertThrows(IllegalArgumentException.class, () ->
+                timeSlotBusiness.addTimeSlot(stationId, start, end)
         );
     }
 
-    // --- TEST: setTimeSlotAvailability ---
     @Test
     void setTimeSlotAvailability_Success() {
-        // ARRANGE
         String stationId = "s1";
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plusHours(2);
 
-        TimeSlot slot1 = new TimeSlot(); 
-        slot1.setIsAvailable(true); // Disponible avant
+        TimeSlot slot1 = new TimeSlot();
+        slot1.setIsAvailable(true);
 
         when(timeSlotRepository.findSlotsInRange(eq(stationId), eq(start), eq(end), anyString()))
                 .thenReturn(List.of(slot1));
 
-        // ACT
         timeSlotBusiness.setTimeSlotAvailability(stationId, start, end);
 
-        // ASSERT
-        assertFalse(slot1.getIsAvailable()); // Doit devenir indisponible
+        assertFalse(slot1.getIsAvailable());
         verify(timeSlotRepository).saveAll(anyList());
     }
 
-    // --- TEST: generateTimeSlotsFromAvailabilityRules ---
     @Test
     void generateTimeSlotsFromAvailabilityRules_Success() {
         // ARRANGE
@@ -102,49 +94,51 @@ class TimeSlotBusinessTest {
         station.setId("s1");
 
         AvailabilityRule rule = new AvailabilityRule();
-        rule.setChargingStation(station); // Correction nom méthode
-        rule.setDayOfWeek(1); // 1 = Lundi
+        rule.setChargingStation(station);
+        rule.setDayOfWeek(1); // Lundi
         rule.setStartTime(LocalTime.of(8, 0));
         rule.setEndTime(LocalTime.of(12, 0));
 
-        // On génère sur une période qui contient un Lundi
-        LocalDate start = LocalDate.of(2024, 1, 1); // C'est un Lundi
-        LocalDate end = LocalDate.of(2024, 1, 2);   // Mardi
+        // On prend une date qui EST un lundi (ex: 1er Janvier 2024)
+        LocalDate start = LocalDate.of(2024, 1, 1);
+        LocalDate end = LocalDate.of(2024, 1, 2);
+
+        // Mock : Pas de slot existant, donc on peut créer
+        when(timeSlotRepository.existsSlotInRange(any(), any(), any(), any())).thenReturn(false);
 
         // ACT
         timeSlotBusiness.generateTimeSlotsFromAvailabilityRules(start, end, List.of(rule));
 
         // ASSERT
-        // On vérifie qu'on sauvegarde bien une liste de slots générés
-        verify(timeSlotRepository).saveAll(argThat(list -> {
-            List<TimeSlot> slots = (List<TimeSlot>) list;
-            return slots.size() == 1 && // Un seul slot généré (le lundi)
-                   slots.get(0).getStartTime().toLocalTime().equals(LocalTime.of(8,0));
-        }));
+        // Capture pour vérifier ce qui est sauvegardé
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<TimeSlot>> captor = ArgumentCaptor.forClass(List.class);
+        verify(timeSlotRepository).saveAll(captor.capture());
+
+        List<TimeSlot> savedSlots = captor.getValue();
+        assertEquals(1, savedSlots.size()); // 1 seul slot car 1 seul lundi dans l'intervalle
+        assertEquals(LocalTime.of(8, 0), savedSlots.get(0).getStartTime().toLocalTime());
     }
 
-    // --- TEST: purgeOldTimeSlots ---
     @Test
     void purgeOldTimeSlots_Success() {
         timeSlotBusiness.purgeOldTimeSlots();
+        // Le mockito 'any' marche ici
         verify(timeSlotRepository).deleteByStartTimeBefore(any(LocalDateTime.class));
     }
 
-    // --- TEST: getAvailableSlots ---
     @Test
     void getAvailableSlots_Success() {
         Pageable pageable = Pageable.unpaged();
         when(timeSlotRepository.findByStationId("s1", pageable)).thenReturn(Page.empty());
-        
+
         timeSlotBusiness.getAvailableSlots("s1", pageable);
-        
+
         verify(timeSlotRepository).findByStationId("s1", pageable);
     }
 
-    // --- TEST: getSlotsFiltered ---
     @Test
     void getSlotsFiltered_Success() {
-        
         when(timeSlotRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
 
         timeSlotBusiness.getSlotsFiltered("s1", LocalDate.now());

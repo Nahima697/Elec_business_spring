@@ -31,8 +31,9 @@ class AvailabilityRuleBusinessTest {
     @Mock
     private AvailabilityRuleRepository ruleRepo;
 
+    // Mapper n'est plus utilisé dans createRule, mais on le laisse si besoin ailleurs
     @Mock
-    private AvailabilityRuleMapper mapper; // Mocké car injecté, même si peu utilisé
+    private AvailabilityRuleMapper mapper;
 
     @Mock
     private TimeSlotBusinessImpl timeSlotService;
@@ -42,8 +43,6 @@ class AvailabilityRuleBusinessTest {
 
     @InjectMocks
     private AvailabilityRuleBusinessImpl availabilityRuleBusiness;
-
-    // --- CREATE RULE ---
 
     @Test
     void createRule_Success() {
@@ -55,32 +54,31 @@ class AvailabilityRuleBusinessTest {
         owner.setId(userId);
 
         ChargingLocation location = new ChargingLocation();
-        location.setUser(owner); // Le User est propriétaire du lieu
+        location.setUser(owner);
 
         ChargingStation station = new ChargingStation();
         station.setId(stationId);
         station.setLocation(location);
 
         AvailabilityRule rule = new AvailabilityRule();
-        rule.setChargingStation(station); // Pour passer le rule.getChargingStation().getId()
+        // On simule une règle qui contient déjà une station (DTO -> Entity)
+        rule.setChargingStation(station);
         rule.setDayOfWeek(1);
         rule.setStartTime(LocalTime.of(8, 0));
         rule.setEndTime(LocalTime.of(12, 0));
 
         // Mocks
         when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
-        // Pas de conflit
         when(ruleRepo.existsOverlappingRule(eq(stationId), any(), any(), any())).thenReturn(false);
-        // Sauvegarde ok
+        // Important : save retourne l'objet passé
         when(ruleRepo.save(any(AvailabilityRule.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // ACT
         availabilityRuleBusiness.createRule(rule, owner);
 
         // ASSERT
-        // 1. Vérifie qu'on a bien sauvegardé la règle
         verify(ruleRepo).save(rule);
-        // 2. Vérifie qu'on a déclenché la génération des créneaux
+        // On vérifie que la génération des slots est appelée
         verify(timeSlotService).generateTimeSlotsFromAvailabilityRules(any(), any(), anyList());
     }
 
@@ -89,6 +87,7 @@ class AvailabilityRuleBusinessTest {
         User user = new User();
         ChargingStation station = new ChargingStation();
         station.setId("unknown");
+
         AvailabilityRule rule = new AvailabilityRule();
         rule.setChargingStation(station);
 
@@ -106,7 +105,7 @@ class AvailabilityRuleBusinessTest {
         User hacker = new User(); hacker.setId("hacker");
 
         ChargingLocation location = new ChargingLocation();
-        location.setUser(owner); // Appartient à Owner
+        location.setUser(owner);
 
         ChargingStation station = new ChargingStation();
         station.setId("s1");
@@ -118,7 +117,6 @@ class AvailabilityRuleBusinessTest {
         when(chargingStationRepository.findById("s1")).thenReturn(Optional.of(station));
 
         // ACT & ASSERT
-        // On essaie de créer avec le user "hacker"
         assertThrows(AccessDeniedStationException.class, () ->
                 availabilityRuleBusiness.createRule(rule, hacker)
         );
@@ -129,10 +127,14 @@ class AvailabilityRuleBusinessTest {
     @Test
     void createRule_Fail_Overlap() {
         // ARRANGE
+        String stationId = "s1";
         User owner = new User(); owner.setId("u1");
-        ChargingLocation location = new ChargingLocation(); location.setUser(owner);
+
+        ChargingLocation location = new ChargingLocation();
+        location.setUser(owner);
+
         ChargingStation station = new ChargingStation();
-        station.setId("s1");
+        station.setId(stationId);
         station.setLocation(location);
 
         AvailabilityRule rule = new AvailabilityRule();
@@ -141,9 +143,8 @@ class AvailabilityRuleBusinessTest {
         rule.setStartTime(LocalTime.of(10, 0));
         rule.setEndTime(LocalTime.of(11, 0));
 
-        when(chargingStationRepository.findById("s1")).thenReturn(Optional.of(station));
-        // Simulation conflit : il existe déjà une règle sur ce créneau
-        when(ruleRepo.existsOverlappingRule(eq("s1"), eq(1), any(), any())).thenReturn(true);
+        when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
+        when(ruleRepo.existsOverlappingRule(eq(stationId), eq(1), any(), any())).thenReturn(true);
 
         // ACT & ASSERT
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
@@ -153,8 +154,6 @@ class AvailabilityRuleBusinessTest {
         assertEquals("Une règle existe déjà sur ce créneau horaire pour ce jour !", ex.getMessage());
         verify(ruleRepo, never()).save(any());
     }
-
-    // --- GET RULES ---
 
     @Test
     void getRules_Success() {
@@ -167,8 +166,6 @@ class AvailabilityRuleBusinessTest {
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
     }
-
-    // --- DELETE RULE ---
 
     @Test
     void deleteRule_Success() {
