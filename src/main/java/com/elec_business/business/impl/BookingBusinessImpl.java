@@ -251,6 +251,6 @@ public class BookingBusinessImpl implements BookingBusiness {
     @Override
     @Transactional
     public List<Booking> getMyRentals(User user) {
-        return bookingRepository.findByUserId(user.getId());
+        return bookingRepository.findByRenterId(user.getId());
     }
 }
