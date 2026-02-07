@@ -2,6 +2,8 @@ package com.elec_business.controller.dto;
 
 import lombok.Data;
 
+import java.time.OffsetDateTime;
+
 @Data
 public class ReviewResponseDTO {
 
@@ -19,5 +21,5 @@ public class ReviewResponseDTO {
 
     private String username;
 
-    private String createdAt;
+    OffsetDateTime createdAt;
 }
