@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public  interface TimeSlotMapper {
+public  interface  TimeSlotMapper {
      TimeSlot toEntity(TimeSlotRequestDto dto);
      TimeSlotResponseDto toDto(TimeSlot entity);
      List<TimeSlotResponseDto> toDtoList(List<TimeSlot> entities);

@@ -10,6 +10,7 @@ import com.elec_business.repository.ReviewRepository;
 import com.elec_business.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import  org.springframework.data.domain.Page;
@@ -51,7 +52,13 @@ public class ReviewBusinessImpl implements ReviewBusiness {
         review.setRating(rating);
         review.setCreatedAt(OffsetDateTime.now());
 
-        return reviewRepository.save(review);
+        Review savedReview = reviewRepository.save(review);
+
+        Hibernate.initialize(savedReview.getUser());
+        Hibernate.initialize(savedReview.getStation());
+
+        return savedReview;
+
     }
 
     @Override

@@ -22,4 +22,6 @@ public interface ReviewMapper {
     default String dateToString(java.time.OffsetDateTime date) {
         return date != null ? date.toString() : null;
     }
+    Review toEntity5(ReviewResponseDTO reviewResponseDTO);
+
 }
