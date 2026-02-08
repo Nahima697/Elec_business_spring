@@ -73,7 +73,7 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
             String stationId,
             BookingStatusType status
     );
-    @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.user.id = :userId AND b.station.id = :stationId AND b.status.name = :status")
+    @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.user.id = :userId AND b.station.id = :stationId AND b.status.name = :status AND b.endDate < CURRENT_TIMESTAMP")
     boolean existsAcceptedBooking(
             @Param("userId") String userId,
             @Param("stationId") String stationId,
