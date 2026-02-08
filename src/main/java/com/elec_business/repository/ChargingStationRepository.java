@@ -23,17 +23,13 @@ public interface ChargingStationRepository  extends JpaRepository<ChargingStatio
             "LEFT JOIN FETCH loc.user " +
             "WHERE loc.id = :id")
     List<ChargingStation> findByLocation_Id(@Param("id") String id);
-    @Query("""
-        SELECT s
-        FROM ChargingStation s
-        LEFT JOIN FETCH s.location l
-        LEFT JOIN FETCH l.user u
-        LEFT JOIN FETCH s.images
-        LEFT JOIN FETCH s.reviews r
-        LEFT JOIN FETCH r.user ru
-        WHERE s.id = :id
-    """)
-    Optional<ChargingStation> findByIdWithDetails(@Param("id") String id);
+    @Query("SELECT DISTINCT cs FROM ChargingStation cs " +
+            "LEFT JOIN FETCH cs.location loc " +
+            "LEFT JOIN FETCH loc.user " +
+            "LEFT JOIN FETCH cs.reviews rev " +
+            "LEFT JOIN FETCH rev.user " +
+            "WHERE cs.id = :id")
+    ChargingStation findByIdWithDetails(@Param("id") String id);
     @Query("SELECT s FROM ChargingStation s WHERE s.location.user.email = :email")
     List<ChargingStation> findByOwnerEmail(String email);
 

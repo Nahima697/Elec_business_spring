@@ -10,9 +10,11 @@ import com.elec_business.service.FileStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DialectOverride;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -75,9 +76,9 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
     }
 
     @Override
-    public Optional<ChargingStation> getChargingStationById(String id) {
-        Optional<ChargingStation> station =chargingStationRepository.findByIdWithDetails(id);
-        if(station.isEmpty()) {
+    public ChargingStation getChargingStationById(String id) {
+        ChargingStation station =chargingStationRepository.findByIdWithDetails(id);
+        if(station == null) {
             throw new EntityNotFoundException("Charging station not found");
         }
         return station;
