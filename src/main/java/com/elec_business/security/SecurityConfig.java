@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/api/login",
                                 "/api/register",
                                 "/api/email/verify",
+                                "api/refresh-token",
                                 "/error",
                                 "/favicon.ico",
                                 "/swagger-ui.html",

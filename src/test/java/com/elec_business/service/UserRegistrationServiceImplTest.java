@@ -41,7 +41,6 @@ class UserRegistrationServiceImplTest {
         user.setEmail("newuser@test.com");
         user.setUsername("newUser");
         user.setPassword("plainPassword");
-     
 
         when(userRepository.existsByUsername(user.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);

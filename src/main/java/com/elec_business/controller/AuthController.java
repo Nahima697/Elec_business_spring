@@ -128,7 +128,7 @@ public class AuthController {
         return ResponseEntity.ok(userMapper.toUserProfileDto(currentUser));
     }
 
-    @PostMapping("/api/refresh-token")
+    @PostMapping("/refresh-token")
     public ResponseEntity<String> refreshToken(@CookieValue(name = "refresh-token") String token) {
         try {
 
