@@ -8,11 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Optional;
 
 public interface ChargingStationBusiness {
     ChargingStation createChargingStation(ChargingStation station, User currentUser, MultipartFile image) throws AccessDeniedException;
     Page<ChargingStation> getAllChargingStations(Pageable pageable);
-    ChargingStation getChargingStationById(String id);
+    Optional<ChargingStation> getChargingStationById(String id);
     List<ChargingStation> getByLocationId(String id);
     ChargingStation getChargingStationByName(String name);
     ChargingStation updateChargingStation(String id, ChargingStation station, User currentUser,MultipartFile image) throws AccessDeniedException;
