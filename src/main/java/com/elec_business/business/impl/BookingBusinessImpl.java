@@ -133,7 +133,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     @Transactional
     @Override
     public Booking acceptBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
-        Booking booking = bookingRepository.findById(bookingId)
+        Booking booking = bookingRepository.findByIdWithDetails(bookingId)
                 .orElseThrow(BookingNotFoundException::new);
 
         ChargingStation station = booking.getStation();
