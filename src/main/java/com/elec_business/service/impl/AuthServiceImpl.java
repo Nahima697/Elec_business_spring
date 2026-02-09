@@ -17,12 +17,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
     private final UserMapper mapper;
@@ -37,33 +37,22 @@ public class AuthServiceImpl implements AuthService {
         return (User) authentication.getPrincipal();
     }
 
-    public ResponseCookie createRefreshTokenCookie(User user) {
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(user);
-        refreshToken.setExpiresAt(LocalDateTime.now().plusDays(30));
-        tokenRepository.save(refreshToken);
-
-        return ResponseCookie.from("refresh-token", refreshToken.getId())
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .path("/api/refresh-token")
-                .build();
-    }
     @Override
     public String generateJwtToken(User user) {
         return jwtUtil.generateToken(user.getUsername());
     }
 
     @Override
-    public String generateRefreshToken(String idUser) {
+    public String generateRefreshToken(User user) {
         RefreshToken refreshToken = new RefreshToken();
-        User user = userRepo.findById(idUser).orElseThrow();
         refreshToken.setUser(user);
-        refreshToken.setExpiresAt(LocalDateTime.now().plus(30, ChronoUnit.DAYS));
+        // Expiration dans 30 jours
+        refreshToken.setExpiresAt(LocalDateTime.now().plusDays(30));
+
         tokenRepository.save(refreshToken);
         return refreshToken.getId();
     }
+
     @Override
     public ResponseCookie createRefreshTokenCookie(String refreshToken) {
         return ResponseCookie.from("refresh-token", refreshToken)
@@ -71,28 +60,44 @@ public class AuthServiceImpl implements AuthService {
                 .secure(true)
                 .sameSite("None")
                 .path("/api/refresh-token")
+                .maxAge(30L * 24 * 60 * 60)
                 .build();
     }
+
     @Override
+    public ResponseCookie createRefreshTokenCookie(User user) {
+        String token = generateRefreshToken(user);
+        return createRefreshTokenCookie(token);
+    }
+
+    @Override
+    @Transactional
     public TokenPair validateRefreshToken(String token) {
-        RefreshToken refreshToken = tokenRepository.findById(token).orElseThrow();
+        // 1. On cherche le token
+        RefreshToken refreshToken = tokenRepository.findById(token)
+                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+
+        // 2. On vérifie s'il est expiré
         if (refreshToken.isExpired()) {
+            tokenRepository.delete(refreshToken);
             throw new RuntimeException("Refresh token expired");
         }
 
         User user = refreshToken.getUser();
-        tokenRepository.delete(refreshToken);
-        String newToken = generateRefreshToken(user.getId());
-        String jwt = jwtUtil.generateToken(user.getUsername());
-        return new TokenPair(newToken, jwt);
 
+        // 3. Rotation des tokens (Sécurité)
+        tokenRepository.delete(refreshToken);
+
+        String newRefreshToken = generateRefreshToken(user);
+        String newJwt = jwtUtil.generateToken(user.getUsername());
+
+        return new TokenPair(newRefreshToken, newJwt);
     }
 
+    // Nettoyage automatique des vieux tokens tous les jours
     @Transactional
     @Scheduled(fixedDelay = 24, timeUnit = TimeUnit.HOURS)
     void cleanExpiredTokens() {
         tokenRepository.deleteExpired();
     }
-
 }
-

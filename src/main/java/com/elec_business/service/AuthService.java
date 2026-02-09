@@ -14,12 +14,13 @@ public interface AuthService {
      */
     User authenticateUser(String username, String password);
 
+    ResponseCookie createRefreshTokenCookie(User user);
+
     String generateJwtToken(User user);                /**
      * Méthode qui va créer un nouveau refresh token et le faire persister en database
      * @param idUser L'id du user pour lequel on souhaite générer un refresh token
      * @return L'id du token généré
      */
-    String generateRefreshToken(String idUser);
     /**
      * Méthode qui va vérifier qu'un token existe en bdd, qu'il n'est pas expiré et s'il est ok,
      * génère un JWT, regénère un refresh token et supprimer l'ancien refresh token
@@ -29,4 +30,6 @@ public interface AuthService {
      ResponseCookie createRefreshTokenCookie(String refreshToken);
 
         TokenPair validateRefreshToken(String token);
+
+    String generateRefreshToken(User user);
 }

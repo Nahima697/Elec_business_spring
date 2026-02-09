@@ -9,5 +9,6 @@ public class LoginResponseDTO {
 
     private String token;
     private UserDTO user;
+    private String refreshToken;
 
 }

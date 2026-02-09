@@ -9,10 +9,8 @@ import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.UserRegistrationService;
 import com.elec_business.service.impl.TokenPair;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.SameSiteCookies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +21,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,14 +31,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
+
     private final EmailVerificationService emailVerificationService;
     private final AuthService authService;
     private final UserRegistrationService userRegistrationService;
     private final UserRepository appUserRepository;
     private final UserMapper userMapper;
-
-    @Value("${app.auth.email-verification-required:true}")
-    private boolean emailVerificationRequired;
 
     @Value("${app.auth.frontend.url}")
     private String FRONT_URL;
@@ -46,35 +44,31 @@ public class AuthController {
     @Value("${application.api.url}")
     private String BACKEND_URL;
 
+    // --- REGISTER ---
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponseDto> register(@RequestBody @Valid RegistrationDto registrationDto) {
+        User registeredUser = userRegistrationService.registerUser(
+                userMapper.toEntity(registrationDto)
+        );
 
-            // 1. Création de l'utilisateur
-            User registeredUser = userRegistrationService.registerUser(
-                    userMapper.toEntity(registrationDto)
-            );
-            String baseUrl = BACKEND_URL;
-            emailVerificationService.sendVerificationToken(
-                    registeredUser.getId(),
-                    registeredUser.getEmail(),
-                    baseUrl
-            );
+        emailVerificationService.sendVerificationToken(
+                registeredUser.getId(),
+                registeredUser.getEmail(),
+                BACKEND_URL
+        );
 
-            // 3. Création de la réponse succès
-            RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
-                    userMapper.toUserDto(registeredUser),
-                    "Votre compte a été créé avec succès, vérifier votre email"
-            );
+        RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
+                userMapper.toUserDto(registeredUser),
+                "Votre compte a été créé avec succès, vérifiez votre email"
+        );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    // --- VERIFY EMAIL ---
     @GetMapping("/email/verify")
-    public ResponseEntity<Void> verifyEmail(
-            @RequestParam String userId, @RequestParam("t") String token) {
-
+    public ResponseEntity<Void> verifyEmail(@RequestParam String userId, @RequestParam("t") String token) {
         emailVerificationService.verifyEmail(userId, token);
-
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header("Location", FRONT_URL + "/email-verified?success=true")
                 .build();
@@ -86,28 +80,31 @@ public class AuthController {
         Optional<User> user = appUserRepository.findByEmail(email);
 
         if (user.isEmpty()) {
-            return ResponseEntity.badRequest().body("Invalid or already verified user.");
+            return ResponseEntity.badRequest().body("Utilisateur invalide ou déjà vérifié.");
         }
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail(),baseUrl);
-        return ResponseEntity.ok("Verification email resent.");
+        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail(), baseUrl);
+        return ResponseEntity.ok("Email de vérification renvoyé.");
     }
 
+    // --- LOGIN ---
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginCredentialsDTO loginDto) {
         try {
-            // Authentifie l'utilisateur via le service
+            // 1. Authentification
             User user = authService.authenticateUser(loginDto.getUsername(), loginDto.getPassword());
 
-            // Génère le JWT
+            // 2. Génération JWT
             String jwt = authService.generateJwtToken(user);
 
-            // Génère le refresh token cookie
-            String refreshToken = authService.generateRefreshToken(user.getId());
-            ResponseCookie refreshCookie= authService.createRefreshTokenCookie(refreshToken);
-            // Crée la réponse DTO
+            // 3. Génération Refresh Token
+            String refreshToken = authService.generateRefreshToken(user);
 
-            LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toUserDto(user));
+            // 4. Création Cookie HttpOnly
+            ResponseCookie refreshCookie = authService.createRefreshTokenCookie(refreshToken);
+
+            // 5. Réponse DTO + Cookie dans le header
+            LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toUserDto(user),refreshToken);
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
@@ -116,6 +113,7 @@ public class AuthController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
+            log.error("Erreur Login", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -128,37 +126,43 @@ public class AuthController {
         return ResponseEntity.ok(userMapper.toUserProfileDto(currentUser));
     }
 
+    // Accepte le token soit par Cookie (Web), soit par Body (Mobile)
     @PostMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(@CookieValue(name = "refresh-token") String token) {
-        try {
+    public ResponseEntity<Map<String, String>> refreshToken(
+            @CookieValue(name = "refresh-token", required = false) String cookieToken,
+            @RequestBody(required = false) Map<String, String> body) {
 
-            TokenPair tokens = authService.validateRefreshToken(token);
-            ResponseCookie refreshCookie = generateCookie(tokens.getRefreshToken());
+        try {
+            // 1. Récupération  du token
+            String tokenToVerify = cookieToken;
+            if (tokenToVerify == null && body != null) {
+                tokenToVerify = body.get("refreshToken");
+            }
+
+            if (tokenToVerify == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+
+            // 2. Validation & Rotation via Service
+            TokenPair tokens = authService.validateRefreshToken(tokenToVerify);
+
+            // 3. Création du nouveau cookie
+            ResponseCookie refreshCookie = authService.createRefreshTokenCookie(tokens.getRefreshToken());
+
+            // 4. Réponse JSON
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                    .body(tokens.getJwt());
+                    .body(Collections.singletonMap("token", tokens.getJwt()));
 
         } catch (Exception e) {
+            log.warn("Refresh failed: {}", e.getMessage());
+            // Renvoie 403 Forbidden pour dire au front de se déconnecter
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid refresh token");
         }
-
     }
 
-    @GetMapping("/api/protected")
+    @GetMapping("/protected")
     public String protec(@AuthenticationPrincipal User user) {
-
         return user.getEmail();
     }
-
-    private ResponseCookie generateCookie(String refreshToken) {
-        return ResponseCookie.from("refresh-token", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite(SameSiteCookies.NONE.toString())
-                .path("/api/refresh-token")
-                .build()
-                ;
-    }
 }
-
-

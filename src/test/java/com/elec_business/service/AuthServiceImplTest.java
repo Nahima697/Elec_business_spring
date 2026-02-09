@@ -109,7 +109,7 @@ public class AuthServiceImplTest {
             return t;
         });
 
-        String token = authService.generateRefreshToken("u1");
+        String token = authService.generateRefreshToken(user);
 
         assertEquals("rt-123", token);
     }
@@ -130,8 +130,7 @@ public class AuthServiceImplTest {
         when(oldToken.isExpired()).thenReturn(false);
         when(oldToken.getUser()).thenReturn(user);
 
-        // ⚠️ Très important : mocker la méthode du SPY !
-        doReturn("new-refresh").when(authService).generateRefreshToken("user-1");
+        doReturn("new-refresh").when(authService).generateRefreshToken(user);
 
         when(jwtUtil.generateToken("testUser")).thenReturn("jwt-new");
 
