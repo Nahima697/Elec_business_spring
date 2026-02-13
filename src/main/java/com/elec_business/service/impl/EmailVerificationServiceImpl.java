@@ -80,6 +80,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
         user.setEmailVerified(true);
         user.setEmailVerifiedAt(Instant.now());
-       return  userRepository.save(user);
+        userRepository.save(user);
+        return user;
     }
 }
