@@ -33,39 +33,36 @@ public class ChargingLocationController {
             @AuthenticationPrincipal User currentUser) {
         ChargingLocation location = chargingLocationMapper.toEntity(chargingLocationRequestDto);
         location.setUser(currentUser);
-        ChargingLocation createdLocation = chargingLocationBusiness.createChargingLocation(location);
-        return chargingLocationMapper.toDto(createdLocation);
+        return  chargingLocationBusiness.createChargingLocation(location);
+
     }
 
     @PutMapping("/charging_locations/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ChargingLocationResponseDto updateLocation(@PathVariable String id, @Valid @RequestBody ChargingLocationRequestDto chargingLocationRequestDto,
                                                       @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
-        ChargingLocation updatedLocation= chargingLocationBusiness.updateChargingLocation(id,chargingLocationMapper.toEntity(chargingLocationRequestDto),currentUser);
-        return chargingLocationMapper.toDto(updatedLocation);
+      return chargingLocationBusiness.updateChargingLocation(id,chargingLocationRequestDto,currentUser);
+
     }
 
     @GetMapping("/charging_locations")
     @ResponseStatus(HttpStatus.OK)
     public List<ChargingLocationResponseDto> getAllLocations( ) {
-        return chargingLocationBusiness.getAllChargingLocations()
-                .stream()
-                .map(chargingLocationMapper::toDto)
-                .toList() ;
+        return chargingLocationBusiness.getAllChargingLocations();
+
     }
 
     @GetMapping("/charging_locations/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ChargingLocationResponseDto getLocation(@PathVariable String  id,@AuthenticationPrincipal User currentUser) throws AccessDeniedException {
-            return chargingLocationMapper.toDto(chargingLocationBusiness.getChargingLocationById(id,currentUser));
+            return chargingLocationBusiness.getChargingLocationById(id,currentUser);
     }
 
     @GetMapping("/charging_locations/user")
     @ResponseStatus(HttpStatus.OK)
     public List<ChargingLocationResponseDto> getLocationsByUserId(@AuthenticationPrincipal User currentUser) {
-        return chargingLocationBusiness.getChargingLocationByUser(currentUser).stream()
-                .map(chargingLocationMapper::toDto)
-                .toList();
+        return chargingLocationBusiness.getChargingLocationByUser(currentUser);
+
     }
 
 

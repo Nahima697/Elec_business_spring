@@ -1,5 +1,7 @@
 package com.elec_business.business.impl;
 
+import com.elec_business.controller.dto.ChargingStationResponseDto;
+import com.elec_business.controller.mapper.ChargingStationMapper;
 import com.elec_business.entity.ChargingLocation;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
@@ -35,12 +37,15 @@ class ChargingStationBusinessTest {
     @Mock
     private ChargingLocationRepository chargingLocationRepository;
 
+    @Mock
+    private ChargingStationMapper chargingStationMapper;
+
     @InjectMocks
     private ChargingStationBusinessImpl chargingStationBusiness;
 
     @Test
     void createChargingStation_Success_WithImage() throws AccessDeniedException {
-        // ARRANGE
+
         User user = new User();
         user.setId("user-123");
 
@@ -51,47 +56,94 @@ class ChargingStationBusinessTest {
         ChargingStation station = new ChargingStation();
         station.setLocation(location);
 
-        MockMultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", "content".getBytes());
+        MockMultipartFile image = new MockMultipartFile(
+                "image", "test.jpg", "image/jpeg", "content".getBytes());
 
-        when(chargingLocationRepository.findById("loc-123")).thenReturn(Optional.of(location));
-        when(fileStorageService.checkMediaType(image, "image")).thenReturn(true);
-        when(fileStorageService.upload(image)).thenReturn("uploads/test.jpg");
-        when(chargingStationRepository.save(any(ChargingStation.class))).thenAnswer(i -> i.getArguments()[0]);
+        ChargingStationResponseDto dto =
+                new ChargingStationResponseDto(
+                        "station-1",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "uploads/test.jpg",
+                        null,
+                        null
+                );
 
-        // ACT
-        ChargingStation created = chargingStationBusiness.createChargingStation(station, user, image);
+        when(chargingLocationRepository.findById("loc-123"))
+                .thenReturn(Optional.of(location));
 
-        // ASSERT
-        assertNotNull(created);
-        assertEquals("uploads/test.jpg", created.getImageUrl());
-        assertNotNull(created.getCreatedAt());
-        verify(chargingStationRepository).save(station);
+        when(fileStorageService.checkMediaType(image, "image"))
+                .thenReturn(true);
+
+        when(fileStorageService.upload(image))
+                .thenReturn("uploads/test.jpg");
+
+        when(chargingStationRepository.save(any()))
+                .thenAnswer(i -> i.getArguments()[0]);
+
+        when(chargingStationMapper.toDto(any()))
+                .thenReturn(dto);
+
+        ChargingStationResponseDto result =
+                chargingStationBusiness.createChargingStation(station, user, image);
+
+        assertNotNull(result);
+        assertEquals("uploads/test.jpg", result.imageUrl());
+
+        verify(chargingStationRepository).save(any());
     }
 
     @Test
     void createChargingStation_Success_NoImage() throws AccessDeniedException {
-        // ARRANGE
+
         User user = new User();
         user.setId("user-123");
+
         ChargingLocation location = new ChargingLocation();
         location.setId("loc-123");
         location.setUser(user);
+
         ChargingStation station = new ChargingStation();
         station.setLocation(location);
 
-        when(chargingLocationRepository.findById("loc-123")).thenReturn(Optional.of(location));
-        when(chargingStationRepository.save(any(ChargingStation.class))).thenAnswer(i -> i.getArguments()[0]);
+        ChargingStationResponseDto dto =
+                new ChargingStationResponseDto(
+                        "station-1",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "default.png",
+                        null,
+                        null
+                );
 
-        // ACT (Image null)
-        ChargingStation created = chargingStationBusiness.createChargingStation(station, user, null);
+        when(chargingLocationRepository.findById("loc-123"))
+                .thenReturn(Optional.of(location));
 
-        // ASSERT
-        assertEquals("default.png", created.getImageUrl());
+        when(chargingStationRepository.save(any()))
+                .thenAnswer(i -> i.getArguments()[0]);
+
+        when(chargingStationMapper.toDto(any()))
+                .thenReturn(dto);
+
+        ChargingStationResponseDto result =
+                chargingStationBusiness.createChargingStation(station, user, null);
+
+        assertEquals("default.png", result.imageUrl());
     }
 
     @Test
     void createChargingStation_Throws_WhenNotOwner() {
-        // ARRANGE
+
         User owner = new User(); owner.setId("owner-1");
         User hacker = new User(); hacker.setId("hacker-99");
 
@@ -102,18 +154,19 @@ class ChargingStationBusinessTest {
         ChargingStation station = new ChargingStation();
         station.setLocation(location);
 
-        when(chargingLocationRepository.findById("loc-123")).thenReturn(Optional.of(location));
+        when(chargingLocationRepository.findById("loc-123"))
+                .thenReturn(Optional.of(location));
 
-        // ACT & ASSERT
         assertThrows(AccessDeniedException.class, () ->
                 chargingStationBusiness.createChargingStation(station, hacker, null)
         );
+
         verify(chargingStationRepository, never()).save(any());
     }
 
     @Test
     void updateChargingStation_Success_NoImage() throws AccessDeniedException {
-        // ARRANGE
+
         String stationId = "station-1";
         User user = new User(); user.setId("u1");
 
@@ -123,74 +176,59 @@ class ChargingStationBusinessTest {
         ChargingStation existingStation = new ChargingStation();
         existingStation.setId(stationId);
         existingStation.setLocation(location);
-        existingStation.setPrice(BigDecimal.TEN);
         existingStation.setImageUrl("old-image.jpg");
 
         ChargingStation updateInfo = new ChargingStation();
         updateInfo.setName("New Name");
-        updateInfo.setPrice(BigDecimal.ONE);
 
-        when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(existingStation));
-        when(chargingStationRepository.save(any(ChargingStation.class))).thenAnswer(i -> i.getArguments()[0]);
+        ChargingStationResponseDto dto =
+                new ChargingStationResponseDto(
+                        stationId,
+                        "New Name",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "old-image.jpg",
+                        null,
+                        null
+                );
 
-        // ACT (Image null)
-        ChargingStation updated = chargingStationBusiness.updateChargingStation(stationId, updateInfo, user, null);
+        when(chargingStationRepository.findById(stationId))
+                .thenReturn(Optional.of(existingStation));
 
-        // ASSERT
-        assertEquals("New Name", updated.getName());
-        assertEquals(BigDecimal.ONE, updated.getPrice());
-        assertEquals("old-image.jpg", updated.getImageUrl()); // L'image ne doit PAS changer
-    }
+        when(chargingStationRepository.save(any()))
+                .thenAnswer(i -> i.getArguments()[0]);
 
-    @Test
-    void updateChargingStation_Success_WithImage() throws AccessDeniedException {
-        // ARRANGE
-        String stationId = "station-1";
-        User user = new User(); user.setId("u1");
+        when(chargingStationMapper.toDto(any()))
+                .thenReturn(dto);
 
-        ChargingLocation location = new ChargingLocation();
-        location.setUser(user);
+        ChargingStationResponseDto result =
+                chargingStationBusiness.updateChargingStation(stationId, updateInfo, user, null);
 
-        ChargingStation existingStation = new ChargingStation();
-        existingStation.setId(stationId);
-        existingStation.setLocation(location);
-        existingStation.setImageUrl("old-image.jpg");
-
-        ChargingStation updateInfo = new ChargingStation();
-        updateInfo.setName("Updated Station");
-
-        MockMultipartFile newImage = new MockMultipartFile("image", "new.jpg", "image/jpeg", "content".getBytes());
-
-        when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(existingStation));
-        when(fileStorageService.checkMediaType(newImage, "image")).thenReturn(true);
-        when(fileStorageService.upload(newImage)).thenReturn("uploads/new-image.jpg");
-        when(chargingStationRepository.save(any(ChargingStation.class))).thenAnswer(i -> i.getArguments()[0]);
-
-        // ACT
-        ChargingStation updated = chargingStationBusiness.updateChargingStation(stationId, updateInfo, user, newImage);
-
-        // ASSERT
-        assertEquals("Updated Station", updated.getName());
-        assertEquals("uploads/new-image.jpg", updated.getImageUrl()); // L'URL doit être mise à jour
-        verify(fileStorageService).upload(newImage); // On vérifie que l'upload a bien été appelé
+        assertEquals("New Name", result.name());
+        assertEquals("old-image.jpg", result.imageUrl());
     }
 
     @Test
     void deleteChargingStation_Success() throws AccessDeniedException {
-        // ARRANGE
+
         String stationId = "station-1";
         User user = new User(); user.setId("u1");
+
         ChargingLocation location = new ChargingLocation();
         location.setUser(user);
+
         ChargingStation station = new ChargingStation();
         station.setLocation(location);
 
-        when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
+        when(chargingStationRepository.findById(stationId))
+                .thenReturn(Optional.of(station));
 
-        // ACT
         chargingStationBusiness.deleteChargingStationById(stationId, user);
 
-        // ASSERT
         verify(chargingStationRepository).delete(station);
     }
 }

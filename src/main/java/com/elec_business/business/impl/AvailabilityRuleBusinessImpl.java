@@ -3,6 +3,7 @@ package com.elec_business.business.impl;
 import com.elec_business.business.AvailabilityRuleBusiness;
 import com.elec_business.business.exception.AccessDeniedStationException;
 import com.elec_business.business.exception.StationNotFoundException;
+import com.elec_business.controller.dto.AvailabilityRuleDto;
 import com.elec_business.controller.mapper.AvailabilityRuleMapper;
 import com.elec_business.entity.AvailabilityRule;
 import com.elec_business.entity.ChargingStation;
@@ -23,12 +24,14 @@ public class AvailabilityRuleBusinessImpl implements AvailabilityRuleBusiness {
     private final AvailabilityRuleRepository ruleRepo;
     private final TimeSlotBusinessImpl timeSlotService;
     private final ChargingStationRepository chargingStationRepository;
+    private final AvailabilityRuleMapper ruleMapper;
 
     @Override
     @Transactional
-    public void createRule(AvailabilityRule rule, User currentUser) {
+    public void createRule(AvailabilityRuleDto ruleDto, User currentUser) {
 
         // 1. Récupération ID station
+        AvailabilityRule rule = ruleMapper.toEntity(ruleDto);
         String stationId = rule.getChargingStation().getId();
 
         // 2. Récupération Station
@@ -66,8 +69,9 @@ public class AvailabilityRuleBusinessImpl implements AvailabilityRuleBusiness {
     }
 
     @Transactional
-    public List<AvailabilityRule> getRules(String stationId) {
-        return ruleRepo.findByChargingStation_Id(stationId);
+    public List<AvailabilityRuleDto> getRules(String stationId) {
+
+        return ruleMapper.toDtos(ruleRepo.findByChargingStation_Id(stationId));
     }
 
     public void deleteRule(String id) {

@@ -58,8 +58,7 @@ public class ChargingStationController {
             @Parameter(description = "Fichier image de la borne (JPG, PNG, WEBP)", required = true)
             @RequestPart(value = "image", required = false) MultipartFile image) throws AccessDeniedException {
 
-        return chargingStationMapper.toDto(
-                chargingStationBusiness.createChargingStation(chargingStationMapper.toEntity(dto), currentUser, image)
+        return chargingStationBusiness.createChargingStation(chargingStationMapper.toEntity(dto), currentUser, image);
         );
     }
 
@@ -83,9 +82,7 @@ public class ChargingStationController {
             @Parameter(description = "Nouvelle image (optionnel)")
             @RequestPart(value = "image", required = false) MultipartFile image) throws AccessDeniedException {
 
-        return chargingStationMapper.toSummaryDto(
-                chargingStationBusiness.updateChargingStation(id, chargingStationMapper.toUpdateEntity(dto), currentUser, image)
-        );
+        return chargingStationBusiness.updateChargingStation(id, chargingStationMapper.toUpdateEntity(dto), currentUser, image);
     }
 
     // --- GET ALL (Paginé) ---
@@ -99,7 +96,7 @@ public class ChargingStationController {
     @GetMapping("/charging_stations")
     public Page<ChargingStationResponseDto> getAllChargingStations(
             @Parameter(description = "Paramètres de pagination (page, size, sort)") Pageable pageable) {
-        return chargingStationBusiness.getAllChargingStations(pageable).map(chargingStationMapper::toSummaryDto);
+        return chargingStationBusiness.getAllChargingStations(pageable);
     }
 
     // --- GET BY LOCATION ---
@@ -113,10 +110,7 @@ public class ChargingStationController {
     @GetMapping("/charging_stations/location/{locationId}")
     public List<ChargingStationResponseDto> getChargingStationsByUser(
             @Parameter(description = "ID de l'emplacement (Location)", required = true) @PathVariable String locationId,@AuthenticationPrincipal User currentUser)  {
-        return chargingStationBusiness.getByLocationId(locationId)
-                .stream()
-                .map(chargingStationMapper::toSummaryDto)
-                .toList();
+        return chargingStationBusiness.getByLocationId(locationId);
     }
 
     //--GET MY STATION ---
@@ -129,12 +123,8 @@ public class ChargingStationController {
     })
     @GetMapping("/charging_stations/me")
     public List<ChargingStationResponseDto>getMyStations(@AuthenticationPrincipal User currentUser) {
-        List<ChargingStation> stations = chargingStationBusiness.getMyStations(currentUser);
+       return chargingStationBusiness.getMyStations(currentUser);
 
-         List<ChargingStationResponseDto> dtos = stations.stream()
-                .map(chargingStationMapper::toSummaryDto)
-                .toList();
-         return dtos;
     }
 
     // --- GET ONE ---
@@ -150,8 +140,7 @@ public class ChargingStationController {
     @GetMapping("/charging_stations/{id}")
     public ChargingStationResponseDto getStation(
             @Parameter(description = "ID de la borne", required = true) @PathVariable String id) {
-        ChargingStation station = chargingStationBusiness.getChargingStationById(id);
-        return chargingStationMapper.toDto(station);
+        return chargingStationBusiness.getChargingStationById(id);
     }
 
     // --- DELETE ---

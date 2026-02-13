@@ -14,6 +14,8 @@ public interface BookingMapper {
     @Mapping(source = "stationId", target = "station")
     Booking toEntity(BookingRequestDto dto);
 
+    Booking responseToEntity(BookingResponseDto dto);
+
     default ChargingStation toStation(String stationId) {
         if (stationId == null) return null;
         ChargingStation station = new ChargingStation();

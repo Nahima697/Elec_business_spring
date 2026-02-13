@@ -4,6 +4,8 @@ import com.elec_business.business.BookingBusiness;
 import com.elec_business.business.TimeSlotBusiness;
 import com.elec_business.business.eventlistener.BookingRejectedEvent;
 import com.elec_business.business.exception.AccessDeniedStationException;
+import com.elec_business.controller.dto.BookingResponseDto;
+import com.elec_business.controller.mapper.BookingMapper;
 import com.elec_business.entity.*;
 import com.elec_business.repository.TimeSlotRepository;
 import com.elec_business.repository.BookingRepository;
@@ -40,10 +42,12 @@ public class BookingBusinessImpl implements BookingBusiness {
     private final BookingStatusRepository bookingStatusRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final TimeSlotBusiness timeSlotBusiness;
+    private final BookingMapper bookingMapper;
+
 
     @Transactional
     @Override
-    public Booking createBooking(String stationId, LocalDateTime startDate, LocalDateTime endDate, User currentUser) {
+    public BookingResponseDto createBooking(String stationId, LocalDateTime startDate, LocalDateTime endDate, User currentUser) {
         // Vérification de l'existence de la station
         ChargingStation station = chargingStationRepository.findById(stationId)
                 .orElseThrow(() -> new EntityNotFoundException("Station not found"));
@@ -76,7 +80,7 @@ public class BookingBusinessImpl implements BookingBusiness {
         Booking savedBooking = bookingRepository.save(booking);
         log.info("Booking created successfully with ID: " + booking.getId());
         // Retourner la réponse
-        return savedBooking;
+        return bookingMapper.toResponseDto(savedBooking);
     }
 
     // Vérification de la disponibilité du créneau
@@ -123,7 +127,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     // Acceptation de la réservation
     @Transactional
     @Override
-    public Booking acceptBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
+    public BookingResponseDto acceptBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
         Booking booking = bookingRepository.findByIdWithDetails(bookingId)
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -144,12 +148,13 @@ public class BookingBusinessImpl implements BookingBusiness {
 
         log.info("BookingAcceptedEvent published for booking ID: {}", booking.getId());
 
-        return booking;
+         return bookingMapper.toResponseDto(booking);
+
     }
 
     @Transactional
     @Override
-    public Booking rejectBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
+    public BookingResponseDto rejectBooking(String bookingId, User currentUser) throws AccessDeniedBookingException {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -168,19 +173,20 @@ public class BookingBusinessImpl implements BookingBusiness {
 
         log.info("BookingRejectedEvent published for booking ID: {}", booking.getId());
 
-        return booking;
+        return bookingMapper.toResponseDto(booking);
+
     }
 
     // Récupération de toutes les réservations
     @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll().stream()
+    public List<BookingResponseDto> getAllBookings() {
+        return bookingMapper.toDtos(bookingRepository.findAll()).stream()
                 .toList();
     }
 
     // Récupération d'une réservation par ID
     @Override
-    public Booking getBookingById(String id, User currentUser) throws AccessDeniedException {
+    public BookingResponseDto getBookingById(String id, User currentUser) throws AccessDeniedException {
         Booking booking = bookingRepository.findByIdWithDetails(id)
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -190,19 +196,19 @@ public class BookingBusinessImpl implements BookingBusiness {
         if (!isRenter && !isOwner) {throw new AccessDeniedException("Vous n'avez pas les droits pour accéder à cette réservation.");
         }
 
-        return booking;
+        return bookingMapper.toResponseDto(booking);
     }
 
     @Override
     @Transactional
-    public List<Booking> getMyBookings(User user) {
-        return bookingRepository.findByStationOwner(user.getId());
+    public List<BookingResponseDto> getMyBookings(User user) {
+        return bookingMapper.toDtos(bookingRepository.findByStationOwner(user.getId()));
     }
 
     // Mise à jour d'une réservation par le locataire
     @Transactional
     @Override
-    public Booking updateBooking(String  id,Booking booking, User currentUser) throws AccessDeniedBookingException {
+    public BookingResponseDto updateBooking(String  id,Booking booking, User currentUser) throws AccessDeniedBookingException {
        Booking updateBooking = bookingRepository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -225,7 +231,8 @@ public class BookingBusinessImpl implements BookingBusiness {
         updateBooking.setStartDate(booking.getStartDate());
         updateBooking.setEndDate(booking.getEndDate());
 
-        return bookingRepository.save(updateBooking);
+        return bookingMapper.toResponseDto(bookingRepository.save(updateBooking));
+
     }
 
     // Suppression d'une réservation
@@ -233,7 +240,7 @@ public class BookingBusinessImpl implements BookingBusiness {
     @Override
     public void deleteBooking(String id, User currentUser) throws AccessDeniedException {
         // 1. On charge la réservation en utilisant la méthode ci-dessus.
-        Booking booking = this.getBookingById(id, currentUser);
+        Booking booking = bookingMapper.responseToEntity(this.getBookingById(id, currentUser));
 
         bookingRepository.delete(booking);
         log.info("Booking {} deleted by user {}", id, currentUser.getId());
@@ -241,7 +248,7 @@ public class BookingBusinessImpl implements BookingBusiness {
 
     @Override
     @Transactional
-    public List<Booking> getMyRentals(User user) {
-        return bookingRepository.findByRenterId(user.getId());
+    public List<BookingResponseDto> getMyRentals(User user) {
+        return bookingMapper.toDtos(bookingRepository.findByRenterId(user.getId()));
     }
 }

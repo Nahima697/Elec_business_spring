@@ -7,6 +7,10 @@ import com.elec_business.controller.dto.ChargingStationRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 @Mapper(componentModel = "spring",uses = ReviewMapper.class)
 public interface ChargingStationMapper {
@@ -25,4 +29,6 @@ public interface ChargingStationMapper {
     @Mapping(source = "location.user.id", target = "locationDTO.userId")
     @Mapping(target = "reviewsDTO", ignore = true)
     ChargingStationResponseDto toSummaryDto(ChargingStation entity);
+
+    List<ChargingStationResponseDto> toDtos(List<ChargingStation> stations);
 }

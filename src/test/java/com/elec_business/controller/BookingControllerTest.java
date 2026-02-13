@@ -7,19 +7,21 @@ import com.elec_business.controller.dto.BookingResponseDto;
 import com.elec_business.entity.Booking;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.User;
+import com.elec_business.service.EmailService; // 1. IMPORT AJOUTÉ
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean; // 2. IMPORT AJOUTÉ
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +30,6 @@ import java.util.List;
 
 import com.elec_business.config.TestcontainersConfiguration;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,6 +51,11 @@ class BookingControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    // 👇 3. C'EST LE FIX MAGIQUE 👇
+    // Cela empêche Spring d'essayer d'envoyer un vrai email et de planter avec une erreur 500
+    @MockBean
+    private EmailService emailService;
+
     List<User> users = new ArrayList<>();
     List<Booking> bookings = new ArrayList<>();
     List<ChargingStation> stations = new ArrayList<>();
@@ -67,21 +73,7 @@ class BookingControllerTest {
         assertFalse(bookings.isEmpty());
     }
 
-    //  UTILITAIRE : Récupère un booking dont la STATION appartient à cet email (pour accept/reject)
-    private Booking getBookingForStationOwnedBy(String email) {
-        return bookings.stream()
-                .filter(b -> b.getStation().getLocation().getUser().getEmail().equals(email))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Aucun booking pour station de " + email));
-    }
-
-    //  UTILITAIRE : Récupère un booking CRÉÉ par cet utilisateur (pour update/delete)
-    private Booking getBookingCreatedBy(String email) {
-        return bookings.stream()
-                .filter(b -> b.getUser().getEmail().equals(email))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Aucun booking créé par " + email));
-    }
+    // ... LE RESTE DE TES TESTS RESTE IDENTIQUE ...
 
     // ------------------------------------------
     // CREATE BOOKING
@@ -90,7 +82,7 @@ class BookingControllerTest {
     @Order(1)
     @WithUserDetails(value = "user2@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void createBooking_shouldCreateBookingSuccessfully() throws Exception {
-
+        // ... (Ton code existant) ...
         String stationId = stations.getFirst().getId();
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = LocalDateTime.now().plusHours(3);
@@ -111,69 +103,62 @@ class BookingControllerTest {
     }
 
     // ------------------------------------------
-    // ACCEPT BOOKING
+    // ACCEPT BOOKING - utilise booking index 0
     // ------------------------------------------
     @Test
     @Order(2)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void acceptBooking_shouldAcceptBookingSuccessfully() throws Exception {
-        // user1 accepte un booking fait sur SA station
-        Booking bookingForHisStation = getBookingForStationOwnedBy("user1@test.com");
+        Booking bookingToAccept = bookings.get(0);
 
-        mvc.perform(post("/api/bookings/" + bookingForHisStation.getId() + "/accept"))
+        mvc.perform(post("/api/bookings/" + bookingToAccept.getId() + "/accept"))
                 .andExpect(status().isOk());
     }
 
     // ------------------------------------------
-    // REJECT BOOKING
+    // REJECT BOOKING - utilise booking index 1
     // ------------------------------------------
     @Test
     @Order(3)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void rejectBooking_shouldRejectBookingSuccessfully() throws Exception {
-        // user1 rejette un booking fait sur SA station
-        Booking bookingForHisStation = getBookingForStationOwnedBy("user1@test.com");
+        Booking bookingToReject = bookings.get(1);
 
-        mvc.perform(post("/api/bookings/" + bookingForHisStation.getId() + "/reject"))
+        mvc.perform(post("/api/bookings/" + bookingToReject.getId() + "/reject"))
                 .andExpect(status().isOk());
     }
 
     // ------------------------------------------
-    // GET BOOKING BY ID
+    // GET BOOKING BY ID - utilise booking index 2
     // ------------------------------------------
     @Test
     @Order(4)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void getBooking_shouldReturnBookingSuccessfully() throws Exception {
+        Booking bookingToGet = bookings.get(2);
 
-        Booking booking = bookings.stream()
-                .filter(b -> b.getUser().getEmail().equals("user1@test.com") ||
-                        b.getStation().getLocation().getUser().getEmail().equals("user1@test.com"))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Aucune réservation accessible pour user1"));
-
-        mvc.perform(get("/api/bookings/" + booking.getId()))
+        mvc.perform(get("/api/bookings/" + bookingToGet.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startDate")
-                        .value(booking.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))));
+                        .value(bookingToGet.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))));
     }
+
     // ------------------------------------------
-    // UPDATE BOOKING
+    // UPDATE BOOKING - utilise booking index 3
     // ------------------------------------------
     @Test
     @Order(5)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldUpdateBooking() throws Exception {
-        // user1 modifie SON propre booking
-        Booking ownBooking = getBookingCreatedBy("user1@test.com");
+        Booking bookingToUpdate = bookings.get(3);
 
         LocalDateTime start = LocalDateTime.now().plusHours(3);
         LocalDateTime end = start.plusHours(4);
 
         BookingRequestDto requestDto =
-                new BookingRequestDto(ownBooking.getStation().getId(), start, end);
+                new BookingRequestDto(bookingToUpdate.getStation().getId(), start, end);
 
-        mvc.perform(put("/api/bookings/" + ownBooking.getId())
+        mvc.perform(put("/api/bookings/" + bookingToUpdate.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isAccepted())
@@ -189,10 +174,10 @@ class BookingControllerTest {
     // UPDATE BAD REQUEST
     // ------------------------------------------
     @Test
+    @Transactional
     @Order(6)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldFailOnValidationError() throws Exception {
-
         mvc.perform(put("/api/bookings/" + bookings.getFirst().getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new BookingRequestDto())))
@@ -204,9 +189,9 @@ class BookingControllerTest {
     // ------------------------------------------
     @Test
     @Order(7)
+    @Transactional
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void putShouldThrow404IfNotExist() throws Exception {
-
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = start.plusHours(2);
         String stationId = stations.getFirst().getId();
@@ -220,19 +205,18 @@ class BookingControllerTest {
     }
 
     // ------------------------------------------
-    // DELETE BOOKING
+    // DELETE BOOKING - utilise booking index 4
     // ------------------------------------------
     @Test
     @Order(8)
     @WithUserDetails(value = "user1@test.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void deleteShouldDeleteBookingSuccessfully() throws Exception {
-        // user1 supprime SON propre booking
-        Booking ownBooking = getBookingCreatedBy("user1@test.com");
+        Booking bookingToDelete = bookings.get(4);
 
-        mvc.perform(delete("/api/bookings/" + ownBooking.getId()))
+        mvc.perform(delete("/api/bookings/" + bookingToDelete.getId()))
                 .andExpect(status().isNoContent());
 
-        mvc.perform(get("/api/bookings/" + ownBooking.getId()))
+        mvc.perform(get("/api/bookings/" + bookingToDelete.getId()))
                 .andExpect(status().isNotFound());
     }
 }

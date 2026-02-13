@@ -1,5 +1,6 @@
 package com.elec_business.business.impl;
 import com.elec_business.business.TimeSlotBusiness;
+import com.elec_business.controller.dto.BookingResponseDto;
 import com.elec_business.entity.*;
 import com.elec_business.repository.BookingRepository;
 import com.elec_business.repository.BookingStatusRepository;
@@ -60,7 +61,7 @@ class BookingBusinessTest {
         when(bookingStatusRepository.findByName(BookingStatusType.PENDING)).thenReturn(Optional.of(pendingStatus));
         when(bookingRepository.save(any(Booking.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        Booking result = bookingBusiness.createBooking("station-1", start, end, renter);
+        BookingResponseDto result = bookingBusiness.createBooking("station-1", start, end, renter);
 
         assertNotNull(result);
 

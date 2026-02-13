@@ -5,6 +5,8 @@ import com.elec_business.entity.AvailabilityRule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface AvailabilityRuleMapper {
 
@@ -17,5 +19,7 @@ public interface AvailabilityRuleMapper {
     @Mapping(source = "chargingStation.id", target = "stationId")
     @Mapping(source = "chargingStation.name", target = "stationName")
     AvailabilityRuleDto toDto(AvailabilityRule entity);
+
+    List<AvailabilityRuleDto> toDtos(List<AvailabilityRule> entityList);
 }
 

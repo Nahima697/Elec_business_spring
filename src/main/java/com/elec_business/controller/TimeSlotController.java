@@ -22,46 +22,48 @@ import java.util.List;
 @RequestMapping("/api/time_slots")
 @RequiredArgsConstructor
 public class TimeSlotController {
+
     private final TimeSlotBusiness timeSlotBusiness;
-    private final TimeSlotMapper timeSlotMapper;
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TimeSlotResponseDto> addTimeSlot(@RequestBody TimeSlotRequestDto requestDto) {
-        TimeSlot timeSlot = timeSlotMapper.toEntity(requestDto);
-        timeSlotBusiness.addTimeSlot(requestDto.getStationId(),requestDto.getStartTime(),requestDto.getEndTime());
-        return ResponseEntity.status(HttpStatus.CREATED).body(timeSlotMapper.toDto(timeSlot));
+    public TimeSlotResponseDto addTimeSlot(
+            @RequestBody TimeSlotRequestDto requestDto) {
+
+        return timeSlotBusiness.addTimeSlot(
+                requestDto.getStationId(),
+                requestDto.getStartTime(),
+                requestDto.getEndTime()
+        );
     }
 
     @GetMapping("/station/{station_id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Page<TimeSlotResponseDto>> getTimeSlotsForStation(
+    public Page<TimeSlotResponseDto> getTimeSlotsForStation(
             @PathVariable("station_id") String stationId,
-            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable
-    ) {
-        Page<TimeSlot> slots = timeSlotBusiness.getAvailableSlots(stationId, pageable);
-        return ResponseEntity.ok(timeSlotMapper.toDtoPage(slots));
+            @org.springframework.data.web.PageableDefault(size = 10)
+            Pageable pageable) {
+
+        return timeSlotBusiness.getAvailableSlots(stationId, pageable);
     }
 
     @GetMapping("/station/{station_id}/filtered")
-    public ResponseEntity<Page<TimeSlotResponseDto>> getFilteredTimeSlots(
+    public Page<TimeSlotResponseDto> getFilteredTimeSlots(
             @PathVariable("station_id") String stationId,
             @RequestParam("start") LocalDateTime start,
             @RequestParam("end") LocalDateTime end,
-            Pageable pageable
-    ) {
-        Page<TimeSlotResponseDto> slots =timeSlotMapper.toDtoPage(timeSlotBusiness.getAvailableSlotsByPeriod(stationId, start, end, pageable));
-        return ResponseEntity.ok(slots);
+            Pageable pageable) {
+
+        return timeSlotBusiness.getAvailableSlotsByPeriod(
+                stationId, start, end, pageable);
     }
+
     @GetMapping("/station/{station_id}/day")
-    public ResponseEntity<List<TimeSlotResponseDto>> getSlotsForDay(
+    public List<TimeSlotResponseDto> getSlotsForDay(
             @PathVariable("station_id") String stationId,
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-    ) {
-        List<TimeSlot> slots = timeSlotBusiness.getSlotsFiltered(stationId, date);
-        return ResponseEntity.ok(timeSlotMapper.toDtoList(slots));
+            @RequestParam("date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate date) {
+
+        return timeSlotBusiness.getSlotsFiltered(stationId, date);
     }
-
 }
-
-

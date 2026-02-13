@@ -2,6 +2,7 @@ package com.elec_business.business.impl;
 
 import com.elec_business.business.exception.AccessDeniedStationException;
 import com.elec_business.business.exception.StationNotFoundException;
+import com.elec_business.controller.dto.AvailabilityRuleDto;
 import com.elec_business.controller.mapper.AvailabilityRuleMapper;
 import com.elec_business.entity.AvailabilityRule;
 import com.elec_business.entity.ChargingLocation;
@@ -45,7 +46,7 @@ class AvailabilityRuleBusinessTest {
 
     @Test
     void createRule_Success() {
-        // ARRANGE
+
         String stationId = "station-1";
         String userId = "owner-1";
 
@@ -59,46 +60,52 @@ class AvailabilityRuleBusinessTest {
         station.setId(stationId);
         station.setLocation(location);
 
+        // DTO
+        AvailabilityRuleDto dto = new AvailabilityRuleDto();
+        dto.setStationId(stationId);
+        dto.setDayOfWeek(1);
+        dto.setStartTime(LocalTime.of(8, 0));
+        dto.setEndTime(LocalTime.of(12, 0));
+
+        // ENTITY retournée par le mapper
         AvailabilityRule rule = new AvailabilityRule();
-        rule.setChargingStation(station);
         rule.setDayOfWeek(1);
         rule.setStartTime(LocalTime.of(8, 0));
         rule.setEndTime(LocalTime.of(12, 0));
 
-        // Mocks
+        when(mapper.toEntity(dto)).thenReturn(rule);
         when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
         when(ruleRepo.existsOverlappingRule(eq(stationId), any(), any(), any())).thenReturn(false);
-        // Important : save retourne l'objet passé
-        when(ruleRepo.save(any(AvailabilityRule.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(ruleRepo.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-        // ACT
-        availabilityRuleBusiness.createRule(rule, owner);
+        availabilityRuleBusiness.createRule(dto, owner);
 
-        // ASSERT
-        verify(ruleRepo).save(rule);
-        // On vérifie que la génération des slots est appelée
+        verify(ruleRepo).save(any());
         verify(timeSlotService).generateTimeSlotsFromAvailabilityRules(any(), any(), anyList());
     }
 
     @Test
     void createRule_Fail_StationNotFound() {
-        User user = new User();
-        ChargingStation station = new ChargingStation();
-        station.setId("unknown");
+
+        AvailabilityRuleDto dto = new AvailabilityRuleDto();
+        dto.setStationId("unknown");
 
         AvailabilityRule rule = new AvailabilityRule();
+        ChargingStation station = new ChargingStation();
+        station.setId("unknown");
         rule.setChargingStation(station);
 
+        when(mapper.toEntity(dto)).thenReturn(rule);
         when(chargingStationRepository.findById("unknown")).thenReturn(Optional.empty());
 
         assertThrows(StationNotFoundException.class, () ->
-                availabilityRuleBusiness.createRule(rule, user)
+                availabilityRuleBusiness.createRule(dto, new User())
         );
     }
 
     @Test
     void createRule_Fail_NotOwner() {
-        // ARRANGE
+
         User owner = new User(); owner.setId("owner");
         User hacker = new User(); hacker.setId("hacker");
 
@@ -109,14 +116,16 @@ class AvailabilityRuleBusinessTest {
         station.setId("s1");
         station.setLocation(location);
 
-        AvailabilityRule rule = new AvailabilityRule();
-        rule.setChargingStation(station);
+        AvailabilityRuleDto dto = new AvailabilityRuleDto();
+        dto.setStationId("s1");
 
+        AvailabilityRule rule = new AvailabilityRule();
+
+        when(mapper.toEntity(dto)).thenReturn(rule);
         when(chargingStationRepository.findById("s1")).thenReturn(Optional.of(station));
 
-        // ACT & ASSERT
         assertThrows(AccessDeniedStationException.class, () ->
-                availabilityRuleBusiness.createRule(rule, hacker)
+                availabilityRuleBusiness.createRule(dto, hacker)
         );
 
         verify(ruleRepo, never()).save(any());
@@ -124,7 +133,7 @@ class AvailabilityRuleBusinessTest {
 
     @Test
     void createRule_Fail_Overlap() {
-        // ARRANGE
+
         String stationId = "s1";
         User owner = new User(); owner.setId("u1");
 
@@ -135,18 +144,23 @@ class AvailabilityRuleBusinessTest {
         station.setId(stationId);
         station.setLocation(location);
 
+        AvailabilityRuleDto dto = new AvailabilityRuleDto();
+        dto.setStationId(stationId);
+        dto.setDayOfWeek(1);
+        dto.setStartTime(LocalTime.of(10, 0));
+        dto.setEndTime(LocalTime.of(11, 0));
+
         AvailabilityRule rule = new AvailabilityRule();
-        rule.setChargingStation(station);
         rule.setDayOfWeek(1);
         rule.setStartTime(LocalTime.of(10, 0));
         rule.setEndTime(LocalTime.of(11, 0));
 
+        when(mapper.toEntity(dto)).thenReturn(rule);
         when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
         when(ruleRepo.existsOverlappingRule(eq(stationId), eq(1), any(), any())).thenReturn(true);
 
-        // ACT & ASSERT
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                availabilityRuleBusiness.createRule(rule, owner)
+                availabilityRuleBusiness.createRule(dto, owner)
         );
 
         assertEquals("Une règle existe déjà sur ce créneau horaire pour ce jour !", ex.getMessage());
@@ -155,11 +169,18 @@ class AvailabilityRuleBusinessTest {
 
     @Test
     void getRules_Success() {
+
         String stationId = "s1";
         AvailabilityRule rule = new AvailabilityRule();
-        when(ruleRepo.findByChargingStation_Id(stationId)).thenReturn(Collections.singletonList(rule));
+        AvailabilityRuleDto dto = new AvailabilityRuleDto();
 
-        List<AvailabilityRule> result = availabilityRuleBusiness.getRules(stationId);
+        when(ruleRepo.findByChargingStation_Id(stationId))
+                .thenReturn(Collections.singletonList(rule));
+
+        when(mapper.toDtos(anyList()))
+                .thenReturn(Collections.singletonList(dto));
+
+        List<AvailabilityRuleDto> result = availabilityRuleBusiness.getRules(stationId);
 
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
@@ -167,8 +188,8 @@ class AvailabilityRuleBusinessTest {
 
     @Test
     void deleteRule_Success() {
+
         String ruleId = "rule-123";
-        doNothing().when(ruleRepo).deleteById(ruleId);
 
         availabilityRuleBusiness.deleteRule(ruleId);
 

@@ -2,6 +2,8 @@ package com.elec_business.business.impl;
 
 import com.elec_business.business.ReviewBusiness;
 import com.elec_business.business.exception.BusinessException;
+import com.elec_business.controller.dto.ReviewResponseDTO;
+import com.elec_business.controller.mapper.ReviewMapper;
 import com.elec_business.entity.BookingStatusType;
 import com.elec_business.entity.Review;
 import com.elec_business.repository.BookingRepository;
@@ -10,25 +12,30 @@ import com.elec_business.repository.ReviewRepository;
 import com.elec_business.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import  org.springframework.data.domain.Page;
 import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
-
 public class ReviewBusinessImpl implements ReviewBusiness {
 
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
     private final ChargingStationRepository stationRepository;
     private final UserRepository userRepository;
+    private final ReviewMapper reviewMapper;
 
-    @Transactional
     @Override
-    public Review createReview(String title, String content, Integer rating, String userId, String stationId) {
+    @Transactional
+    public ReviewResponseDTO createReview(
+            String title,
+            String content,
+            Integer rating,
+            String userId,
+            String stationId) {
 
         boolean hasBooked = bookingRepository.existsAcceptedBooking(
                 userId,
@@ -37,11 +44,13 @@ public class ReviewBusinessImpl implements ReviewBusiness {
         );
 
         if (!hasBooked) {
-            throw new BusinessException("You must have a completed booking to review this station.");
+            throw new BusinessException(
+                    "You must have a completed booking to review this station.");
         }
 
         if (reviewRepository.existsByUserAndStation(userId, stationId)) {
-            throw new BusinessException("You already reviewed this station.");
+            throw new BusinessException(
+                    "You already reviewed this station.");
         }
 
         Review review = new Review();
@@ -54,16 +63,14 @@ public class ReviewBusinessImpl implements ReviewBusiness {
 
         Review savedReview = reviewRepository.save(review);
 
-        Hibernate.initialize(savedReview.getUser());
-        Hibernate.initialize(savedReview.getStation());
-
-        return savedReview;
-
+        return reviewMapper.toDto(savedReview);
     }
 
     @Override
     public Double getAverageRating(String stationId) {
-        return reviewRepository.findAverageRatingByStationId(stationId).orElse(0.0);
+        return reviewRepository
+                .findAverageRatingByStationId(stationId)
+                .orElse(0.0);
     }
 
     @Override
@@ -72,8 +79,11 @@ public class ReviewBusinessImpl implements ReviewBusiness {
     }
 
     @Override
-    public Page<Review> getReviews(String stationId, org.springframework.data.domain.Pageable pageable) {
-        return reviewRepository.findByStationIdOrderByCreatedAtDesc(stationId, pageable);
-    }
+    @Transactional
+    public Page<ReviewResponseDTO> getReviews(String stationId, Pageable pageable) {
 
+        return reviewRepository
+                .findByStationIdOrderByCreatedAtDesc(stationId, pageable)
+                .map(reviewMapper::toDto);
+    }
 }

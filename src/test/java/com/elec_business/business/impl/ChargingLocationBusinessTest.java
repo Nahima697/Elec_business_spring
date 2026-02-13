@@ -1,5 +1,8 @@
 package com.elec_business.business.impl;
 
+import com.elec_business.controller.dto.ChargingLocationRequestDto;
+import com.elec_business.controller.dto.ChargingLocationResponseDto;
+import com.elec_business.controller.mapper.ChargingLocationMapper;
 import com.elec_business.entity.ChargingLocation;
 import com.elec_business.entity.User;
 import com.elec_business.repository.ChargingLocationRepository;
@@ -24,81 +27,141 @@ class ChargingLocationBusinessTest {
     @Mock
     private ChargingLocationRepository chargingLocationRepository;
 
+    @Mock
+    private ChargingLocationMapper chargingLocationMapper;
+
     @InjectMocks
     private ChargingLocationBusinessImpl chargingLocationBusiness;
 
     @Test
     void createChargingLocation_Success() {
-        ChargingLocation loc = new ChargingLocation();
-        when(chargingLocationRepository.save(loc)).thenReturn(loc);
 
-        ChargingLocation result = chargingLocationBusiness.createChargingLocation(loc);
+        ChargingLocation location = new ChargingLocation();
+        ChargingLocationResponseDto dto =
+                mock(ChargingLocationResponseDto.class);
+
+        when(chargingLocationRepository.save(location))
+                .thenReturn(location);
+
+        when(chargingLocationMapper.toDto(location))
+                .thenReturn(dto);
+
+        ChargingLocationResponseDto result =
+                chargingLocationBusiness.createChargingLocation(location);
+
         assertNotNull(result);
+        verify(chargingLocationRepository).save(location);
+        verify(chargingLocationMapper).toDto(location);
     }
 
     @Test
-    void getChargingLocationById_Success() throws AccessDeniedException {
-        // ARRANGE
-        User owner = new User(); owner.setId("u1");
-        ChargingLocation loc = new ChargingLocation();
-        loc.setId("loc1");
-        loc.setUser(owner);
+    void getChargingLocationById_Success() throws Exception {
 
-        when(chargingLocationRepository.findById("loc1")).thenReturn(Optional.of(loc));
+        User owner = new User();
+        owner.setId("u1");
 
-        // ACT
-        ChargingLocation result = chargingLocationBusiness.getChargingLocationById("loc1", owner);
+        ChargingLocation location = new ChargingLocation();
+        location.setId("loc1");
+        location.setUser(owner);
 
-        // ASSERT
-        assertEquals("loc1", result.getId());
+        ChargingLocationResponseDto dto =
+                mock(ChargingLocationResponseDto.class);
+
+        when(chargingLocationRepository.findById("loc1"))
+                .thenReturn(Optional.of(location));
+
+        when(chargingLocationMapper.toDto(location))
+                .thenReturn(dto);
+
+        ChargingLocationResponseDto result =
+                chargingLocationBusiness.getChargingLocationById("loc1", owner);
+
+        assertNotNull(result);
+        verify(chargingLocationMapper).toDto(location);
     }
 
     @Test
     void getChargingLocationById_Fail_AccessDenied() {
-        // ARRANGE : Le user connecté n'est PAS le propriétaire
+
         User owner = new User(); owner.setId("u1");
-        User hacker = new User(); hacker.setId("hacker");
+        User hacker = new User(); hacker.setId("hack");
 
-        ChargingLocation loc = new ChargingLocation();
-        loc.setUser(owner);
+        ChargingLocation location = new ChargingLocation();
+        location.setUser(owner);
 
-        when(chargingLocationRepository.findById("loc1")).thenReturn(Optional.of(loc));
+        when(chargingLocationRepository.findById("loc1"))
+                .thenReturn(Optional.of(location));
 
-        // ACT & ASSERT
         assertThrows(AccessDeniedException.class, () ->
                 chargingLocationBusiness.getChargingLocationById("loc1", hacker)
         );
     }
 
     @Test
-    void updateChargingLocation_Success() throws AccessDeniedException {
+    void updateChargingLocation_Success() throws Exception {
+
         User owner = new User(); owner.setId("u1");
+
         ChargingLocation existing = new ChargingLocation();
         existing.setId("loc1");
         existing.setUser(owner);
-        existing.setName("Old Name");
 
-        ChargingLocation updateData = new ChargingLocation();
-        updateData.setName("New Name");
+        ChargingLocationRequestDto requestDto =
+                mock(ChargingLocationRequestDto.class);
 
-        when(chargingLocationRepository.findById("loc1")).thenReturn(Optional.of(existing));
-        when(chargingLocationRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+        ChargingLocation mappedLocation =
+                new ChargingLocation();
+        mappedLocation.setName("New Name");
 
-        ChargingLocation updated = chargingLocationBusiness.updateChargingLocation("loc1", updateData, owner);
+        ChargingLocationResponseDto responseDto =
+                mock(ChargingLocationResponseDto.class);
 
-        assertEquals("New Name", updated.getName());
+        when(chargingLocationRepository.findById("loc1"))
+                .thenReturn(Optional.of(existing));
+
+        when(chargingLocationMapper.toEntity(requestDto))
+                .thenReturn(mappedLocation);
+
+        when(chargingLocationRepository.save(existing))
+                .thenReturn(existing);
+
+        when(chargingLocationMapper.toDto(existing))
+                .thenReturn(responseDto);
+
+        ChargingLocationResponseDto result =
+                chargingLocationBusiness.updateChargingLocation(
+                        "loc1",
+                        requestDto,
+                        owner
+                );
+
+        assertNotNull(result);
+        verify(chargingLocationRepository).save(existing);
+        verify(chargingLocationMapper).toDto(existing);
     }
 
     @Test
-    void deleteChargingLocation_Success() throws AccessDeniedException {
-        User owner = new User(); owner.setId("u1");
-        ChargingLocation loc = new ChargingLocation();
-        loc.setUser(owner);
+    void deleteChargingLocation_Success() throws Exception {
 
-        when(chargingLocationRepository.findById("loc1")).thenReturn(Optional.of(loc));
+        User owner = new User(); owner.setId("u1");
+
+        ChargingLocation location = new ChargingLocation();
+        location.setUser(owner);
+
+        ChargingLocationResponseDto dto =
+                mock(ChargingLocationResponseDto.class);
+
+        when(chargingLocationRepository.findById("loc1"))
+                .thenReturn(Optional.of(location));
+
+        when(chargingLocationMapper.toDto(location))
+                .thenReturn(dto);
+
+        when(chargingLocationMapper.toEntity(dto))
+                .thenReturn(location);
 
         chargingLocationBusiness.deleteChargingLocation("loc1", owner);
 
-        verify(chargingLocationRepository).delete(loc);
+        verify(chargingLocationRepository).delete(location);
     }
 }

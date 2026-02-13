@@ -1,19 +1,50 @@
 package com.elec_business.business;
 
+import com.elec_business.controller.dto.TimeSlotResponseDto;
 import com.elec_business.entity.AvailabilityRule;
-import com.elec_business.entity.TimeSlot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TimeSlotBusiness {
-    void  addTimeSlot(String stationId, LocalDateTime startTime, LocalDateTime endTime);
-    void generateTimeSlotsFromAvailabilityRules(LocalDate startDate, LocalDate endDate, List<AvailabilityRule> rules);
-    void setTimeSlotAvailability(String stationId, LocalDateTime startTime, LocalDateTime endTime);
+
+    TimeSlotResponseDto addTimeSlot(
+            String stationId,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    );
+
+    void generateTimeSlotsFromAvailabilityRules(
+            LocalDate startDate,
+            LocalDate endDate,
+            List<AvailabilityRule> rules
+    );
+
+    void setTimeSlotAvailability(
+            String stationId,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    );
+
     void purgeOldTimeSlots();
-    Page<TimeSlot> getAvailableSlots(String stationId, Pageable pageable);
-    Page<TimeSlot> getAvailableSlotsByPeriod(String stationId, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
-    List<TimeSlot> getSlotsFiltered(String stationId, LocalDate date);
+
+    Page<TimeSlotResponseDto> getAvailableSlots(
+            String stationId,
+            Pageable pageable
+    );
+
+    Page<TimeSlotResponseDto> getAvailableSlotsByPeriod(
+            String stationId,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            Pageable pageable
+    );
+
+    List<TimeSlotResponseDto> getSlotsFiltered(
+            String stationId,
+            LocalDate date
+    );
 }

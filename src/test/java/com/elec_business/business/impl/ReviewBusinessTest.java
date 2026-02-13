@@ -1,6 +1,8 @@
 package com.elec_business.business.impl;
 
 import com.elec_business.business.exception.BusinessException;
+import com.elec_business.controller.dto.ReviewResponseDTO;
+import com.elec_business.controller.mapper.ReviewMapper;
 import com.elec_business.entity.*;
 import com.elec_business.repository.BookingRepository;
 import com.elec_business.repository.ChargingStationRepository;
@@ -29,83 +31,99 @@ class ReviewBusinessTest {
 
     @Mock
     private ReviewRepository reviewRepository;
+
     @Mock
     private BookingRepository bookingRepository;
+
     @Mock
     private ChargingStationRepository stationRepository;
+
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ReviewMapper reviewMapper;
 
     @InjectMocks
     private ReviewBusinessImpl reviewBusiness;
 
     @Test
     void createReview_Success() {
-        // ARRANGE
+
         String userId = "user-1";
         String stationId = "station-1";
+
         User user = new User(); user.setId(userId);
         ChargingStation station = new ChargingStation(); station.setId(stationId);
 
-        // 1. On dit que la réservation existe bien (ACCEPTED)
-        when(bookingRepository.existsAcceptedBooking(eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
+        Review review = new Review();
+        review.setTitle("Titre");
+        review.setRating(5);
+
+        ReviewResponseDTO dto = mock(ReviewResponseDTO.class);
+
+        when(bookingRepository.existsAcceptedBooking(
+                eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
                 .thenReturn(true);
 
-        // 2. On dit que l'utilisateur n'a PAS encore noté
-        when(reviewRepository.existsByUserAndStation(userId, stationId)).thenReturn(false);
+        when(reviewRepository.existsByUserAndStation(userId, stationId))
+                .thenReturn(false);
 
-        // 3. Mock des repositories User et Station
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(stationRepository.findById(stationId)).thenReturn(Optional.of(station));
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(user));
 
-        // 4. Mock du save (retourne l'objet passé en argument)
-        when(reviewRepository.save(any(Review.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(stationRepository.findById(stationId))
+                .thenReturn(Optional.of(station));
 
-        // ACT
-        Review result = reviewBusiness.createReview("Titre", "Contenu", 5, userId, stationId);
+        when(reviewRepository.save(any(Review.class)))
+                .thenReturn(review);
 
-        // ASSERT
+        when(reviewMapper.toDto(review))
+                .thenReturn(dto);
+
+        ReviewResponseDTO result =
+                reviewBusiness.createReview("Titre", "Contenu", 5, userId, stationId);
+
         assertNotNull(result);
-        assertEquals("Titre", result.getTitle());
-        assertEquals(5, result.getRating());
         verify(reviewRepository).save(any(Review.class));
+        verify(reviewMapper).toDto(review);
     }
 
     @Test
     void createReview_Fail_NoCompletedBooking() {
-        // ARRANGE
+
         String userId = "user-1";
         String stationId = "station-1";
 
-        // Le repository répond FALSE : aucune réservation acceptée
-        when(bookingRepository.existsAcceptedBooking(eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
+        when(bookingRepository.existsAcceptedBooking(
+                eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
                 .thenReturn(false);
 
-        // ACT & ASSERT
         BusinessException ex = assertThrows(BusinessException.class, () ->
                 reviewBusiness.createReview("Titre", "Contenu", 5, userId, stationId)
         );
 
-        assertEquals("You must have a completed booking to review this station.", ex.getMessage());
+        assertEquals(
+                "You must have a completed booking to review this station.",
+                ex.getMessage()
+        );
 
-        // On vérifie qu'on n'a JAMAIS essayé de sauver
         verify(reviewRepository, never()).save(any());
     }
 
     @Test
     void createReview_Fail_AlreadyReviewed() {
-        // ARRANGE
+
         String userId = "user-1";
         String stationId = "station-1";
 
-        // 1. Il faut que la réservation existe
-        when(bookingRepository.existsAcceptedBooking(eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
+        when(bookingRepository.existsAcceptedBooking(
+                eq(userId), eq(stationId), eq(BookingStatusType.ACCEPTED)))
                 .thenReturn(true);
 
-        // 2. MAIS l'utilisateur a déjà noté
-        when(reviewRepository.existsByUserAndStation(userId, stationId)).thenReturn(true);
+        when(reviewRepository.existsByUserAndStation(userId, stationId))
+                .thenReturn(true);
 
-        // ACT & ASSERT
         BusinessException ex = assertThrows(BusinessException.class, () ->
                 reviewBusiness.createReview("Titre", "Contenu", 5, userId, stationId)
         );
@@ -116,22 +134,37 @@ class ReviewBusinessTest {
 
     @Test
     void getReviews_Success() {
+
         String stationId = "station-1";
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Review> page = new PageImpl<>(Collections.emptyList());
 
-        when(reviewRepository.findByStationIdOrderByCreatedAtDesc(stationId, pageable)).thenReturn(page);
+        Review review = new Review();
+        Page<Review> page = new PageImpl<>(Collections.singletonList(review));
 
-        Page<Review> result = reviewBusiness.getReviews(stationId, pageable);
+        ReviewResponseDTO dto = mock(ReviewResponseDTO.class);
+
+        when(reviewRepository.findByStationIdOrderByCreatedAtDesc(
+                stationId, pageable))
+                .thenReturn(page);
+
+        when(reviewMapper.toDto(review))
+                .thenReturn(dto);
+
+        Page<ReviewResponseDTO> result =
+                reviewBusiness.getReviews(stationId, pageable);
 
         assertNotNull(result);
-        verify(reviewRepository).findByStationIdOrderByCreatedAtDesc(stationId, pageable);
+        verify(reviewRepository)
+                .findByStationIdOrderByCreatedAtDesc(stationId, pageable);
     }
 
     @Test
     void getAverageRating_Success() {
+
         String stationId = "station-1";
-        when(reviewRepository.findAverageRatingByStationId(stationId)).thenReturn(Optional.of(4.5));
+
+        when(reviewRepository.findAverageRatingByStationId(stationId))
+                .thenReturn(Optional.of(4.5));
 
         Double rating = reviewBusiness.getAverageRating(stationId);
 
@@ -139,9 +172,25 @@ class ReviewBusinessTest {
     }
 
     @Test
-    void getReviewCount_Success() {
+    void getAverageRating_DefaultZero() {
+
         String stationId = "station-1";
-        when(reviewRepository.countByStationId(stationId)).thenReturn(10L);
+
+        when(reviewRepository.findAverageRatingByStationId(stationId))
+                .thenReturn(Optional.empty());
+
+        Double rating = reviewBusiness.getAverageRating(stationId);
+
+        assertEquals(0.0, rating);
+    }
+
+    @Test
+    void getReviewCount_Success() {
+
+        String stationId = "station-1";
+
+        when(reviewRepository.countByStationId(stationId))
+                .thenReturn(10L);
 
         Long count = reviewBusiness.getReviewCount(stationId);
 

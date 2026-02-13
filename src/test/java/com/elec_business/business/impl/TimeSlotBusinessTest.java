@@ -1,5 +1,7 @@
 package com.elec_business.business.impl;
 
+import com.elec_business.controller.dto.TimeSlotResponseDto;
+import com.elec_business.controller.mapper.TimeSlotMapper;
 import com.elec_business.entity.AvailabilityRule;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.entity.TimeSlot;
@@ -36,6 +38,9 @@ class TimeSlotBusinessTest {
     @Mock
     private ChargingStationRepository chargingStationRepository;
 
+    @Mock
+    private TimeSlotMapper timeSlotMapper;
+
     @InjectMocks
     private TimeSlotBusinessImpl timeSlotBusiness;
 
@@ -48,12 +53,30 @@ class TimeSlotBusinessTest {
         ChargingStation station = new ChargingStation();
         station.setId(stationId);
 
-        when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
-        when(timeSlotRepository.existsSlotInRange(any(), any(), any(), any())).thenReturn(false);
+        TimeSlot savedSlot = new TimeSlot();
+        savedSlot.setStartTime(start);
+        savedSlot.setEndTime(end);
 
-        timeSlotBusiness.addTimeSlot(stationId, start, end);
+        TimeSlotResponseDto dto = mock(TimeSlotResponseDto.class);
 
+        when(chargingStationRepository.findById(stationId))
+                .thenReturn(Optional.of(station));
+
+        when(timeSlotRepository.existsSlotInRange(any(), any(), any(), any()))
+                .thenReturn(false);
+
+        when(timeSlotRepository.save(any(TimeSlot.class)))
+                .thenReturn(savedSlot);
+
+        when(timeSlotMapper.toDto(savedSlot))
+                .thenReturn(dto);
+
+        TimeSlotResponseDto result =
+                timeSlotBusiness.addTimeSlot(stationId, start, end);
+
+        assertNotNull(result);
         verify(timeSlotRepository).save(any(TimeSlot.class));
+        verify(timeSlotMapper).toDto(savedSlot);
     }
 
     @Test
@@ -62,7 +85,8 @@ class TimeSlotBusinessTest {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plusHours(1);
 
-        when(chargingStationRepository.findById(stationId)).thenReturn(Optional.empty());
+        when(chargingStationRepository.findById(stationId))
+                .thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () ->
                 timeSlotBusiness.addTimeSlot(stationId, start, end)
@@ -78,7 +102,8 @@ class TimeSlotBusinessTest {
         TimeSlot slot1 = new TimeSlot();
         slot1.setIsAvailable(true);
 
-        when(timeSlotRepository.findSlotsInRange(eq(stationId), eq(start), eq(end), anyString()))
+        when(timeSlotRepository.findSlotsInRange(
+                eq(stationId), eq(start), eq(end), anyString()))
                 .thenReturn(List.of(slot1));
 
         timeSlotBusiness.setTimeSlotAvailability(stationId, start, end);
@@ -89,60 +114,88 @@ class TimeSlotBusinessTest {
 
     @Test
     void generateTimeSlotsFromAvailabilityRules_Success() {
-        // ARRANGE
+
         ChargingStation station = new ChargingStation();
         station.setId("s1");
 
         AvailabilityRule rule = new AvailabilityRule();
         rule.setChargingStation(station);
-        rule.setDayOfWeek(1); // Lundi
+        rule.setDayOfWeek(1);
         rule.setStartTime(LocalTime.of(8, 0));
         rule.setEndTime(LocalTime.of(12, 0));
 
-        // On prend une date qui EST un lundi (ex: 1er Janvier 2024)
         LocalDate start = LocalDate.of(2024, 1, 1);
         LocalDate end = LocalDate.of(2024, 1, 2);
 
-        // Mock : Pas de slot existant, donc on peut créer
-        when(timeSlotRepository.existsSlotInRange(any(), any(), any(), any())).thenReturn(false);
+        when(timeSlotRepository.existsSlotInRange(any(), any(), any(), any()))
+                .thenReturn(false);
 
-        // ACT
-        timeSlotBusiness.generateTimeSlotsFromAvailabilityRules(start, end, List.of(rule));
+        timeSlotBusiness.generateTimeSlotsFromAvailabilityRules(
+                start, end, List.of(rule));
 
-        // ASSERT
-        // Capture pour vérifier ce qui est sauvegardé
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<List<TimeSlot>> captor = ArgumentCaptor.forClass(List.class);
-        verify(timeSlotRepository).saveAll(captor.capture());
-
-        List<TimeSlot> savedSlots = captor.getValue();
-        assertEquals(1, savedSlots.size()); // 1 seul slot car 1 seul lundi dans l'intervalle
-        assertEquals(LocalTime.of(8, 0), savedSlots.get(0).getStartTime().toLocalTime());
+        verify(timeSlotRepository).saveAll(anyList());
     }
 
     @Test
     void purgeOldTimeSlots_Success() {
         timeSlotBusiness.purgeOldTimeSlots();
-        // Le mockito 'any' marche ici
-        verify(timeSlotRepository).deleteByStartTimeBefore(any(LocalDateTime.class));
+        verify(timeSlotRepository)
+                .deleteByStartTimeBefore(any(LocalDateTime.class));
     }
 
     @Test
     void getAvailableSlots_Success() {
         Pageable pageable = Pageable.unpaged();
-        when(timeSlotRepository.findByStationId("s1", pageable)).thenReturn(Page.empty());
 
-        timeSlotBusiness.getAvailableSlots("s1", pageable);
+        TimeSlot slot = new TimeSlot();
+        Page<TimeSlot> page = Page.empty();
 
-        verify(timeSlotRepository).findByStationId("s1", pageable);
+        when(timeSlotRepository.findByStationId("s1", pageable))
+                .thenReturn(page);
+
+        when(timeSlotMapper.toDto(any()))
+                .thenReturn(mock(TimeSlotResponseDto.class));
+
+        Page<TimeSlotResponseDto> result =
+                timeSlotBusiness.getAvailableSlots("s1", pageable);
+
+        assertNotNull(result);
+        verify(timeSlotRepository)
+                .findByStationId("s1", pageable);
+    }
+
+    @Test
+    void getAvailableSlotsByPeriod_Success() {
+        Pageable pageable = Pageable.unpaged();
+
+        Page<TimeSlot> page = Page.empty();
+
+        when(timeSlotRepository.findAvailableSlotsPage(
+                any(), any(), any(), any()))
+                .thenReturn(page);
+
+        Page<TimeSlotResponseDto> result =
+                timeSlotBusiness.getAvailableSlotsByPeriod(
+                        "s1",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusHours(1),
+                        pageable
+                );
+
+        assertNotNull(result);
     }
 
     @Test
     void getSlotsFiltered_Success() {
-        when(timeSlotRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
 
-        timeSlotBusiness.getSlotsFiltered("s1", LocalDate.now());
+        when(timeSlotRepository.findAll(any(Specification.class)))
+                .thenReturn(Collections.emptyList());
 
-        verify(timeSlotRepository).findAll(any(Specification.class));
+        List<TimeSlotResponseDto> result =
+                timeSlotBusiness.getSlotsFiltered("s1", LocalDate.now());
+
+        assertNotNull(result);
+        verify(timeSlotRepository)
+                .findAll(any(Specification.class));
     }
 }

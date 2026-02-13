@@ -1,6 +1,8 @@
 package com.elec_business.business.impl;
 
 import com.elec_business.business.ChargingStationBusiness;
+import com.elec_business.controller.dto.ChargingStationResponseDto;
+import com.elec_business.controller.mapper.ChargingStationMapper;
 import com.elec_business.repository.ChargingLocationRepository;
 import com.elec_business.entity.ChargingStation;
 import com.elec_business.repository.ChargingStationRepository;
@@ -32,9 +34,10 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
     private final FileStorageService fileStorageService;
     private final ChargingLocationRepository chargingLocationRepository;
     private static final String ERR_STATION_NOT_FOUND = "Charging station not found";
+    private final ChargingStationMapper chargingStationMapper;
 
     @Override
-    public ChargingStation createChargingStation(ChargingStation station, User currentUser, MultipartFile image) throws AccessDeniedException {
+    public ChargingStationResponseDto createChargingStation(ChargingStation station, User currentUser, MultipartFile image) throws AccessDeniedException {
         ChargingLocation location = chargingLocationRepository.findById(station.getLocation().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Location non trouvée"));
 
@@ -48,8 +51,8 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
         // Gestion de l'image
         try {
             String imageUrl;
-            if (image != null && !image.isEmpty()) { 
-                
+            if (image != null && !image.isEmpty()) {
+
                 boolean isValidImage = fileStorageService.checkMediaType(image, "image");
                 if (!isValidImage) {
                     throw new IllegalArgumentException("Le fichier fourni n'est pas une image valide.");
@@ -62,7 +65,7 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
 
             station.setImageUrl(imageUrl);
             station.setCreatedAt(Instant.now());
-           return chargingStationRepository.save(station);
+           return  chargingStationMapper.toDto(chargingStationRepository.save(station));
 
         } catch (InvalidMediaTypeException e ) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid format, image required");
@@ -71,45 +74,47 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
     }
 
     @Override
-    public Page<ChargingStation> getAllChargingStations(Pageable pageable) {
-        return chargingStationRepository.findAll(pageable);
+    public Page<ChargingStationResponseDto> getAllChargingStations(Pageable pageable) {
+        return chargingStationRepository
+                .findAll(pageable)
+                .map(chargingStationMapper::toDto);
     }
 
     @Override
-    public ChargingStation getChargingStationById(String id) {
+    public ChargingStationResponseDto getChargingStationById(String id) {
         ChargingStation station =chargingStationRepository.findByIdWithDetails(id);
         if(station == null) {
             throw new EntityNotFoundException("Charging station not found");
         }
-        return station;
+        return  chargingStationMapper.toDto(station);
     }
 
     @Override
     @Transactional
-    public List<ChargingStation> getByLocationId(String id)  {
+    public List<ChargingStationResponseDto> getByLocationId(String id)  {
         if (!chargingLocationRepository.existsById(id)) {
             throw new EntityNotFoundException("Lieu introuvable");
         }
-        return chargingStationRepository.findByLocation_Id(id);
+        return chargingStationMapper.toDtos(chargingStationRepository.findByLocation_Id(id));
     }
 
-    public ChargingStation getChargingStationByName(String name) {
+    public ChargingStationResponseDto getChargingStationByName(String name) {
         ChargingStation station = chargingStationRepository.findChargingStationByName(name);
         if (station == null) {
             throw new EntityNotFoundException(ERR_STATION_NOT_FOUND);
         }
-        return station;
+        return chargingStationMapper.toDto(station);
     }
 
     @Override
     @Transactional
-    public List<ChargingStation> getMyStations(User currentUser) {
-        return chargingStationRepository.findByOwnerEmail(currentUser.getEmail());
+    public List<ChargingStationResponseDto> getMyStations(User currentUser) {
+        return chargingStationMapper.toDtos(chargingStationRepository.findByOwnerEmail(currentUser.getEmail()));
     }
 
     @Override
     @Transactional
-    public ChargingStation updateChargingStation(String id, ChargingStation stationChanges, User currentUser, MultipartFile image) throws AccessDeniedException {
+    public ChargingStationResponseDto updateChargingStation(String id, ChargingStation stationChanges, User currentUser, MultipartFile image) throws AccessDeniedException {
 
         ChargingStation existingStation = chargingStationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ERR_STATION_NOT_FOUND));
@@ -140,7 +145,7 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image format");
             }
         }
-        return chargingStationRepository.save(existingStation);
+        return chargingStationMapper.toDto(chargingStationRepository.save(existingStation));
     }
 
     public void deleteChargingStationById(String id, User currentUser) throws AccessDeniedException {

@@ -1,6 +1,9 @@
 package com.elec_business.business.impl;
 
 import com.elec_business.business.ChargingLocationBusiness;
+import com.elec_business.controller.dto.ChargingLocationRequestDto;
+import com.elec_business.controller.dto.ChargingLocationResponseDto;
+import com.elec_business.controller.mapper.ChargingLocationMapper;
 import com.elec_business.entity.User;
 import com.elec_business.repository.ChargingLocationRepository;
 import com.elec_business.entity.ChargingLocation;
@@ -15,17 +18,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChargingLocationBusinessImpl implements ChargingLocationBusiness {
     private final ChargingLocationRepository chargingLocationRepository;
+    private final ChargingLocationMapper chargingLocationMapper;
 
-    public ChargingLocation createChargingLocation(ChargingLocation chargingLocation) {
+    public ChargingLocationResponseDto createChargingLocation(ChargingLocation chargingLocation) {
 
-        return chargingLocationRepository.save(chargingLocation);
+        return chargingLocationMapper.toDto(chargingLocationRepository.save(chargingLocation));
     }
 
-    public List<ChargingLocation> getAllChargingLocations() {
-        return chargingLocationRepository.findAll();
+    public List<ChargingLocationResponseDto> getAllChargingLocations() {
+        return chargingLocationMapper.toDtos(chargingLocationRepository.findAll());
     }
 
-    public ChargingLocation getChargingLocationById(String id, User currentUser) throws AccessDeniedException {
+    public ChargingLocationResponseDto getChargingLocationById(String id, User currentUser) throws AccessDeniedException {
         ChargingLocation location = chargingLocationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Location not found"));
 
@@ -33,17 +37,17 @@ public class ChargingLocationBusinessImpl implements ChargingLocationBusiness {
             throw new AccessDeniedException("You do not have access to this location");
         }
 
-        return location;
+        return chargingLocationMapper.toDto(location);
     }
 
 
-    public List<ChargingLocation> getChargingLocationByUser(User user) {
+    public List<ChargingLocationResponseDto> getChargingLocationByUser(User user) {
 
-        return chargingLocationRepository.findByUser(user);
+        return chargingLocationMapper.toDtos(chargingLocationRepository.findByUser(user));
     }
 
 
-    public ChargingLocation updateChargingLocation(String id, ChargingLocation location, User currentUser) throws AccessDeniedException {
+    public ChargingLocationResponseDto updateChargingLocation(String id, ChargingLocationRequestDto dto, User currentUser) throws AccessDeniedException {
         ChargingLocation existingLocation = chargingLocationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Charging location not found"));
 
@@ -51,18 +55,19 @@ public class ChargingLocationBusinessImpl implements ChargingLocationBusiness {
             throw new AccessDeniedException("You do not have permission to modify this location.");
         }
 
+        ChargingLocation location = chargingLocationMapper.toEntity(dto);
         existingLocation.setAddressLine(location.getAddressLine());
         existingLocation.setCity(location.getCity());
         existingLocation.setPostalCode(location.getPostalCode());
         existingLocation.setCountry(location.getCountry());
         existingLocation.setName(location.getName());
 
-        return chargingLocationRepository.save(existingLocation);
+        return chargingLocationMapper.toDto(chargingLocationRepository.save(existingLocation));
     }
 
 
     public void deleteChargingLocation(String id, User currentUser) throws AccessDeniedException {
-        ChargingLocation location = getChargingLocationById(id, currentUser);
+        ChargingLocation location =chargingLocationMapper.toEntity(getChargingLocationById(id, currentUser));
         chargingLocationRepository.delete(location);
     }
 
