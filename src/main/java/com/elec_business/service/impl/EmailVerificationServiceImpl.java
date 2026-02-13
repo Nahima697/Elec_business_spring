@@ -63,7 +63,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     }
 
     @Transactional
-    public User verifyEmail(String  userId, String token) {
+    public void verifyEmail(String  userId, String token) {
         if (!otpService.isOtpValid(userId, token)) {
             throw new ResponseStatusException(BAD_REQUEST,
                     "Token invalid or expired");
@@ -82,7 +82,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
         user.setEmailVerified(true);
         user.setEmailVerifiedAt(Instant.now());
-       return  userRepository.save(user);
+        userRepository.save(user);
 
     }
 }
