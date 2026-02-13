@@ -6,39 +6,53 @@ INSERT INTO user_role(name) VALUES ('ROLE_USER')
 ON CONFLICT (name) DO NOTHING;
 
 -- 2. Insert users avec UUID générés
+-- 2. Insert users (CORRIGÉ : Sans role_id ni phone_verif_code)
 INSERT INTO app_user (
     id, username, email, password, phone_number,
     email_verified, email_verif_at,
-    phone_verif_code, phone_verified, phone_verif_at,
+    phone_verified, phone_verif_at,
     profile_picture_url,
-    role_id,
     created_at
 ) VALUES
       (
           gen_random_uuid(), 'user1', 'user1@test.com', '{bcrypt}password123', '0600000001',
           true, NOW(),
-          NULL, true, NOW(),
+          true, NOW(),
           NULL,
-          (SELECT id FROM user_role WHERE name = 'ROLE_USER'),
           NOW()
       ),
       (
           gen_random_uuid(), 'user2', 'user2@test.com', '{bcrypt}password456', '0600000002',
           true, NOW(),
-          NULL, true, NOW(),
+          true, NOW(),
           NULL,
-          (SELECT id FROM user_role WHERE name = 'ROLE_USER'),
           NOW()
       ),
       (
           gen_random_uuid(), 'user3', 'user3@test.com', '{bcrypt}password789', '0600000003',
           true, NOW(),
-          NULL, true, NOW(),
+          true, NOW(),
           NULL,
-          (SELECT id FROM user_role WHERE name = 'ROLE_USER'),
           NOW()
       )
 ON CONFLICT (email) DO NOTHING;
+
+-- 3. NOUVEAU : Liaison Many-to-Many dans la table de jointure
+INSERT INTO user_user_role (user_id, role_id)
+VALUES
+    (
+        (SELECT id FROM app_user WHERE username = 'user1'),
+        (SELECT id FROM user_role WHERE name = 'ROLE_USER')
+    ),
+    (
+        (SELECT id FROM app_user WHERE username = 'user2'),
+        (SELECT id FROM user_role WHERE name = 'ROLE_USER')
+    ),
+    (
+        (SELECT id FROM app_user WHERE username = 'user3'),
+        (SELECT id FROM user_role WHERE name = 'ROLE_USER')
+    )
+ON CONFLICT DO NOTHING;
 
 -- 3. Insert charging_location (avec UUID et FK user_id)
 INSERT INTO charging_location (
