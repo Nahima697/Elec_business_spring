@@ -124,7 +124,7 @@ public class TestDataLoader {
         // ================================
         // 7) BOOKINGS
         // ================================
-        // 💡 FIX: Create MULTIPLE bookings with different owner/renter combinations
+        //
 
         // Booking 1: user2 rents from user1's station (for accept test)
         Booking booking1 = new Booking();
@@ -160,8 +160,6 @@ public class TestDataLoader {
         em.persist(booking3);
 
         em.flush();
-
-        // 🔍 IMPORTANT: Refresh entities to ensure IDs are populated
         em.refresh(booking1);
         em.refresh(booking2);
         em.refresh(booking3);
@@ -224,14 +222,12 @@ public class TestDataLoader {
             u.setEmailVerifiedAt(Instant.now());
             u.setPhoneVerifiedAt(Instant.now());
 
-            // 🔥 FIX: S'assurer que les rôles sont bien attachés
             Set<UserRole> roleSet = new HashSet<>(Arrays.asList(roles));
             u.setRoles(roleSet);
 
             em.persist(u);
             em.flush();
 
-            // 🔥 FIX: Rafraîchir pour charger les relations
             em.refresh(u);
             return u;
         }

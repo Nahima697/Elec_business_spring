@@ -37,7 +37,7 @@ class TimeSlotRepositoryTest {
     void setUp() {
         // 1. Charge les données globales (Users, Stations, et le slot par défaut)
         TestDataLoader.LoadResult result = testDataLoader.load();
-        this.station = result.stations().get(0);
+        this.station = result.stations().getFirst();
 
         // 2. NETTOYAGE CRITIQUE : On supprime le slot créé par le Loader
         timeSlotRepository.deleteAll(); 

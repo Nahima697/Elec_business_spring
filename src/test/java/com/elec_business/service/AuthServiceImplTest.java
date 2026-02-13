@@ -78,13 +78,15 @@ public class AuthServiceImplTest {
     @Test
     void createRefreshTokenCookie_shouldCreateCookie() {
         User user = new User();
-        user.setId("abc123");
+        user.setId("abc1234"); // ID bidon
 
         when(tokenRepo.save(any())).thenAnswer(invocation -> {
             RefreshToken t = invocation.getArgument(0);
             t.setId("token-999");
             return t;
         });
+
+        // Puisque generateRefreshToken utilise l'objet 'user' passé en paramètre
 
         String refreshToken = authService.generateRefreshToken(user);
         ResponseCookie cookie = authService.createRefreshTokenCookie(refreshToken);
@@ -96,14 +98,13 @@ public class AuthServiceImplTest {
     }
 
     // -----------------------------------------
-    // TEST generateRefreshToken(String idUser)
+    // TEST generateRefreshToken(User user)
     // -----------------------------------------
     @Test
     void generateRefreshToken_shouldReturnTokenId() {
         User user = new User();
         user.setId("u1");
 
-        when(userRepo.findById("u1")).thenReturn(Optional.of(user));
         when(tokenRepo.save(any())).thenAnswer(invocation -> {
             RefreshToken t = invocation.getArgument(0);
             t.setId("rt-123");
