@@ -46,6 +46,7 @@ class TimeSlotBusinessTest {
 
     @Test
     void addTimeSlot_Success() {
+
         String stationId = "station-1";
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = start.plusHours(2);
@@ -75,40 +76,42 @@ class TimeSlotBusinessTest {
                 timeSlotBusiness.addTimeSlot(stationId, start, end);
 
         assertNotNull(result);
+
         verify(timeSlotRepository).save(any(TimeSlot.class));
         verify(timeSlotMapper).toDto(savedSlot);
     }
 
     @Test
     void addTimeSlot_StationNotFound() {
-        String stationId = "unknown";
-        LocalDateTime start = LocalDateTime.now();
-        LocalDateTime end = start.plusHours(1);
 
-        when(chargingStationRepository.findById(stationId))
+        when(chargingStationRepository.findById("unknown"))
                 .thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () ->
-                timeSlotBusiness.addTimeSlot(stationId, start, end)
+                timeSlotBusiness.addTimeSlot(
+                        "unknown",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusHours(1))
         );
     }
 
     @Test
     void setTimeSlotAvailability_Success() {
+
         String stationId = "s1";
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plusHours(2);
 
-        TimeSlot slot1 = new TimeSlot();
-        slot1.setIsAvailable(true);
+        TimeSlot slot = new TimeSlot();
+        slot.setIsAvailable(true);
 
         when(timeSlotRepository.findSlotsInRange(
                 eq(stationId), eq(start), eq(end), anyString()))
-                .thenReturn(List.of(slot1));
+                .thenReturn(List.of(slot));
 
         timeSlotBusiness.setTimeSlotAvailability(stationId, start, end);
 
-        assertFalse(slot1.getIsAvailable());
+        assertFalse(slot.getIsAvailable());
         verify(timeSlotRepository).saveAll(anyList());
     }
 
@@ -124,50 +127,56 @@ class TimeSlotBusinessTest {
         rule.setStartTime(LocalTime.of(8, 0));
         rule.setEndTime(LocalTime.of(12, 0));
 
-        LocalDate start = LocalDate.of(2024, 1, 1);
-        LocalDate end = LocalDate.of(2024, 1, 2);
-
         when(timeSlotRepository.existsSlotInRange(any(), any(), any(), any()))
                 .thenReturn(false);
 
         timeSlotBusiness.generateTimeSlotsFromAvailabilityRules(
-                start, end, List.of(rule));
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 1, 2),
+                List.of(rule));
 
         verify(timeSlotRepository).saveAll(anyList());
     }
 
     @Test
     void purgeOldTimeSlots_Success() {
+
         timeSlotBusiness.purgeOldTimeSlots();
+
         verify(timeSlotRepository)
                 .deleteByStartTimeBefore(any(LocalDateTime.class));
     }
 
+    /**
+     * 🔥 CORRECTION ICI
+     * Pas de stub inutile du mapper
+     */
     @Test
     void getAvailableSlots_Success() {
+
         Pageable pageable = Pageable.unpaged();
 
-        TimeSlot slot = new TimeSlot();
         Page<TimeSlot> page = Page.empty();
 
         when(timeSlotRepository.findByStationId("s1", pageable))
                 .thenReturn(page);
 
-        when(timeSlotMapper.toDto(any()))
-                .thenReturn(mock(TimeSlotResponseDto.class));
-
         Page<TimeSlotResponseDto> result =
                 timeSlotBusiness.getAvailableSlots("s1", pageable);
 
         assertNotNull(result);
+        assertTrue(result.isEmpty());
+
         verify(timeSlotRepository)
                 .findByStationId("s1", pageable);
+
+        verifyNoInteractions(timeSlotMapper); // important
     }
 
     @Test
     void getAvailableSlotsByPeriod_Success() {
-        Pageable pageable = Pageable.unpaged();
 
+        Pageable pageable = Pageable.unpaged();
         Page<TimeSlot> page = Page.empty();
 
         when(timeSlotRepository.findAvailableSlotsPage(
@@ -183,6 +192,9 @@ class TimeSlotBusinessTest {
                 );
 
         assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        verifyNoInteractions(timeSlotMapper);
     }
 
     @Test
@@ -195,7 +207,11 @@ class TimeSlotBusinessTest {
                 timeSlotBusiness.getSlotsFiltered("s1", LocalDate.now());
 
         assertNotNull(result);
+        assertTrue(result.isEmpty());
+
         verify(timeSlotRepository)
                 .findAll(any(Specification.class));
+
+        verifyNoInteractions(timeSlotMapper);
     }
 }

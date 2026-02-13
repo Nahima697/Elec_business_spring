@@ -18,34 +18,1334 @@
 [INFO] --- compiler:3.10.1:compile (default-compile) @ elec_business ---
 [INFO] Changes detected - recompiling the module!
 [INFO] Compiling 129 source files to /Users/nahima/Dev/Elec_business_spring/target/classes
-[INFO] -------------------------------------------------------------
-[ERROR] COMPILATION ERROR : 
-[INFO] -------------------------------------------------------------
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[146,17] constructor BookingAcceptedEvent in class com.elec_business.business.eventlistener.BookingAcceptedEvent cannot be applied to given types;
-  required: com.elec_business.entity.Booking
-  found:    com.elec_business.entity.Booking,com.elec_business.entity.User
-  reason: actual and formal argument lists differ in length
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[171,17] constructor BookingRejectedEvent in class com.elec_business.business.eventlistener.BookingRejectedEvent cannot be applied to given types;
-  required: com.elec_business.entity.Booking
-  found:    com.elec_business.entity.Booking,com.elec_business.entity.User
-  reason: actual and formal argument lists differ in length
-[INFO] 2 errors 
-[INFO] -------------------------------------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ elec_business ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ elec_business ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 15 source files to /Users/nahima/Dev/Elec_business_spring/target/test-classes
+[INFO] /Users/nahima/Dev/Elec_business_spring/src/test/java/com/elec_business/controller/BookingControllerTest.java: /Users/nahima/Dev/Elec_business_spring/src/test/java/com/elec_business/controller/BookingControllerTest.java uses or overrides a deprecated API that is marked for removal.
+[INFO] /Users/nahima/Dev/Elec_business_spring/src/test/java/com/elec_business/controller/BookingControllerTest.java: Recompile with -Xlint:removal for details.
+[INFO] /Users/nahima/Dev/Elec_business_spring/src/test/java/com/elec_business/business/impl/TimeSlotBusinessTest.java: /Users/nahima/Dev/Elec_business_spring/src/test/java/com/elec_business/business/impl/TimeSlotBusinessTest.java uses unchecked or unsafe operations.
+[INFO] /Users/nahima/Dev/Elec_business_spring/src/test/java/com/elec_business/business/impl/TimeSlotBusinessTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.0.0-M7:test (default-test) @ elec_business ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.elec_business.repository.TimeSlotRepositoryTest
+00:12:30.334 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.elec_business.repository.TimeSlotRepositoryTest]: TimeSlotRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+00:12:30.431 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.elec_business.ElecBusinessApplication for test class com.elec_business.repository.TimeSlotRepositoryTest
+00:12:30.481 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+2026-02-14T00:12:30.708+01:00  INFO 1546 --- [           main] c.e.repository.TimeSlotRepositoryTest    : Starting TimeSlotRepositoryTest using Java 21.0.9 with PID 1546 (started by nahima in /Users/nahima/Dev/Elec_business_spring)
+2026-02-14T00:12:30.709+01:00  INFO 1546 --- [           main] c.e.repository.TimeSlotRepositoryTest    : The following 1 profile is active: "test"
+2026-02-14T00:12:31.916+01:00  WARN 1546 --- [           main] tc.redis:7-alpine                        : Reuse was requested but the environment does not support the reuse of containers
+To enable reuse of containers, you must set 'testcontainers.reuse.enable=true' in a file located at /Users/nahima/.testcontainers.properties
+2026-02-14T00:12:32.118+01:00  WARN 1546 --- [           main] tc.postgres:17                           : Reuse was requested but the environment does not support the reuse of containers
+To enable reuse of containers, you must set 'testcontainers.reuse.enable=true' in a file located at /Users/nahima/.testcontainers.properties
+2026-02-14T00:12:33.004+01:00 DEBUG 1546 --- [           main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2026-02-14T00:12:33.323+01:00  INFO 1546 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+Hibernate: set client_min_messages = WARNING
+Hibernate: alter table if exists public.availability_rule drop constraint if exists FK97d6yh9dt6g843hwjhnqvty11
+Hibernate: alter table if exists public.billing_address drop constraint if exists FKkf7sxu2sbwe1ss9s033nd27a7
+Hibernate: alter table if exists public.booking drop constraint if exists FKs18mba98d77sn5b4gvj9bxt47
+Hibernate: alter table if exists public.booking drop constraint if exists FKj71yfwtvpb8cim66giop5l1cu
+Hibernate: alter table if exists public.booking drop constraint if exists FKn7phgawjwo673xgim9d2cvfe1
+Hibernate: alter table if exists public.charging_location drop constraint if exists FKpfcmef7h0u656ciu2xugb3lgk
+Hibernate: alter table if exists public.charging_station drop constraint if exists FK1f0hbt5kdmc2msuc68y4frpwm
+Hibernate: alter table if exists public.notification drop constraint if exists FKcxbqr6g1py0j4m9qeq44h1ju6
+Hibernate: alter table if exists public.review drop constraint if exists FKth4ylr90ghxu066syx6eu7h3j
+Hibernate: alter table if exists public.review drop constraint if exists FKc7y0l3wac4n2ewm6a2uecd54c
+Hibernate: alter table if exists public.time_slot drop constraint if exists FKfsqiaav3okusxra9w249si7ue
+Hibernate: drop table if exists public.app_user cascade
+Hibernate: drop table if exists public.availability_rule cascade
+Hibernate: drop table if exists public.billing_address cascade
+Hibernate: drop table if exists public.booking cascade
+Hibernate: drop table if exists public.charging_location cascade
+Hibernate: drop table if exists public.charging_station cascade
+Hibernate: drop table if exists public.notification cascade
+Hibernate: drop table if exists public.review cascade
+Hibernate: drop table if exists public.spatial_ref_sys cascade
+Hibernate: drop table if exists public.time_slot cascade
+Hibernate: alter table if exists refresh_token drop constraint if exists FK5wkt2p042y3lwltk29cvpxuh
+Hibernate: alter table if exists user_user_role drop constraint if exists FKau88me9jrx9hvw6wx58xwtron
+Hibernate: alter table if exists user_user_role drop constraint if exists FKsery6ia4t1ue5m6jqka7mg6kf
+Hibernate: drop table if exists booking_status cascade
+Hibernate: drop table if exists refresh_token cascade
+Hibernate: drop table if exists user_role cascade
+Hibernate: drop table if exists user_user_role cascade
+Hibernate: create table public.app_user (email_verified boolean not null, phone_verified boolean, created_at timestamp(6) with time zone default CURRENT_TIMESTAMP, email_verif_at timestamp(6) with time zone, phone_verif_at timestamp(6) with time zone, phone_number varchar(20), email varchar(100) not null, username varchar(100) not null, id varchar(255) not null, password varchar(255) not null, profile_picture_url TEXT, primary key (id), constraint app_user_email_key unique (email))
+Hibernate: create table public.availability_rule (day_of_week integer not null, end_time time(6) not null, start_time time(6) not null, created_at timestamp(6) with time zone, updated_at timestamp(6) with time zone, charging_station_id varchar(255) not null, id varchar(255) not null, primary key (id))
+Hibernate: create table public.billing_address (postal_code varchar(10) not null, city varchar(100) not null, country varchar(100) not null, address_line varchar(255) not null, id varchar(255) not null, user_id varchar(255) not null, primary key (id))
+Hibernate: create table public.booking (status_id integer not null, total_price numeric(10,2), created_at timestamp(6) with time zone default CURRENT_TIMESTAMP, end_date timestamp(6) not null, start_date timestamp(6) not null, id varchar(255) not null, station_id varchar(255) not null, user_id varchar(255) not null, primary key (id))
+Hibernate: create table public.charging_location (postal_code varchar(10) not null, city varchar(100) not null, country varchar(100) not null, address_line varchar(255) not null, id varchar(255) not null, name varchar(255) not null, user_id varchar(255) not null, primary key (id))
+Hibernate: create table public.charging_station (lat numeric(9,6), lng numeric(9,6), power_kw numeric(5,2), price numeric(10,2) not null, created_at timestamp(6) with time zone default CURRENT_TIMESTAMP, name varchar(100) not null, id varchar(255) not null, image_url varchar(255), location_id varchar(255) not null, description text, primary key (id))
+Hibernate: create table public.notification (is_read boolean default false, created_at timestamp(6) with time zone default CURRENT_TIMESTAMP, updated_at timestamp(6) with time zone, type varchar(50), id varchar(255) not null, user_id varchar(255) not null, message text, primary key (id))
+Hibernate: create table public.review (rating integer not null check ((rating<=5) and (rating>=1)), created_at timestamp(6) with time zone default CURRENT_TIMESTAMP, updated_at timestamp(6) with time zone, id varchar(255) not null, station_id varchar(255) not null, user_id varchar(255) not null, comments text, title text, primary key (id))
+Hibernate: create table public.spatial_ref_sys (auth_srid integer, srid integer not null, auth_name varchar(256), proj4text varchar(2048), srtext varchar(2048), primary key (srid))
+Hibernate: create table public.time_slot (is_available boolean default true not null, end_time timestamp(6) not null, start_time timestamp(6) not null, id varchar(255) not null, station_id varchar(255) not null, availability tsrange, primary key (id), constraint no_overlap unique (station_id, availability))
+Hibernate: create index idx_booking_user on public.booking (user_id)
+Hibernate: create index idx_booking_station on public.booking (station_id)
+Hibernate: create index idx_timeslot_range on public.time_slot (availability)
+Hibernate: create table booking_status (id integer generated by default as identity, name varchar(50) not null unique check (name in ('PENDING','ACCEPTED','CANCELLED','REJECTED')), primary key (id))
+Hibernate: create table refresh_token (expires_at timestamp(6), id varchar(255) not null, user_id varchar(255), primary key (id))
+Hibernate: create table user_role (id integer generated by default as identity, name varchar(50) not null, primary key (id), unique (name))
+Hibernate: create table user_user_role (role_id integer not null, user_id varchar(255) not null, primary key (role_id, user_id))
+Hibernate: alter table if exists public.availability_rule add constraint FK97d6yh9dt6g843hwjhnqvty11 foreign key (charging_station_id) references public.charging_station on delete cascade
+Hibernate: alter table if exists public.billing_address add constraint FKkf7sxu2sbwe1ss9s033nd27a7 foreign key (user_id) references public.app_user on delete cascade
+Hibernate: alter table if exists public.booking add constraint FKs18mba98d77sn5b4gvj9bxt47 foreign key (station_id) references public.charging_station on delete cascade
+Hibernate: alter table if exists public.booking add constraint FKj71yfwtvpb8cim66giop5l1cu foreign key (status_id) references booking_status
+Hibernate: alter table if exists public.booking add constraint FKn7phgawjwo673xgim9d2cvfe1 foreign key (user_id) references public.app_user on delete cascade
+Hibernate: alter table if exists public.charging_location add constraint FKpfcmef7h0u656ciu2xugb3lgk foreign key (user_id) references public.app_user on delete cascade
+Hibernate: alter table if exists public.charging_station add constraint FK1f0hbt5kdmc2msuc68y4frpwm foreign key (location_id) references public.charging_location
+Hibernate: alter table if exists public.notification add constraint FKcxbqr6g1py0j4m9qeq44h1ju6 foreign key (user_id) references public.app_user on delete cascade
+Hibernate: alter table if exists public.review add constraint FKth4ylr90ghxu066syx6eu7h3j foreign key (station_id) references public.charging_station
+Hibernate: alter table if exists public.review add constraint FKc7y0l3wac4n2ewm6a2uecd54c foreign key (user_id) references public.app_user on delete cascade
+Hibernate: alter table if exists public.time_slot add constraint FKfsqiaav3okusxra9w249si7ue foreign key (station_id) references public.charging_station on delete cascade
+Hibernate: alter table if exists refresh_token add constraint FK5wkt2p042y3lwltk29cvpxuh foreign key (user_id) references public.app_user
+Hibernate: alter table if exists user_user_role add constraint FKau88me9jrx9hvw6wx58xwtron foreign key (role_id) references user_role
+Hibernate: alter table if exists user_user_role add constraint FKsery6ia4t1ue5m6jqka7mg6kf foreign key (user_id) references public.app_user
+2026-02-14T00:12:33.951+01:00  INFO 1546 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-14T00:12:34.038+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.060+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.089+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.118+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.143+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.144+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.145+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.147+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.391+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.398+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.399+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.401+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.402+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.404+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.407+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.409+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.410+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.486+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.487+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.489+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.491+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.565+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.566+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.566+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.568+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.573+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.573+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.574+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.576+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.576+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.577+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.580+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.582+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.583+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.584+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.585+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.586+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.586+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.588+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.588+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.589+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.706+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.714+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.714+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.715+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.716+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.756+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.756+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.767+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.770+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.770+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.771+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.775+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.776+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.776+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.779+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.779+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.780+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.780+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.781+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.781+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.784+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.785+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.785+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:34.808+01:00  INFO 1546 --- [           main] c.e.repository.TimeSlotRepositoryTest    : Started TimeSlotRepositoryTest in 4.335 seconds (process running for 10.05)
+2026-02-14T00:12:34.815+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.repository.TimeSlotRepositoryTest.testExistsByStationAndAvailability]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:34.815+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1506871831<open>)] for JPA transaction
+2026-02-14T00:12:34.818+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@7cf59da9]
+2026-02-14T00:12:35.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1506871831<open>)] for JPA transaction
+2026-02-14T00:12:35.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: insert into public.charging_location (address_line,city,country,name,postal_code,user_id,id) values (?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+2026-02-14T00:12:35.391+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1506871831<open>)] for JPA transaction
+2026-02-14T00:12:35.391+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:35.402+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1506871831<open>)] for JPA transaction
+2026-02-14T00:12:35.403+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:35.403+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1506871831<open>)] for JPA transaction
+2026-02-14T00:12:35.403+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: delete from public.time_slot where id=?
+Hibernate: SELECT *
+FROM time_slot t
+WHERE t.station_id = ?
+  AND t.availability && tsrange(
+      CAST(? AS timestamp),
+      CAST(? AS timestamp),
+      ?
+  )
+
+2026-02-14T00:12:35.463+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:35.463+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(1506871831<open>)]
+2026-02-14T00:12:35.465+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1506871831<open>)] after transaction
+2026-02-14T00:12:35.468+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.repository.TimeSlotRepositoryTest.testFindByStationId]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:35.468+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1668084430<open>)] for JPA transaction
+2026-02-14T00:12:35.468+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@4db07ba]
+2026-02-14T00:12:35.469+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1668084430<open>)] for JPA transaction
+2026-02-14T00:12:35.469+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: insert into public.charging_location (address_line,city,country,name,postal_code,user_id,id) values (?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+2026-02-14T00:12:35.667+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1668084430<open>)] for JPA transaction
+2026-02-14T00:12:35.667+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:35.668+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1668084430<open>)] for JPA transaction
+2026-02-14T00:12:35.668+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:35.669+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1668084430<open>)] for JPA transaction
+2026-02-14T00:12:35.669+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: delete from public.time_slot where id=?
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0 left join public.charging_station s1_0 on s1_0.id=ts1_0.station_id where s1_0.id=?
+2026-02-14T00:12:35.679+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:35.679+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(1668084430<open>)]
+2026-02-14T00:12:35.679+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1668084430<open>)] after transaction
+2026-02-14T00:12:35.680+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.repository.TimeSlotRepositoryTest.testFindAvailableTimeSlotsByPeriod]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:35.680+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1487386388<open>)] for JPA transaction
+2026-02-14T00:12:35.680+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@3e7ffc2a]
+2026-02-14T00:12:35.681+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1487386388<open>)] for JPA transaction
+2026-02-14T00:12:35.681+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: insert into public.charging_location (address_line,city,country,name,postal_code,user_id,id) values (?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+2026-02-14T00:12:35.868+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1487386388<open>)] for JPA transaction
+2026-02-14T00:12:35.868+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:35.870+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1487386388<open>)] for JPA transaction
+2026-02-14T00:12:35.870+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:35.870+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1487386388<open>)] for JPA transaction
+2026-02-14T00:12:35.870+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: delete from public.time_slot where id=?
+Hibernate: SELECT *
+FROM time_slot t
+WHERE t.station_id = ?
+  AND t.availability && tsrange(
+      CAST(? AS timestamp),
+      CAST(? AS timestamp),
+      ?
+  )
+
+2026-02-14T00:12:35.884+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:35.884+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(1487386388<open>)]
+2026-02-14T00:12:35.885+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1487386388<open>)] after transaction
+2026-02-14T00:12:35.887+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.repository.TimeSlotRepositoryTest.testFindByStationIdWithPaging]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:35.887+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(717624927<open>)] for JPA transaction
+2026-02-14T00:12:35.887+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@6f03a5e]
+2026-02-14T00:12:35.887+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(717624927<open>)] for JPA transaction
+2026-02-14T00:12:35.887+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: insert into public.charging_location (address_line,city,country,name,postal_code,user_id,id) values (?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+2026-02-14T00:12:36.077+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(717624927<open>)] for JPA transaction
+2026-02-14T00:12:36.077+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:36.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(717624927<open>)] for JPA transaction
+2026-02-14T00:12:36.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:36.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(717624927<open>)] for JPA transaction
+2026-02-14T00:12:36.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: delete from public.time_slot where id=?
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0 left join public.charging_station s1_0 on s1_0.id=ts1_0.station_id where s1_0.id=? fetch first ? rows only
+2026-02-14T00:12:36.087+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:36.087+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(717624927<open>)]
+2026-02-14T00:12:36.087+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(717624927<open>)] after transaction
+2026-02-14T00:12:36.088+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.repository.TimeSlotRepositoryTest.testDeleteByStartTimeBefore]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:36.088+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(673883019<open>)] for JPA transaction
+2026-02-14T00:12:36.088+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@46e2f228]
+2026-02-14T00:12:36.089+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(673883019<open>)] for JPA transaction
+2026-02-14T00:12:36.089+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: insert into public.charging_location (address_line,city,country,name,postal_code,user_id,id) values (?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+2026-02-14T00:12:36.273+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(673883019<open>)] for JPA transaction
+2026-02-14T00:12:36.273+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:36.275+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(673883019<open>)] for JPA transaction
+2026-02-14T00:12:36.275+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:36.275+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(673883019<open>)] for JPA transaction
+2026-02-14T00:12:36.275+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: delete from public.time_slot where id=?
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0 where ts1_0.start_time<?
+2026-02-14T00:12:36.279+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(673883019<open>)] for JPA transaction
+2026-02-14T00:12:36.279+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: delete from public.time_slot where id=?
+Hibernate: delete from public.time_slot where id=?
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:36.282+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:36.282+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(673883019<open>)]
+2026-02-14T00:12:36.283+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(673883019<open>)] after transaction
+2026-02-14T00:12:36.283+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.repository.TimeSlotRepositoryTest.testFindSlotAvailableByStationIdBetweenStartDateTimeAndEndDateTime]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:36.283+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1383548991<open>)] for JPA transaction
+2026-02-14T00:12:36.284+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@29de23d5]
+2026-02-14T00:12:36.284+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1383548991<open>)] for JPA transaction
+2026-02-14T00:12:36.284+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: insert into public.charging_location (address_line,city,country,name,postal_code,user_id,id) values (?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+2026-02-14T00:12:36.477+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1383548991<open>)] for JPA transaction
+2026-02-14T00:12:36.477+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:36.478+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1383548991<open>)] for JPA transaction
+2026-02-14T00:12:36.478+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:36.478+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1383548991<open>)] for JPA transaction
+2026-02-14T00:12:36.478+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: delete from public.time_slot where id=?
+Hibernate: SELECT *
+FROM time_slot t
+WHERE t.station_id = ?
+  AND t.availability && tsrange(
+      CAST(? AS timestamp),
+      CAST(? AS timestamp),
+      ?
+  )
+
+2026-02-14T00:12:36.482+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:36.482+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(1383548991<open>)]
+2026-02-14T00:12:36.482+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1383548991<open>)] after transaction
+2026-02-14T00:12:36.484+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.repository.TimeSlotRepositoryTest.testIsSlotAvailable]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:36.484+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(768417900<open>)] for JPA transaction
+2026-02-14T00:12:36.484+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@67864aeb]
+2026-02-14T00:12:36.484+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(768417900<open>)] for JPA transaction
+2026-02-14T00:12:36.484+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select ur1_0.id,ur1_0.name from user_role ur1_0 where ur1_0.name=?
+Hibernate: insert into user_role (name) values (?)
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: select distinct u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.email=?
+Hibernate: insert into public.app_user (created_at,email,email_verified,email_verif_at,password,phone_number,phone_verified,phone_verif_at,profile_picture_url,username,id) values (?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into user_user_role (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.email_verif_at,u1_0.password,u1_0.phone_number,u1_0.phone_verified,u1_0.phone_verif_at,u1_0.profile_picture_url,r1_0.user_id,r1_1.id,r1_1.name,u1_0.username from public.app_user u1_0 left join user_user_role r1_0 on u1_0.id=r1_0.user_id left join user_role r1_1 on r1_1.id=r1_0.role_id where u1_0.id=?
+Hibernate: select rt1_0.user_id,rt1_0.id,rt1_0.expires_at from refresh_token rt1_0 where rt1_0.user_id=?
+Hibernate: insert into public.charging_location (address_line,city,country,name,postal_code,user_id,id) values (?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: insert into public.charging_station (created_at,description,image_url,lat,lng,location_id,name,power_kw,price,id) values (?,?,?,?,?,?,?,?,?,?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: select bs1_0.id,bs1_0.name from booking_status bs1_0 where bs1_0.name=?
+Hibernate: insert into booking_status (name) values (?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: insert into public.booking (created_at,end_date,start_date,station_id,status_id,total_price,user_id,id) values (?,?,?,?,?,?,?,?)
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+Hibernate: select b1_0.id,b1_0.created_at,b1_0.end_date,b1_0.start_date,b1_0.station_id,b1_0.status_id,b1_0.total_price,b1_0.user_id from public.booking b1_0 where b1_0.id=?
+2026-02-14T00:12:36.673+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(768417900<open>)] for JPA transaction
+2026-02-14T00:12:36.673+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: select ts1_0.id,ts1_0.availability,ts1_0.end_time,ts1_0.is_available,ts1_0.start_time,ts1_0.station_id from public.time_slot ts1_0
+2026-02-14T00:12:36.674+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(768417900<open>)] for JPA transaction
+2026-02-14T00:12:36.674+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:36.674+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(768417900<open>)] for JPA transaction
+2026-02-14T00:12:36.674+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: insert into public.time_slot (availability,end_time,is_available,start_time,station_id,id) values (?,?,?,?,?,?)
+Hibernate: delete from public.time_slot where id=?
+Hibernate: SELECT *
+FROM time_slot t
+WHERE t.station_id = ?
+  AND t.availability && tsrange(
+      CAST(? AS timestamp),
+      CAST(? AS timestamp),
+      ?
+  )
+
+2026-02-14T00:12:36.678+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:36.678+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(768417900<open>)]
+2026-02-14T00:12:36.679+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(768417900<open>)] after transaction
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.435 s - in com.elec_business.repository.TimeSlotRepositoryTest
+[INFO] Running com.elec_business.business.impl.ChargingLocationBusinessTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.299 s - in com.elec_business.business.impl.ChargingLocationBusinessTest
+[INFO] Running com.elec_business.business.impl.TimeSlotBusinessTest
+2026-02-14T00:12:37.133+01:00  INFO 1546 --- [           main] c.e.business.impl.TimeSlotBusinessImpl   : Génération des slots du 2024-01-01 au 2024-01-02 pour 1 règles
+2026-02-14T00:12:37.134+01:00  INFO 1546 --- [           main] c.e.business.impl.TimeSlotBusinessImpl   : 1 créneaux générés.
+[ERROR] Tests run: 8, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.193 s <<< FAILURE! - in com.elec_business.business.impl.TimeSlotBusinessTest
+[ERROR] com.elec_business.business.impl.TimeSlotBusinessTest.getAvailableSlots_Success  Time elapsed: 0.032 s  <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException: 
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.elec_business.business.impl.TimeSlotBusinessTest.getAvailableSlots_Success(TimeSlotBusinessTest.java:156)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+	at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:197)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running com.elec_business.business.impl.NotificationBusinessTest
+2026-02-14T00:12:37.253+01:00  INFO 1546 --- [           main] c.e.b.impl.NotificationBusinessImpl      : Envoi notification ACCEPTED à test@test.com
+2026-02-14T00:12:37.285+01:00  INFO 1546 --- [           main] c.e.b.impl.NotificationBusinessImpl      : Envoi notification REJECTED à test@test.com
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.1 s - in com.elec_business.business.impl.NotificationBusinessTest
+[INFO] Running com.elec_business.business.impl.AvailabilityRuleBusinessTest
+[ERROR] Tests run: 6, Failures: 2, Errors: 1, Skipped: 0, Time elapsed: 0.108 s <<< FAILURE! - in com.elec_business.business.impl.AvailabilityRuleBusinessTest
+[ERROR] com.elec_business.business.impl.AvailabilityRuleBusinessTest.createRule_Success  Time elapsed: 0.005 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.elec_business.entity.ChargingStation.getId()" because the return value of "com.elec_business.entity.AvailabilityRule.getChargingStation()" is null
+	at com.elec_business.business.impl.AvailabilityRuleBusinessImpl.createRule(AvailabilityRuleBusinessImpl.java:35)
+	at com.elec_business.business.impl.AvailabilityRuleBusinessTest.createRule_Success(AvailabilityRuleBusinessTest.java:81)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.elec_business.business.impl.AvailabilityRuleBusinessTest.createRule_Fail_NotOwner  Time elapsed: 0.002 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.elec_business.business.exception.AccessDeniedStationException> but was: <java.lang.NullPointerException>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
+	at com.elec_business.business.impl.AvailabilityRuleBusinessTest.createRule_Fail_NotOwner(AvailabilityRuleBusinessTest.java:127)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.NullPointerException: Cannot invoke "com.elec_business.entity.ChargingStation.getId()" because the return value of "com.elec_business.entity.AvailabilityRule.getChargingStation()" is null
+	at com.elec_business.business.impl.AvailabilityRuleBusinessImpl.createRule(AvailabilityRuleBusinessImpl.java:35)
+	at com.elec_business.business.impl.AvailabilityRuleBusinessTest.lambda$createRule_Fail_NotOwner$2(AvailabilityRuleBusinessTest.java:128)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+
+[ERROR] com.elec_business.business.impl.AvailabilityRuleBusinessTest.createRule_Fail_Overlap  Time elapsed: 0.002 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <java.lang.IllegalArgumentException> but was: <java.lang.NullPointerException>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
+	at com.elec_business.business.impl.AvailabilityRuleBusinessTest.createRule_Fail_Overlap(AvailabilityRuleBusinessTest.java:162)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.NullPointerException: Cannot invoke "com.elec_business.entity.ChargingStation.getId()" because the return value of "com.elec_business.entity.AvailabilityRule.getChargingStation()" is null
+	at com.elec_business.business.impl.AvailabilityRuleBusinessImpl.createRule(AvailabilityRuleBusinessImpl.java:35)
+	at com.elec_business.business.impl.AvailabilityRuleBusinessTest.lambda$createRule_Fail_Overlap$3(AvailabilityRuleBusinessTest.java:163)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+
+[INFO] Running com.elec_business.business.impl.BookingBusinessTest
+2026-02-14T00:12:37.530+01:00  INFO 1546 --- [           main] c.e.business.impl.BookingBusinessImpl    : Booking created successfully with ID: null
+[ERROR] Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.128 s <<< FAILURE! - in com.elec_business.business.impl.BookingBusinessTest
+[ERROR] com.elec_business.business.impl.BookingBusinessTest.deleteBooking_Success  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.elec_business.controller.mapper.BookingMapper.toResponseDto(com.elec_business.entity.Booking)" because "this.bookingMapper" is null
+	at com.elec_business.business.impl.BookingBusinessImpl.getBookingById(BookingBusinessImpl.java:199)
+	at com.elec_business.business.impl.BookingBusinessImpl.deleteBooking(BookingBusinessImpl.java:243)
+	at com.elec_business.business.impl.BookingBusinessTest.deleteBooking_Success(BookingBusinessTest.java:114)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.elec_business.business.impl.BookingBusinessTest.createBooking_Success  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.elec_business.controller.mapper.BookingMapper.toResponseDto(com.elec_business.entity.Booking)" because "this.bookingMapper" is null
+	at com.elec_business.business.impl.BookingBusinessImpl.createBooking(BookingBusinessImpl.java:83)
+	at com.elec_business.business.impl.BookingBusinessTest.createBooking_Success(BookingBusinessTest.java:64)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running com.elec_business.business.impl.ChargingStationBusinessTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.055 s - in com.elec_business.business.impl.ChargingStationBusinessTest
+[INFO] Running com.elec_business.business.impl.ReviewBusinessTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.136 s - in com.elec_business.business.impl.ReviewBusinessTest
+[INFO] Running com.elec_business.controller.BookingControllerTest
+2026-02-14T00:12:37.813+01:00  INFO 1546 --- [           main] c.e.controller.BookingControllerTest     : Starting BookingControllerTest using Java 21.0.9 with PID 1546 (started by nahima in /Users/nahima/Dev/Elec_business_spring)
+2026-02-14T00:12:37.814+01:00  INFO 1546 --- [           main] c.e.controller.BookingControllerTest     : The following 1 profile is active: "test"
+2026-02-14T00:12:38.640+01:00  WARN 1546 --- [           main] tc.redis:7-alpine                        : Reuse was requested but the environment does not support the reuse of containers
+To enable reuse of containers, you must set 'testcontainers.reuse.enable=true' in a file located at /Users/nahima/.testcontainers.properties
+2026-02-14T00:12:38.827+01:00  WARN 1546 --- [           main] tc.postgres:17                           : Reuse was requested but the environment does not support the reuse of containers
+To enable reuse of containers, you must set 'testcontainers.reuse.enable=true' in a file located at /Users/nahima/.testcontainers.properties
+2026-02-14T00:12:39.554+01:00 DEBUG 1546 --- [           main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2026-02-14T00:12:39.572+01:00  INFO 1546 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-14T00:12:39.697+01:00  INFO 1546 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-14T00:12:39.707+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.712+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.713+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.714+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.714+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.715+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.715+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.730+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.732+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.733+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.746+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.752+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.753+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.755+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.758+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.758+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.759+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.759+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.760+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.760+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.762+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.762+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.763+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.765+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.765+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.766+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.777+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.778+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.779+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.781+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.782+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.783+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.784+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.785+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.786+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.786+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.788+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.791+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.791+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.792+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.799+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.799+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.800+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.800+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.801+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.801+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.823+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.824+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.824+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.825+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.827+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.827+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.828+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.834+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.835+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.836+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.846+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.846+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:39.847+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:40.196+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:40.196+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:40.197+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:40.198+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:40.354+01:00  WARN 1546 --- [           main] o.s.w.s.resource.ResourceHandlerUtils    : Appended trailing slash to static resource location: file:uploads\
+2026-02-14T00:12:40.680+01:00 DEBUG 1546 --- [           main] o.s.d.r.l.RedisMessageListenerContainer  : Starting RedisMessageListenerContainer...
+2026-02-14T00:12:40.680+01:00 DEBUG 1546 --- [           main] o.s.d.r.l.RedisMessageListenerContainer  : Postpone listening for Redis messages until actual listeners are added
+2026-02-14T00:12:40.685+01:00  INFO 1546 --- [           main] c.e.controller.BookingControllerTest     : Started BookingControllerTest in 2.909 seconds (process running for 15.927)
+2026-02-14T00:12:40.688+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.service.impl.AuthServiceImpl.cleanExpiredTokens]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:40.688+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1236202669<open>)] for JPA transaction
+2026-02-14T00:12:40.691+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@4d631c5a]
+2026-02-14T00:12:40.693+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.data.TestDataLoader.load]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:40.693+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(2039713382<open>)] for JPA transaction
+2026-02-14T00:12:40.694+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@4fc5cb44]
+2026-02-14T00:12:40.698+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:40.698+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1236202669<open>)]
+2026-02-14T00:12:40.698+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1236202669<open>)] after transaction
+2026-02-14T00:12:40.911+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:40.911+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(2039713382<open>)]
+2026-02-14T00:12:40.912+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(2039713382<open>)] after transaction
+2026-02-14T00:12:40.922+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.018+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.business.impl.BookingBusinessImpl.createBooking]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:41.018+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(88672824<open>)] for JPA transaction
+2026-02-14T00:12:41.018+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@5fb02647]
+2026-02-14T00:12:41.019+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(88672824<open>)] for JPA transaction
+2026-02-14T00:12:41.019+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.037+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(88672824<open>)] for JPA transaction
+2026-02-14T00:12:41.037+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.037+01:00  INFO 1546 --- [           main] c.e.business.impl.BookingBusinessImpl    : Booking created successfully with ID: 8a57d751-26da-4c46-9906-2e130e85a4c1
+2026-02-14T00:12:41.038+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:41.038+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(88672824<open>)]
+2026-02-14T00:12:41.039+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(88672824<open>)] after transaction
+2026-02-14T00:12:41.065+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.071+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.business.impl.BookingBusinessImpl.acceptBooking]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:41.072+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1483678735<open>)] for JPA transaction
+2026-02-14T00:12:41.072+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@1c55ef24]
+2026-02-14T00:12:41.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1483678735<open>)] for JPA transaction
+2026-02-14T00:12:41.079+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.085+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1483678735<open>)] for JPA transaction
+2026-02-14T00:12:41.085+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.088+01:00 DEBUG 1546 --- [           main] actionalApplicationListenerMethodAdapter : Registered transaction synchronization for org.springframework.context.PayloadApplicationEvent[source=org.springframework.web.context.support.GenericWebApplicationContext@5aeebd4, started on Sat Feb 14 00:12:37 CET 2026]
+2026-02-14T00:12:41.088+01:00  INFO 1546 --- [           main] c.e.business.impl.BookingBusinessImpl    : BookingAcceptedEvent published for booking ID: 0aadbd81-4adb-4b1d-a4c9-b2460d1fd3ee
+2026-02-14T00:12:41.088+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:41.088+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1483678735<open>)]
+2026-02-14T00:12:41.091+01:00  INFO 1546 --- [           main] c.e.b.e.BookingNotificationListener      : ⚡ Notification ACCEPTED for user user2@test.com
+2026-02-14T00:12:41.091+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1483678735<open>)] for JPA transaction
+2026-02-14T00:12:41.091+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Suspending current transaction, creating new transaction with name [com.elec_business.business.impl.NotificationBusinessImpl.sendNotificationBookingAccepted]
+2026-02-14T00:12:41.091+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1846448730<open>)] for JPA transaction
+2026-02-14T00:12:41.091+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@5b85121f]
+2026-02-14T00:12:41.091+01:00  INFO 1546 --- [           main] c.e.b.impl.NotificationBusinessImpl      : Envoi notification ACCEPTED à user2@test.com
+2026-02-14T00:12:41.091+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1846448730<open>)] for JPA transaction
+2026-02-14T00:12:41.091+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.092+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:41.092+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1846448730<open>)]
+2026-02-14T00:12:41.093+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1846448730<open>)] after transaction
+2026-02-14T00:12:41.093+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Resuming suspended transaction after completion of inner transaction
+2026-02-14T00:12:41.093+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1483678735<open>)] after transaction
+2026-02-14T00:12:41.097+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.102+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.business.impl.BookingBusinessImpl.rejectBooking]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:41.102+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1125452743<open>)] for JPA transaction
+2026-02-14T00:12:41.102+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@1ec746a0]
+2026-02-14T00:12:41.102+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1125452743<open>)] for JPA transaction
+2026-02-14T00:12:41.102+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.106+01:00 DEBUG 1546 --- [           main] actionalApplicationListenerMethodAdapter : Registered transaction synchronization for org.springframework.context.PayloadApplicationEvent[source=org.springframework.web.context.support.GenericWebApplicationContext@5aeebd4, started on Sat Feb 14 00:12:37 CET 2026]
+2026-02-14T00:12:41.106+01:00  INFO 1546 --- [           main] c.e.business.impl.BookingBusinessImpl    : BookingRejectedEvent published for booking ID: 4d8f8921-f49c-4bb2-96d4-ee9b6229ef51
+2026-02-14T00:12:41.109+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:41.109+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1125452743<open>)]
+2026-02-14T00:12:41.110+01:00  INFO 1546 --- [           main] c.e.b.e.BookingNotificationListener      : ⚡ Notification REJECTED for user user2@test.com
+2026-02-14T00:12:41.110+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1125452743<open>)] for JPA transaction
+2026-02-14T00:12:41.110+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Suspending current transaction, creating new transaction with name [com.elec_business.business.impl.NotificationBusinessImpl.sendNotificationBookingRejected]
+2026-02-14T00:12:41.111+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(500310846<open>)] for JPA transaction
+2026-02-14T00:12:41.111+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@75a8ac2b]
+2026-02-14T00:12:41.111+01:00  INFO 1546 --- [           main] c.e.b.impl.NotificationBusinessImpl      : Envoi notification REJECTED à user2@test.com
+2026-02-14T00:12:41.111+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(500310846<open>)] for JPA transaction
+2026-02-14T00:12:41.111+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.111+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:41.111+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(500310846<open>)]
+2026-02-14T00:12:41.112+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(500310846<open>)] after transaction
+2026-02-14T00:12:41.112+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Resuming suspended transaction after completion of inner transaction
+2026-02-14T00:12:41.112+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1125452743<open>)] after transaction
+2026-02-14T00:12:41.115+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.119+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.144+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.148+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.business.impl.BookingBusinessImpl.updateBooking]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:41.148+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(970652362<open>)] for JPA transaction
+2026-02-14T00:12:41.148+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@6eb59c6b]
+2026-02-14T00:12:41.148+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(970652362<open>)] for JPA transaction
+2026-02-14T00:12:41.148+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.150+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(970652362<open>)] for JPA transaction
+2026-02-14T00:12:41.150+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.153+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(970652362<open>)] for JPA transaction
+2026-02-14T00:12:41.153+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.154+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:41.154+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(970652362<open>)]
+2026-02-14T00:12:41.156+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(970652362<open>)] after transaction
+2026-02-14T00:12:41.158+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.controller.BookingControllerTest.putShouldFailOnValidationError]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:41.158+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(506944478<open>)] for JPA transaction
+2026-02-14T00:12:41.159+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@6a3bcc53]
+2026-02-14T00:12:41.167+01:00  WARN 1546 --- [           main] c.e.exception.GlobalExceptionHandler     : Validation failed: endDate: endDate ne peut pas être null, startDate: startDate ne peut pas être null, stationId: StationId ne peut pas être null
+2026-02-14T00:12:41.178+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:41.178+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(506944478<open>)]
+2026-02-14T00:12:41.179+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(506944478<open>)] after transaction
+2026-02-14T00:12:41.179+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.controller.BookingControllerTest.putShouldThrow404IfNotExist]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:41.179+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(9371006<open>)] for JPA transaction
+2026-02-14T00:12:41.179+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@61cdf55e]
+2026-02-14T00:12:41.183+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(9371006<open>)] for JPA transaction
+2026-02-14T00:12:41.183+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.184+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(9371006<open>)] for JPA transaction
+2026-02-14T00:12:41.184+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.185+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating transaction failed - marking existing transaction as rollback-only
+2026-02-14T00:12:41.185+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Setting JPA transaction on EntityManager [SessionImpl(9371006<open>)] rollback-only
+2026-02-14T00:12:41.185+01:00 ERROR 1546 --- [           main] c.e.exception.GlobalExceptionHandler     : BookingNotFoundError occured
+
+com.elec_business.business.exception.BookingNotFoundException: La réservation est introuvable 
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
+	at com.elec_business.business.impl.BookingBusinessImpl.updateBooking(BookingBusinessImpl.java:213) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359) ~[spring-aop-6.2.5.jar:6.2.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.5.jar:6.2.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.5.jar:6.2.5]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.5.jar:6.2.5]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.5.jar:6.2.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.5.jar:6.2.5]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727) ~[spring-aop-6.2.5.jar:6.2.5]
+	at com.elec_business.business.impl.BookingBusinessImpl$$SpringCGLIB$$0.updateBooking(<generated>) ~[classes/:na]
+	at com.elec_business.controller.BookingController.updateBooking(BookingController.java:65) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.FrameworkServlet.doPut(FrameworkServlet.java:925) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:593) ~[tomcat-embed-core-10.1.39.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72) ~[spring-test-6.2.5.jar:6.2.5]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.39.jar:6.0]
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at com.elec_business.security.jwt.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:46) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238) ~[spring-security-config-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201) ~[spring-test-6.2.5.jar:6.2.5]
+	at com.elec_business.controller.BookingControllerTest.putShouldThrow404IfNotExist(BookingControllerTest.java:201) ~[test-classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:767) ~[junit-platform-commons-1.11.4.jar:1.11.4]
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$8(TestMethodTestDescriptor.java:217) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:55) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:223) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:175) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:139) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:456) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:169) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:595) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:581) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+
+2026-02-14T00:12:41.190+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction rollback
+2026-02-14T00:12:41.190+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Rolling back JPA transaction on EntityManager [SessionImpl(9371006<open>)]
+2026-02-14T00:12:41.191+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(9371006<open>)] after transaction
+2026-02-14T00:12:41.192+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.196+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.business.impl.BookingBusinessImpl.deleteBooking]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:41.196+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(1071786502<open>)] for JPA transaction
+2026-02-14T00:12:41.196+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@1a38fca9]
+2026-02-14T00:12:41.200+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Found thread-bound EntityManager [SessionImpl(1071786502<open>)] for JPA transaction
+2026-02-14T00:12:41.200+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Participating in existing transaction
+2026-02-14T00:12:41.201+01:00  INFO 1546 --- [           main] c.e.business.impl.BookingBusinessImpl    : Booking c2913d6e-6bc1-4c47-9e05-c645877bdb17 deleted by user 44138518-fe8f-4d29-90f1-a89e7549da93
+2026-02-14T00:12:41.201+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:41.201+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(1071786502<open>)]
+2026-02-14T00:12:41.202+01:00 DEBUG 1546 --- [           main] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(1071786502<open>)] after transaction
+2026-02-14T00:12:41.204+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:41.205+01:00 ERROR 1546 --- [           main] c.e.exception.GlobalExceptionHandler     : BookingNotFoundError occured
+
+com.elec_business.business.exception.BookingNotFoundException: La réservation est introuvable 
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
+	at com.elec_business.business.impl.BookingBusinessImpl.getBookingById(BookingBusinessImpl.java:191) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359) ~[spring-aop-6.2.5.jar:6.2.5]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:723) ~[spring-aop-6.2.5.jar:6.2.5]
+	at com.elec_business.business.impl.BookingBusinessImpl$$SpringCGLIB$$0.getBookingById(<generated>) ~[classes/:na]
+	at com.elec_business.controller.BookingController.getBooking(BookingController.java:78) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.39.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72) ~[spring-test-6.2.5.jar:6.2.5]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.39.jar:6.0]
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at com.elec_business.security.jwt.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:46) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243) ~[spring-webmvc-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238) ~[spring-security-config-6.4.4.jar:6.4.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201) ~[spring-test-6.2.5.jar:6.2.5]
+	at com.elec_business.controller.BookingControllerTest.deleteShouldDeleteBookingSuccessfully(BookingControllerTest.java:219) ~[test-classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:767) ~[junit-platform-commons-1.11.4.jar:1.11.4]
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$8(TestMethodTestDescriptor.java:217) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:55) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:223) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:175) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:139) ~[surefire-junit-platform-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:456) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:169) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:595) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:581) ~[surefire-booter-3.0.0-M7.jar:3.0.0-M7]
+
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.468 s - in com.elec_business.controller.BookingControllerTest
+[INFO] Running com.elec_business.ElecBusinessApplicationTests
+2026-02-14T00:12:41.234+01:00  INFO 1546 --- [           main] c.e.ElecBusinessApplicationTests         : Starting ElecBusinessApplicationTests using Java 21.0.9 with PID 1546 (started by nahima in /Users/nahima/Dev/Elec_business_spring)
+2026-02-14T00:12:41.234+01:00  INFO 1546 --- [           main] c.e.ElecBusinessApplicationTests         : The following 1 profile is active: "test"
+2026-02-14T00:12:41.366+01:00  WARN 1546 --- [           main] tc.redis:7-alpine                        : Reuse was requested but the environment does not support the reuse of containers
+To enable reuse of containers, you must set 'testcontainers.reuse.enable=true' in a file located at /Users/nahima/.testcontainers.properties
+2026-02-14T00:12:41.578+01:00  WARN 1546 --- [           main] tc.postgres:17                           : Reuse was requested but the environment does not support the reuse of containers
+To enable reuse of containers, you must set 'testcontainers.reuse.enable=true' in a file located at /Users/nahima/.testcontainers.properties
+2026-02-14T00:12:42.407+01:00 DEBUG 1546 --- [           main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2026-02-14T00:12:42.418+01:00  INFO 1546 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-14T00:12:42.521+01:00  INFO 1546 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-14T00:12:42.527+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.530+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.532+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.533+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.533+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.534+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.534+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.541+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.541+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.542+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.544+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.548+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.548+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.549+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.550+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.551+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.551+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.551+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.552+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.552+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.553+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.553+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.554+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.554+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.555+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.556+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.558+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.559+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.560+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.560+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.561+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.562+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.562+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.563+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.564+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.564+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.565+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.567+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.567+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.567+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.569+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.569+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.569+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.570+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.570+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.570+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.573+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.573+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.573+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.574+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.574+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.575+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.575+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.576+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.577+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.578+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.580+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.580+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.580+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.612+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.613+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.613+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.614+01:00 DEBUG 1546 --- [           main] tor$SharedEntityManagerInvocationHandler : Creating new EntityManager for shared EntityManager invocation
+2026-02-14T00:12:42.645+01:00  WARN 1546 --- [           main] o.s.w.s.resource.ResourceHandlerUtils    : Appended trailing slash to static resource location: file:uploads\
+2026-02-14T00:12:42.701+01:00 DEBUG 1546 --- [           main] o.s.d.r.l.RedisMessageListenerContainer  : Starting RedisMessageListenerContainer...
+2026-02-14T00:12:42.701+01:00 DEBUG 1546 --- [           main] o.s.d.r.l.RedisMessageListenerContainer  : Postpone listening for Redis messages until actual listeners are added
+2026-02-14T00:12:42.704+01:00  INFO 1546 --- [           main] c.e.ElecBusinessApplicationTests         : Started ElecBusinessApplicationTests in 1.484 seconds (process running for 17.946)
+2026-02-14T00:12:42.704+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Creating new transaction with name [com.elec_business.service.impl.AuthServiceImpl.cleanExpiredTokens]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+2026-02-14T00:12:42.704+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Opened new EntityManager [SessionImpl(4104500<open>)] for JPA transaction
+2026-02-14T00:12:42.704+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Exposing JPA transaction as JDBC [org.springframework.orm.jpa.vendor.HibernateJpaDialect$HibernateConnectionHandle@9d97a10]
+2026-02-14T00:12:42.706+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Initiating transaction commit
+2026-02-14T00:12:42.706+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Committing JPA transaction on EntityManager [SessionImpl(4104500<open>)]
+2026-02-14T00:12:42.706+01:00 DEBUG 1546 --- [   scheduling-1] o.s.orm.jpa.JpaTransactionManager        : Closing JPA EntityManager [SessionImpl(4104500<open>)] after transaction
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.498 s - in com.elec_business.ElecBusinessApplicationTests
+[INFO] Running com.elec_business.service.AuthServiceImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.158 s - in com.elec_business.service.AuthServiceImplTest
+[INFO] Running com.elec_business.service.UserRegistrationServiceImplTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s - in com.elec_business.service.UserRegistrationServiceImplTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   AvailabilityRuleBusinessTest.createRule_Fail_NotOwner:127 Unexpected exception type thrown, expected: <com.elec_business.business.exception.AccessDeniedStationException> but was: <java.lang.NullPointerException>
+[ERROR]   AvailabilityRuleBusinessTest.createRule_Fail_Overlap:162 Unexpected exception type thrown, expected: <java.lang.IllegalArgumentException> but was: <java.lang.NullPointerException>
+[ERROR] Errors: 
+[ERROR]   AvailabilityRuleBusinessTest.createRule_Success:81 » NullPointer Cannot invoke "com.elec_business.entity.ChargingStation.getId()" because the return value of "com.elec_business.entity.AvailabilityRule.getChargingStation()" is null
+[ERROR]   BookingBusinessTest.createBooking_Success:64 » NullPointer Cannot invoke "com.elec_business.controller.mapper.BookingMapper.toResponseDto(com.elec_business.entity.Booking)" because "this.bookingMapper" is null
+[ERROR]   BookingBusinessTest.deleteBooking_Success:114 » NullPointer Cannot invoke "com.elec_business.controller.mapper.BookingMapper.toResponseDto(com.elec_business.entity.Booking)" because "this.bookingMapper" is null
+[ERROR]   TimeSlotBusinessTest.getAvailableSlots_Success » UnnecessaryStubbing 
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.elec_business.business.impl.TimeSlotBusinessTest.getAvailableSlots_Success(TimeSlotBusinessTest.java:156)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+[INFO] 
+[ERROR] Tests run: 63, Failures: 2, Errors: 4, Skipped: 0
+[INFO] 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  2.229 s
-[INFO] Finished at: 2026-02-14T00:01:37+01:00
+[INFO] Total time:  22.331 s
+[INFO] Finished at: 2026-02-14T00:12:44+01:00
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project elec_business: Compilation failure: Compilation failure: 
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[146,17] constructor BookingAcceptedEvent in class com.elec_business.business.eventlistener.BookingAcceptedEvent cannot be applied to given types;
-[ERROR]   required: com.elec_business.entity.Booking
-[ERROR]   found:    com.elec_business.entity.Booking,com.elec_business.entity.User
-[ERROR]   reason: actual and formal argument lists differ in length
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[171,17] constructor BookingRejectedEvent in class com.elec_business.business.eventlistener.BookingRejectedEvent cannot be applied to given types;
-[ERROR]   required: com.elec_business.entity.Booking
-[ERROR]   found:    com.elec_business.entity.Booking,com.elec_business.entity.User
-[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.0.0-M7:test (default-test) on project elec_business: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /Users/nahima/Dev/Elec_business_spring/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
 [ERROR] -> [Help 1]
 [ERROR] 
 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.

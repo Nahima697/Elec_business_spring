@@ -216,7 +216,7 @@ public class AuthController {
     public ResponseEntity<String> confirmResetPassword(
             @RequestBody ResetPasswordConfirmDTO dto) {
 
-        resetPasswordService.sendPasswordResetToken(
+        resetPasswordService.resetPassword(
                 dto.getUserId(),
                 dto.getToken(),
                 dto.getNewPassword()
@@ -224,6 +224,7 @@ public class AuthController {
 
         return ResponseEntity.ok("Password successfully reset.");
     }
+
 }
 
 

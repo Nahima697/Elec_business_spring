@@ -72,6 +72,7 @@ class AvailabilityRuleBusinessTest {
         rule.setDayOfWeek(1);
         rule.setStartTime(LocalTime.of(8, 0));
         rule.setEndTime(LocalTime.of(12, 0));
+        rule.setChargingStation(station);
 
         when(mapper.toEntity(dto)).thenReturn(rule);
         when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
@@ -120,6 +121,8 @@ class AvailabilityRuleBusinessTest {
         dto.setStationId("s1");
 
         AvailabilityRule rule = new AvailabilityRule();
+        rule.setChargingStation(station);
+
 
         when(mapper.toEntity(dto)).thenReturn(rule);
         when(chargingStationRepository.findById("s1")).thenReturn(Optional.of(station));
@@ -154,6 +157,7 @@ class AvailabilityRuleBusinessTest {
         rule.setDayOfWeek(1);
         rule.setStartTime(LocalTime.of(10, 0));
         rule.setEndTime(LocalTime.of(11, 0));
+        rule.setChargingStation(station);
 
         when(mapper.toEntity(dto)).thenReturn(rule);
         when(chargingStationRepository.findById(stationId)).thenReturn(Optional.of(station));
