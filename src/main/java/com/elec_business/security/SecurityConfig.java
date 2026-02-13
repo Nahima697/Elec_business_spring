@@ -29,11 +29,9 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthEntryPointJwt unauthorizedHandler;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -60,9 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/charging_stations/**","/api/charging_locations/**").permitAll()
                         .anyRequest().authenticated()
                 )
-            
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

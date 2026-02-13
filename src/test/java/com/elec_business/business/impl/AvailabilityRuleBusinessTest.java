@@ -31,7 +31,6 @@ class AvailabilityRuleBusinessTest {
     @Mock
     private AvailabilityRuleRepository ruleRepo;
 
-    // Mapper n'est plus utilisé dans createRule, mais on le laisse si besoin ailleurs
     @Mock
     private AvailabilityRuleMapper mapper;
 
@@ -61,7 +60,6 @@ class AvailabilityRuleBusinessTest {
         station.setLocation(location);
 
         AvailabilityRule rule = new AvailabilityRule();
-        // On simule une règle qui contient déjà une station (DTO -> Entity)
         rule.setChargingStation(station);
         rule.setDayOfWeek(1);
         rule.setStartTime(LocalTime.of(8, 0));

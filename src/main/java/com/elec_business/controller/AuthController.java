@@ -70,7 +70,7 @@ public class AuthController {
     public ResponseEntity<Void> verifyEmail(@RequestParam String userId, @RequestParam("t") String token) {
         emailVerificationService.verifyEmail(userId, token);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", FRONT_URL + "/email-verified?success=true")
+                .header("Location", FRONT_URL + "/login")
                 .build();
     }
 

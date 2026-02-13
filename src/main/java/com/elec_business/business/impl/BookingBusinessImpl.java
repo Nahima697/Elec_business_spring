@@ -44,7 +44,6 @@ public class BookingBusinessImpl implements BookingBusiness {
     @Transactional
     @Override
     public Booking createBooking(String stationId, LocalDateTime startDate, LocalDateTime endDate, User currentUser) {
-
         // Vérification de l'existence de la station
         ChargingStation station = chargingStationRepository.findById(stationId)
                 .orElseThrow(() -> new EntityNotFoundException("Station not found"));
@@ -52,10 +51,8 @@ public class BookingBusinessImpl implements BookingBusiness {
             throw new IllegalArgumentException("Vous ne pouvez pas louer votre propre borne");
         }
         Booking booking = new Booking();
-
         booking.setUser(currentUser);
         booking.setStation(station);
-
         booking.setStartDate(startDate);
         booking.setEndDate(endDate);
 
@@ -63,13 +60,10 @@ public class BookingBusinessImpl implements BookingBusiness {
         if (endDate.isBefore(startDate)) {
             throw new InvalidBookingDurationException();
         }
-
         // Vérification de la disponibilité du créneau
         verifyAvailability(station, booking);
-
         // Définition de l'état de la réservation
         setBookingStatus(booking);
-
         // Calcul du prix total
         BigDecimal totalPrice = calculateTotalPrice(station, booking);
         booking.setTotalPrice(totalPrice);
@@ -78,12 +72,9 @@ public class BookingBusinessImpl implements BookingBusiness {
         if (booking.getCreatedAt() == null) {
             booking.setCreatedAt(Instant.now());
         }
-
         // Sauvegarde de la réservation
         Booking savedBooking = bookingRepository.save(booking);
-
         log.info("Booking created successfully with ID: " + booking.getId());
-
         // Retourner la réponse
         return savedBooking;
     }
