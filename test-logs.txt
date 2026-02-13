@@ -17,15 +17,15 @@
 [INFO] 
 [INFO] --- compiler:3.10.1:compile (default-compile) @ elec_business ---
 [INFO] Changes detected - recompiling the module!
-[INFO] Compiling 128 source files to /Users/nahima/Dev/Elec_business_spring/target/classes
+[INFO] Compiling 129 source files to /Users/nahima/Dev/Elec_business_spring/target/classes
 [INFO] -------------------------------------------------------------
 [ERROR] COMPILATION ERROR : 
 [INFO] -------------------------------------------------------------
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/eventlistener/BookingNotificationListener.java:[21,28] method sendNotificationBookingAccepted in class com.elec_business.business.impl.NotificationBusinessImpl cannot be applied to given types;
+[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[146,17] constructor BookingAcceptedEvent in class com.elec_business.business.eventlistener.BookingAcceptedEvent cannot be applied to given types;
   required: com.elec_business.entity.Booking
   found:    com.elec_business.entity.Booking,com.elec_business.entity.User
   reason: actual and formal argument lists differ in length
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/eventlistener/BookingNotificationListener.java:[26,28] method sendNotificationBookingRejected in class com.elec_business.business.impl.NotificationBusinessImpl cannot be applied to given types;
+[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[171,17] constructor BookingRejectedEvent in class com.elec_business.business.eventlistener.BookingRejectedEvent cannot be applied to given types;
   required: com.elec_business.entity.Booking
   found:    com.elec_business.entity.Booking,com.elec_business.entity.User
   reason: actual and formal argument lists differ in length
@@ -34,15 +34,15 @@
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  2.186 s
-[INFO] Finished at: 2026-02-13T23:34:33+01:00
+[INFO] Total time:  2.229 s
+[INFO] Finished at: 2026-02-14T00:01:37+01:00
 [INFO] ------------------------------------------------------------------------
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project elec_business: Compilation failure: Compilation failure: 
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/eventlistener/BookingNotificationListener.java:[21,28] method sendNotificationBookingAccepted in class com.elec_business.business.impl.NotificationBusinessImpl cannot be applied to given types;
+[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[146,17] constructor BookingAcceptedEvent in class com.elec_business.business.eventlistener.BookingAcceptedEvent cannot be applied to given types;
 [ERROR]   required: com.elec_business.entity.Booking
 [ERROR]   found:    com.elec_business.entity.Booking,com.elec_business.entity.User
 [ERROR]   reason: actual and formal argument lists differ in length
-[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/eventlistener/BookingNotificationListener.java:[26,28] method sendNotificationBookingRejected in class com.elec_business.business.impl.NotificationBusinessImpl cannot be applied to given types;
+[ERROR] /Users/nahima/Dev/Elec_business_spring/src/main/java/com/elec_business/business/impl/BookingBusinessImpl.java:[171,17] constructor BookingRejectedEvent in class com.elec_business.business.eventlistener.BookingRejectedEvent cannot be applied to given types;
 [ERROR]   required: com.elec_business.entity.Booking
 [ERROR]   found:    com.elec_business.entity.Booking,com.elec_business.entity.User
 [ERROR]   reason: actual and formal argument lists differ in length

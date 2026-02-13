@@ -143,7 +143,7 @@ public class BookingBusinessImpl implements BookingBusiness {
         timeSlotBusiness.setTimeSlotAvailability(station.getId(), booking.getStartDate(), booking.getEndDate());
 
         eventPublisher.publishEvent(
-                new BookingAcceptedEvent(booking, booking.getUser())
+                new BookingAcceptedEvent(booking)
         );
 
         log.info("BookingAcceptedEvent published for booking ID: {}", booking.getId());
@@ -168,7 +168,7 @@ public class BookingBusinessImpl implements BookingBusiness {
         booking.setStatus(rejectedStatus);
 
         eventPublisher.publishEvent(
-                new BookingRejectedEvent(booking, booking.getUser())
+                new BookingRejectedEvent(booking)
         );
 
         log.info("BookingRejectedEvent published for booking ID: {}", booking.getId());
