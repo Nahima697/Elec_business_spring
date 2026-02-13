@@ -1,9 +1,8 @@
-package com.elec_business.service.impl;
+package com.elec_business.service;
 
 import com.elec_business.entity.User;
-import com.elec_business.entity.UserRole;
 import com.elec_business.repository.UserRepository;
-import com.elec_business.service.EmailVerificationService; 
+import com.elec_business.service.impl.UserRegistrationServiceImpl;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
