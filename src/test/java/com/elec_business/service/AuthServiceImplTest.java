@@ -10,9 +10,7 @@ import com.elec_business.service.impl.AuthServiceImpl;
 import com.elec_business.service.impl.TokenPair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +21,6 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 public class AuthServiceImplTest {
 
     @Mock private AuthenticationManager authManager;
@@ -81,15 +78,13 @@ public class AuthServiceImplTest {
     @Test
     void createRefreshTokenCookie_shouldCreateCookie() {
         User user = new User();
-        user.setId("abc1234"); // ID bidon
+        user.setId("abc123");
 
         when(tokenRepo.save(any())).thenAnswer(invocation -> {
             RefreshToken t = invocation.getArgument(0);
             t.setId("token-999");
             return t;
         });
-
-        // Puisque generateRefreshToken utilise l'objet 'user' passé en paramètre
 
         String refreshToken = authService.generateRefreshToken(user);
         ResponseCookie cookie = authService.createRefreshTokenCookie(refreshToken);
@@ -101,13 +96,14 @@ public class AuthServiceImplTest {
     }
 
     // -----------------------------------------
-    // TEST generateRefreshToken(User user)
+    // TEST generateRefreshToken(String idUser)
     // -----------------------------------------
     @Test
     void generateRefreshToken_shouldReturnTokenId() {
         User user = new User();
         user.setId("u1");
 
+        when(userRepo.findById("u1")).thenReturn(Optional.of(user));
         when(tokenRepo.save(any())).thenAnswer(invocation -> {
             RefreshToken t = invocation.getArgument(0);
             t.setId("rt-123");

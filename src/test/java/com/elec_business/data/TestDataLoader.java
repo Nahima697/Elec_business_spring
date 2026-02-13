@@ -128,8 +128,8 @@ public class TestDataLoader {
 
         // Booking 1: user2 rents from user1's station (for accept test)
         Booking booking1 = new Booking();
-        booking1.setUser(user2);          // locataire = user2 (RENTER)
-        booking1.setStation(station1);    // station owned by user1
+        booking1.setUser(user2);
+        booking1.setStation(station1);
         booking1.setStartDate(now.plusHours(2));
         booking1.setEndDate(now.plusHours(4));
         booking1.setTotalPrice(new BigDecimal("0.50"));
@@ -139,8 +139,8 @@ public class TestDataLoader {
 
         // Booking 2: user2 rents from user1's station (for reject test)
         Booking booking2 = new Booking();
-        booking2.setUser(user2);          // locataire = user2 (RENTER)
-        booking2.setStation(station2);    // different station, also owned by user1
+        booking2.setUser(user2);
+        booking2.setStation(station2);
         booking2.setStartDate(now.plusHours(3));
         booking2.setEndDate(now.plusHours(5));
         booking2.setTotalPrice(new BigDecimal("0.36"));
@@ -150,8 +150,8 @@ public class TestDataLoader {
 
         // Booking 3: user1 makes own booking (for update/delete tests)
         Booking booking3 = new Booking();
-        booking3.setUser(user1);          // locataire = user1
-        booking3.setStation(station1);    // station also owned by user1
+        booking3.setUser(user1);
+        booking3.setStation(station1);
         booking3.setStartDate(now.plusHours(6));
         booking3.setEndDate(now.plusHours(8));
         booking3.setTotalPrice(new BigDecimal("0.50"));
