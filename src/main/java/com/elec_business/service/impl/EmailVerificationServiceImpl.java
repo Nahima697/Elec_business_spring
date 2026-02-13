@@ -41,9 +41,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
             Email from = new Email("nahima.toumi697@gmail.com");
             String subject = "Verify your email";
 
-            // recupérer l'email du user
-            User user =this.userRepository.findById(userId).orElseThrow();
-            Email to = new Email(user.getEmail());
+            Email to = new Email(email);
             Content content = new Content("text/html",
                     "<p>Click below to verify your email:</p>" +
                             "<a href=\"" + emailVerificationUrl + "\">Verify Email</a>");
