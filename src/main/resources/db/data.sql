@@ -37,7 +37,6 @@ INSERT INTO app_user (
       )
 ON CONFLICT (email) DO NOTHING;
 
--- 3. NOUVEAU : Liaison Many-to-Many dans la table de jointure
 INSERT INTO user_user_role (user_id, role_id)
 VALUES
     (
