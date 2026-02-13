@@ -65,12 +65,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseCookie createRefreshTokenCookie(User user) {
-        String token = generateRefreshToken(user);
-        return createRefreshTokenCookie(token);
-    }
-
-    @Override
     @Transactional
     public TokenPair validateRefreshToken(String token) {
         // 1. On cherche le token

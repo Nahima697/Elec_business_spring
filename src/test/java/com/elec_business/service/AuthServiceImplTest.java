@@ -86,7 +86,8 @@ public class AuthServiceImplTest {
             return t;
         });
 
-        ResponseCookie cookie = authService.createRefreshTokenCookie(user);
+        String refreshToken = authService.generateRefreshToken(user);
+        ResponseCookie cookie = authService.createRefreshTokenCookie(refreshToken);
 
         assertEquals("refresh-token", cookie.getName());
         assertEquals("token-999", cookie.getValue());

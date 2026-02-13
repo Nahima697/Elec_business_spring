@@ -14,7 +14,6 @@ public interface AuthService {
      */
     User authenticateUser(String username, String password);
 
-    ResponseCookie createRefreshTokenCookie(User user);
 
     String generateJwtToken(User user);                /**
      * Méthode qui va créer un nouveau refresh token et le faire persister en database
@@ -29,7 +28,7 @@ public interface AuthService {
      */
      ResponseCookie createRefreshTokenCookie(String refreshToken);
 
-        TokenPair validateRefreshToken(String token);
+     TokenPair validateRefreshToken(String token);
 
     String generateRefreshToken(User user);
 }
