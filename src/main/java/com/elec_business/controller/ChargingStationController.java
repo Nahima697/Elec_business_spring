@@ -59,7 +59,7 @@ public class ChargingStationController {
             @RequestPart(value = "image", required = false) MultipartFile image) throws AccessDeniedException {
 
         return chargingStationBusiness.createChargingStation(chargingStationMapper.toEntity(dto), currentUser, image);
-        );
+
     }
 
     // --- UPDATE ---
