@@ -16,13 +16,11 @@ public class OtpService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public String generateAndStoreOtp(final String id) {
-        final var otp = generateOtp("ABCDEFG123456789", 10);
+    public void store( String otp,String id) {
         final var cacheKey = getCacheKey(id);
 
         redisTemplate.opsForValue().set(
                 cacheKey, otp, Duration.ofMinutes(5));
-        return otp;
     }
 
     public boolean isOtpValid(final String id, final String otp) {
@@ -40,7 +38,9 @@ public class OtpService {
         return "otp:%s".formatted(id);
     }
 
-    private String generateOtp(String characters, Integer length) {
+    public String generateOtp() {
+        String characters = "ABCDEFG123456789";
+        int length = 10;
         StringBuilder otp = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             int index = SECURE_RANDOM.nextInt(characters.length());

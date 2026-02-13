@@ -2,6 +2,7 @@ package com.elec_business.service.impl;
 
 import com.elec_business.entity.User;
 import com.elec_business.repository.UserRepository;
+import com.elec_business.service.EmailService;
 import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.OtpService;
 import com.elec_business.service.exception.EmailNotSentException;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import java.io.IOException;
+
 import java.time.Instant;
 
 import static org.springframework.http.HttpStatus.*;
@@ -23,45 +24,32 @@ import static org.springframework.http.HttpStatus.*;
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationServiceImpl implements EmailVerificationService {
-
+    @Value("${FROM_EMAIL}")
+    private String fromEmail;
     private final OtpService otpService;
-
+    private final EmailService emailService;
     private final UserRepository userRepository;
 
-    @Value("${sendgrid.api.key:dummy-key}")
-    private String sendGridApiKey;
-
+    @Override
     @Async
-    public void sendVerificationToken(String userId, String email,String baseUrl) {
-        try {
-            final var token = otpService.generateAndStoreOtp(userId);
-            final var emailVerificationUrl =
-                    baseUrl + "/api/email/verify?userId=%s&t=%s".formatted(userId, token);
+    public void sendVerificationToken(String userId, String email, String baseUrl) {
+        final var token = otpService.generateOtp();
+        otpService.store("otp:verify-email:%s".formatted(userId), token);
+        final var emailVerificationUrl =
+                baseUrl + "/api/email/verify?userId=%s&t=%s".formatted(userId, token);
 
-            Email from = new Email("nahima.toumi697@gmail.com");
-            String subject = "Verify your email";
-
-            Email to = new Email(email);
-            Content content = new Content("text/html",
-                    "<p>Click below to verify your email:</p>" +
-                            "<a href=\"" + emailVerificationUrl + "\">Verify Email</a>");
-            Mail mail = new Mail(from, subject, to, content);
-            SendGrid sg = new SendGrid(sendGridApiKey);
-            Request request = new Request();
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            Response response = sg.api(request);
-            System.out.println("SendGrid response: " + response.getStatusCode());
-            System.out.println("SendGrid body: " + response.getBody());
-
-        } catch (IOException ex) {
-            throw new EmailNotSentException();
-        }
+        Email from = new Email(fromEmail);
+        String subject = "Verify your email";
+        Email to = new Email(email);
+        Content content = new Content("text/html",
+                "<p>Click below to verify your email:</p>" +
+                        "<a href=\"" + emailVerificationUrl + "\">Verify Email</a>");
+        Mail mail = new Mail(from, subject, to, content);
+        this.emailService.send(mail);
     }
-
+    @Override
     @Transactional
-    public void verifyEmail(String  userId, String token) {
+    public void verifyEmail(String userId, String token) {
         if (!otpService.isOtpValid(userId, token)) {
             throw new ResponseStatusException(BAD_REQUEST,
                     "Token invalid or expired");

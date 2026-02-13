@@ -6,6 +6,7 @@ import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.AuthService;
 import com.elec_business.service.EmailVerificationService;
+import com.elec_business.service.ResetPasswordEmailService;
 import com.elec_business.service.UserRegistrationService;
 import com.elec_business.service.impl.TokenPair;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,6 +38,7 @@ public class AuthController {
     private final UserRegistrationService userRegistrationService;
     private final UserRepository appUserRepository;
     private final UserMapper userMapper;
+    private final ResetPasswordEmailService resetPasswordEmailService;
 
     @Value("${app.auth.email-verification-required:true}")
     private boolean emailVerificationRequired;
@@ -49,24 +52,24 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponseDto> register(@RequestBody @Valid RegistrationDto registrationDto) {
 
-            // 1. Création de l'utilisateur
-            User registeredUser = userRegistrationService.registerUser(
-                    userMapper.toEntity(registrationDto)
-            );
-            String baseUrl = BACKEND_URL;
-            emailVerificationService.sendVerificationToken(
-                    registeredUser.getId(),
-                    registeredUser.getEmail(),
-                    baseUrl
-            );
+        // 1. Création de l'utilisateur
+        User registeredUser = userRegistrationService.registerUser(
+                userMapper.toEntity(registrationDto)
+        );
+        String baseUrl = BACKEND_URL;
+        emailVerificationService.sendVerificationToken(
+                registeredUser.getId(),
+                registeredUser.getEmail(),
+                baseUrl
+        );
 
-            // 3. Création de la réponse succès
-            RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
-                    userMapper.toUserDto(registeredUser),
-                    "Votre compte a été créé avec succès, vérifier votre email"
-            );
+        // 3. Création de la réponse succès
+        RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
+                userMapper.toUserDto(registeredUser),
+                "Votre compte a été créé avec succès, vérifier votre email"
+        );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/email/verify")
@@ -89,7 +92,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Invalid or already verified user.");
         }
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail(),baseUrl);
+        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail(), baseUrl);
         return ResponseEntity.ok("Verification email resent.");
     }
 
@@ -104,7 +107,7 @@ public class AuthController {
 
             // Génère le refresh token cookie
             String refreshToken = authService.generateRefreshToken(user);
-            ResponseCookie refreshCookie= authService.createRefreshTokenCookie(refreshToken);
+            ResponseCookie refreshCookie = authService.createRefreshTokenCookie(refreshToken);
             // Crée la réponse DTO
 
             LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toUserDto(user));
@@ -133,7 +136,7 @@ public class AuthController {
         try {
 
             TokenPair tokens = authService.validateRefreshToken(token);
-            ResponseCookie refreshCookie = generateCookie(tokens.getRefreshToken());
+            ResponseCookie refreshCookie = authService.createRefreshTokenCookie(tokens.getRefreshToken());
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                     .body(tokens.getJwt());
@@ -144,21 +147,21 @@ public class AuthController {
 
     }
 
-    @GetMapping("/api/protected")
-    public String protec(@AuthenticationPrincipal User user) {
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> sendResetPassword(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        Optional<User> user = appUserRepository.findByEmail(email);
 
-        return user.getEmail();
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid email.");
+        }
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        resetPasswordEmailService.sendPasswordResetToken(user.get().getId(), user.get().getEmail(), baseUrl);
+        return ResponseEntity.ok("Verification email resent.");
+
     }
 
-    private ResponseCookie generateCookie(String refreshToken) {
-        return ResponseCookie.from("refresh-token", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite(SameSiteCookies.NONE.toString())
-                .path("/api/refresh-token")
-                .build()
-                ;
-    }
+
 }
 
 
