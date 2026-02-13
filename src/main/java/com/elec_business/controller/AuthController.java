@@ -6,14 +6,12 @@ import com.elec_business.controller.mapper.UserMapper;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.AuthService;
 import com.elec_business.service.EmailVerificationService;
-import com.elec_business.service.ResetPasswordEmailService;
+import com.elec_business.service.ResetPasswordService;
 import com.elec_business.service.UserRegistrationService;
 import com.elec_business.service.impl.TokenPair;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.SameSiteCookies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,25 +21,21 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
+
     private final EmailVerificationService emailVerificationService;
     private final AuthService authService;
     private final UserRegistrationService userRegistrationService;
     private final UserRepository appUserRepository;
     private final UserMapper userMapper;
-    private final ResetPasswordEmailService resetPasswordEmailService;
-
-    @Value("${app.auth.email-verification-required:true}")
-    private boolean emailVerificationRequired;
+    private final ResetPasswordService resetPasswordService;
 
     @Value("${app.auth.frontend.url}")
     private String FRONT_URL;
@@ -49,68 +43,88 @@ public class AuthController {
     @Value("${application.api.url}")
     private String BACKEND_URL;
 
-    @PostMapping("/register")
-    public ResponseEntity<RegistrationResponseDto> register(@RequestBody @Valid RegistrationDto registrationDto) {
+    // ---------------- REGISTER ----------------
 
-        // 1. Création de l'utilisateur
-        User registeredUser = userRegistrationService.registerUser(
-                userMapper.toEntity(registrationDto)
-        );
-        String baseUrl = BACKEND_URL;
+    @PostMapping("/register")
+    public ResponseEntity<RegistrationResponseDto> register(
+            @Valid @RequestBody RegistrationDto registrationDto) {
+
+        User registeredUser =
+                userRegistrationService.registerUser(
+                        userMapper.toEntity(registrationDto)
+                );
+
         emailVerificationService.sendVerificationToken(
                 registeredUser.getId(),
                 registeredUser.getEmail(),
-                baseUrl
+                BACKEND_URL
         );
 
-        // 3. Création de la réponse succès
-        RegistrationResponseDto responseDto = userMapper.toRegistrationResponseDto(
-                userMapper.toUserDto(registeredUser),
-                "Votre compte a été créé avec succès, vérifier votre email"
-        );
+        RegistrationResponseDto responseDto =
+                userMapper.toRegistrationResponseDto(
+                        userMapper.toUserDto(registeredUser),
+                        "Votre compte a été créé avec succès, vérifiez votre email"
+                );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    // ---------------- VERIFY EMAIL ----------------
+
     @GetMapping("/email/verify")
     public ResponseEntity<Void> verifyEmail(
-            @RequestParam String userId, @RequestParam("t") String token) {
+            @RequestParam String userId,
+            @RequestParam("t") String token) {
 
         emailVerificationService.verifyEmail(userId, token);
 
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", FRONT_URL + "/login")
+                .header(HttpHeaders.LOCATION, FRONT_URL + "/login")
                 .build();
     }
 
     @PostMapping("/email/resend")
-    public ResponseEntity<String> resendEmailVerification(@RequestBody Map<String, String> payload) {
-        String email = payload.get("email");
-        Optional<User> user = appUserRepository.findByEmail(email);
+    public ResponseEntity<String> resendEmailVerification(
+            @RequestBody Map<String, String> payload) {
 
-        if (user.isEmpty()) {
-            return ResponseEntity.badRequest().body("Invalid or already verified user.");
-        }
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        emailVerificationService.sendVerificationToken(user.get().getId(), user.get().getEmail(), baseUrl);
-        return ResponseEntity.ok("Verification email resent.");
+        String email = payload.get("email");
+
+        appUserRepository.findByEmail(email)
+                .ifPresent(user ->
+                        emailVerificationService.sendVerificationToken(
+                                user.getId(),
+                                user.getEmail(),
+                                BACKEND_URL
+                        )
+                );
+
+        // Toujours OK pour éviter enumeration
+        return ResponseEntity.ok(
+                "If the account exists, a verification email has been sent."
+        );
     }
 
+    // ---------------- LOGIN ----------------
+
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginCredentialsDTO loginDto) {
+    public ResponseEntity<LoginResponseDTO> login(
+            @RequestBody LoginCredentialsDTO loginDto) {
+
         try {
-            // Authentifie l'utilisateur via le service
-            User user = authService.authenticateUser(loginDto.getUsername(), loginDto.getPassword());
 
-            // Génère le JWT
+            User user = authService.authenticateUser(
+                    loginDto.getUsername(),
+                    loginDto.getPassword()
+            );
+
             String jwt = authService.generateJwtToken(user);
-
-            // Génère le refresh token cookie
             String refreshToken = authService.generateRefreshToken(user);
-            ResponseCookie refreshCookie = authService.createRefreshTokenCookie(refreshToken);
-            // Crée la réponse DTO
 
-            LoginResponseDTO responseDto = new LoginResponseDTO(jwt, userMapper.toUserDto(user));
+            ResponseCookie refreshCookie =
+                    authService.createRefreshTokenCookie(refreshToken);
+
+            LoginResponseDTO responseDto =
+                    new LoginResponseDTO(jwt, userMapper.toUserDto(user));
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
@@ -118,50 +132,98 @@ public class AuthController {
 
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+    // ---------------- CURRENT USER ----------------
+
     @GetMapping("/me")
-    public ResponseEntity<UserProfileDto> getCurrentUser(@AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<UserProfileDto> getCurrentUser(
+            @AuthenticationPrincipal User currentUser) {
+
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(userMapper.toUserProfileDto(currentUser));
+
+        return ResponseEntity.ok(
+                userMapper.toUserProfileDto(currentUser)
+        );
     }
 
+    // ---------------- REFRESH TOKEN ----------------
+
     @PostMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(@CookieValue(name = "refresh-token") String token) {
+    public ResponseEntity<String> refreshToken(
+            @CookieValue(name = "refresh-token", required = false)
+            String token) {
+
+        if (token == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Missing refresh token"
+            );
+        }
+
         try {
 
-            TokenPair tokens = authService.validateRefreshToken(token);
-            ResponseCookie refreshCookie = authService.createRefreshTokenCookie(tokens.getRefreshToken());
+            TokenPair tokens =
+                    authService.validateRefreshToken(token);
+
+            ResponseCookie refreshCookie =
+                    authService.createRefreshTokenCookie(
+                            tokens.getRefreshToken()
+                    );
+
             return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE,
+                            refreshCookie.toString())
                     .body(tokens.getJwt());
 
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid refresh token");
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Invalid refresh token"
+            );
         }
-
     }
+
+    // ---------------- RESET PASSWORD REQUEST ----------------
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> sendResetPassword(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> sendResetPassword(
+            @RequestBody Map<String, String> payload) {
+
         String email = payload.get("email");
-        Optional<User> user = appUserRepository.findByEmail(email);
 
-        if (user.isEmpty()) {
-            return ResponseEntity.badRequest().body("Invalid email.");
-        }
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        resetPasswordEmailService.sendPasswordResetToken(user.get().getId(), user.get().getEmail(), baseUrl);
-        return ResponseEntity.ok("Verification email resent.");
+        appUserRepository.findByEmail(email)
+                .ifPresent(user ->
+                        resetPasswordService
+                                .sendPasswordResetToken(
+                                        user.getId(),
+                                        user.getEmail(),
+                                        BACKEND_URL
+                                )
+                );
 
+        return ResponseEntity.ok(
+                "If the account exists, a reset link has been sent."
+        );
     }
 
+    // ---------------- RESET PASSWORD CONFIRM ----------------
 
+    @PostMapping("/reset-password/confirm")
+    public ResponseEntity<String> confirmResetPassword(
+            @RequestBody ResetPasswordConfirmDTO dto) {
+
+        resetPasswordService.sendPasswordResetToken(
+                dto.getUserId(),
+                dto.getToken(),
+                dto.getNewPassword()
+        );
+
+        return ResponseEntity.ok("Password successfully reset.");
+    }
 }
 
 

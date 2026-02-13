@@ -1,6 +1,7 @@
 package com.elec_business.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.core.RedisTemplate;
 import java.security.SecureRandom;
@@ -13,39 +14,45 @@ import java.util.Objects;
 public class OtpService {
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final int OTP_LENGTH = 6;
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void store( String otp,String id) {
-        final var cacheKey = getCacheKey(id);
+    public String generateOtp() {
+        int bound = (int) Math.pow(10, OTP_LENGTH);
+        int number = SECURE_RANDOM.nextInt(bound);
+        return String.format("%0" + OTP_LENGTH + "d", number);
+    }
+
+    public void store(String id, String otp, String purpose) {
+        final var cacheKey = getCacheKey(id, purpose);
 
         redisTemplate.opsForValue().set(
-                cacheKey, otp, Duration.ofMinutes(5));
+                cacheKey,
+                DigestUtils.sha256Hex(otp),
+                Duration.ofMinutes(5)
+        );
     }
 
-    public boolean isOtpValid(final String id, final String otp) {
-        final var cacheKey = getCacheKey(id);
-        return Objects.equals(
-                redisTemplate.opsForValue().get(cacheKey), otp);
-    }
+    public boolean isOtpValid(String id, String otp, String purpose) {
+        final var cacheKey = getCacheKey(id, purpose);
 
-    public void deleteOtp(final String id) {
-        final var cacheKey = getCacheKey(id);
-        redisTemplate.delete(cacheKey);
-    }
+        String storedHash = redisTemplate.opsForValue().get(cacheKey);
 
-    private String getCacheKey(String id) {
-        return "otp:%s".formatted(id);
-    }
-
-    public String generateOtp() {
-        String characters = "ABCDEFG123456789";
-        int length = 10;
-        StringBuilder otp = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int index = SECURE_RANDOM.nextInt(characters.length());
-            otp.append(characters.charAt(index));
+        if (storedHash == null) {
+            return false;
         }
-        return otp.toString();
+
+        String providedHash = DigestUtils.sha256Hex(otp);
+
+        return storedHash.equals(providedHash);
+    }
+
+    public void deleteOtp(String id, String purpose) {
+        redisTemplate.delete(getCacheKey(id, purpose));
+    }
+
+    private String getCacheKey(String id, String purpose) {
+        return "otp:%s:%s".formatted(purpose, id);
     }
 }

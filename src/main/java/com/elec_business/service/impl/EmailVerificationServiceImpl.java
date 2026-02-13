@@ -1,11 +1,9 @@
 package com.elec_business.service.impl;
 
-import com.elec_business.entity.User;
 import com.elec_business.repository.UserRepository;
 import com.elec_business.service.EmailService;
 import com.elec_business.service.EmailVerificationService;
 import com.elec_business.service.OtpService;
-import com.elec_business.service.exception.EmailNotSentException;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -34,7 +32,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     @Async
     public void sendVerificationToken(String userId, String email, String baseUrl) {
         final var token = otpService.generateOtp();
-        otpService.store("otp:verify-email:%s".formatted(userId), token);
+        otpService.store(userId, token, "verify-email");
         final var emailVerificationUrl =
                 baseUrl + "/api/email/verify?userId=%s&t=%s".formatted(userId, token);
 
@@ -47,27 +45,39 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         Mail mail = new Mail(from, subject, to, content);
         this.emailService.send(mail);
     }
+
     @Override
     @Transactional
     public void verifyEmail(String userId, String token) {
-        if (!otpService.isOtpValid(userId, token)) {
-            throw new ResponseStatusException(BAD_REQUEST,
-                    "Token invalid or expired");
+
+        boolean isValid = otpService.isOtpValid(userId, token, "verify-email");
+
+        if (!isValid) {
+            throw new ResponseStatusException(
+                    BAD_REQUEST,
+                    "Token invalid or expired"
+            );
         }
-        otpService.deleteOtp(userId);
 
         final var user = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new ResponseStatusException(GONE,
-                                "User account has been deleted or deactivated"));
-        boolean userEmailVerified = user.getEmailVerified();
-        if (userEmailVerified) {
-            throw new ResponseStatusException(BAD_REQUEST,
-                    "Email is already verified");
+                        new ResponseStatusException(
+                                GONE,
+                                "User account has been deleted or deactivated"
+                        )
+                );
+
+        if (Boolean.TRUE.equals(user.getEmailVerified())) {
+            throw new ResponseStatusException(
+                    BAD_REQUEST,
+                    "Email is already verified"
+            );
         }
 
         user.setEmailVerified(true);
         user.setEmailVerifiedAt(Instant.now());
-        userRepository.save(user);
+
+        otpService.deleteOtp(userId, "verify-email");
     }
+
 }

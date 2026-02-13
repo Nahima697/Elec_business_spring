@@ -10,10 +10,9 @@ import lombok.Setter;
 @Setter
 public class BookingRejectedEvent {
     private final Booking booking;
-    private final User currentUser;
 
-    public BookingRejectedEvent(Booking booking,User currentUser) {
+    public BookingRejectedEvent(Booking booking) {
         this.booking = booking;
-        this.currentUser = currentUser;
+
     }
 }

@@ -7,15 +7,12 @@ import lombok.Setter;
 
 
 @Getter
-@Setter
 public class BookingAcceptedEvent {
+
     private final Booking booking;
-    private final User currentUser;
 
-    public BookingAcceptedEvent(Booking booking,User currentUser) {
+    public BookingAcceptedEvent(Booking booking) {
         this.booking = booking;
-        this.currentUser = currentUser;
     }
-
 }
 
