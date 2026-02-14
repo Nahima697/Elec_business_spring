@@ -77,7 +77,7 @@ public class ChargingStationBusinessImpl implements ChargingStationBusiness {
     public Page<ChargingStationResponseDto> getAllChargingStations(Pageable pageable) {
         return chargingStationRepository
                 .findAll(pageable)
-                .map(chargingStationMapper::toDto);
+                .map(chargingStationMapper::toSummaryDto);
     }
 
     @Override
