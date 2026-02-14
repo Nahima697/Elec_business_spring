@@ -16,20 +16,26 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class SendGridEmailService implements EmailService {
-    @Value("${sendgrid.api.key:dummy-key}")
-    private String sendGridApiKey;
+
+    private final SendGrid sendGrid;
 
     @Override
     public void send(Mail email) {
         try {
-            SendGrid sg = new SendGrid(sendGridApiKey);
             Request request = new Request();
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(email.build());
-            Response response = sg.api(request);
-            System.out.println("SendGrid response: " + response.getStatusCode());
+
+            Response response = sendGrid.api(request);
+
+            System.out.println("SendGrid status: " + response.getStatusCode());
             System.out.println("SendGrid body: " + response.getBody());
+
+            if (response.getStatusCode() >= 400) {
+                throw new RuntimeException("SendGrid error: " + response.getBody());
+            }
+
         } catch (IOException e) {
             throw new EmailNotSentException();
         }
