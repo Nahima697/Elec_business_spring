@@ -9,12 +9,13 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
-@ConditionalOnProperty(name = "spring.sendgrid.api-key")
+@Profile("!test")
 @RequiredArgsConstructor
 public class SendGridEmailService implements EmailService {
 
