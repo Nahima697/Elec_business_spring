@@ -14,6 +14,7 @@ public interface AuthService {
      */
     User authenticateUser(String username, String password);
 
+    ResponseCookie createAccessTokenCookie(String jwt);
     /**
      * Méthode qui va utiliser l'utilitaire JWTUtil pour créer un JWT
      * et créer un JWT de celui ci

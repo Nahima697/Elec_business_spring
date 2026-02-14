@@ -75,7 +75,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            // log propre si besoin
+            logger.warn("JWT invalide ou expiré : {}", e);
         }
 
         filterChain.doFilter(request, response);
