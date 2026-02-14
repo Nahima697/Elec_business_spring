@@ -42,7 +42,14 @@ public class SecurityConfig {
 
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers(
+                                "/api/login",
+                                "/api/register",
+                                "/api/refresh-token",
+                                "/api/reset-password/**"
+                        )
                 )
+
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

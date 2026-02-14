@@ -153,37 +153,26 @@ public class AuthController {
     // ---------------- REFRESH TOKEN ----------------
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(
-            @CookieValue(name = "refresh-token", required = false)
-            String token) {
-
+    public ResponseEntity<Void> refreshToken(
+            @CookieValue(name = "refresh-token", required = false) String token
+    ) {
         if (token == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Missing refresh token"
-            );
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Missing refresh token");
         }
 
         try {
+            TokenPair tokens = authService.validateRefreshToken(token);
 
-            TokenPair tokens =
-                    authService.validateRefreshToken(token);
+            ResponseCookie refreshCookie = authService.createRefreshTokenCookie(tokens.getRefreshToken());
+            ResponseCookie accessCookie  = authService.createAccessTokenCookie(tokens.getJwt());
 
-            ResponseCookie refreshCookie =
-                    authService.createRefreshTokenCookie(
-                            tokens.getRefreshToken()
-                    );
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE,
-                            refreshCookie.toString())
-                    .body(tokens.getJwt());
+            return ResponseEntity.noContent()
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                    .build();
 
         } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Invalid refresh token"
-            );
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid refresh token");
         }
     }
 
