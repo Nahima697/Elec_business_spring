@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/api/login",
                                 "/api/register",
                                 "api/reset-password",
-                                "api/reset-password/*",
+                                "api/reset-password/**",
                                 "/api/email/verify",
                                 "api/refresh-token",
                                 "/error",
@@ -84,7 +84,7 @@ public class SecurityConfig {
                 "capacitor://localhost", "http://localhost:4200","https://elec-business-spring.onrender.com","https://elecbusiness.netlify.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("Authorization", "x-authentication-token"));
+        config.setExposedHeaders(List.of());
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 

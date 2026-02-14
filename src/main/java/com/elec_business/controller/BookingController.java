@@ -25,46 +25,38 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
-public class   BookingController {
+public class BookingController {
 
     private final BookingBusiness bookingBusiness;
     private final BookingMapper bookingMapper;
     private final PdfService pdfService;
 
     @PostMapping("/bookings")
-    public ResponseEntity<BookingResponseDto> addBooking(
-            @Valid @RequestBody BookingRequestDto bookingRequestDto,
-            @AuthenticationPrincipal User currentUser) {
-        BookingResponseDto createdBooking = bookingBusiness.createBooking(bookingRequestDto.getStationId(),bookingRequestDto.getStartDate(),bookingRequestDto.getEndDate(), currentUser);
-         return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
+    public ResponseEntity<BookingResponseDto> addBooking(@Valid @RequestBody BookingRequestDto bookingRequestDto, @AuthenticationPrincipal User currentUser) {
+        BookingResponseDto createdBooking = bookingBusiness.createBooking(bookingRequestDto.getStationId(), bookingRequestDto.getStartDate(), bookingRequestDto.getEndDate(), currentUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
     }
 
     @PostMapping("/bookings/{id}/accept")
     @ResponseStatus(HttpStatus.OK)
-    public BookingResponseDto validateBooking(@PathVariable String id,
-                                              @AuthenticationPrincipal User currentUser)
-    {
+    public BookingResponseDto validateBooking(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
         return bookingBusiness.acceptBooking(id, currentUser);
     }
 
     @PostMapping("/bookings/{id}/reject")
     @ResponseStatus(HttpStatus.OK)
-    public BookingResponseDto rejectBooking(@PathVariable String id,
-                                              @AuthenticationPrincipal User currentUser)
-    {
+    public BookingResponseDto rejectBooking(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
         return bookingBusiness.rejectBooking(id, currentUser);
 
     }
 
     @PutMapping("/bookings/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public BookingResponseDto updateBooking(@PathVariable String id,
-                                            @Valid @RequestBody BookingRequestDto bookingRequestDto,
-                                            @AuthenticationPrincipal User currentUser)
-    {
-        return  bookingBusiness.updateBooking(id,bookingMapper.toEntity(bookingRequestDto),currentUser);
+    public BookingResponseDto updateBooking(@PathVariable String id, @Valid @RequestBody BookingRequestDto bookingRequestDto, @AuthenticationPrincipal User currentUser) {
+        return bookingBusiness.updateBooking(id, bookingMapper.toEntity(bookingRequestDto), currentUser);
 
     }
+
     @GetMapping("/bookings")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingResponseDto> getAllBookings() {
@@ -73,15 +65,15 @@ public class   BookingController {
 
     @GetMapping("/bookings/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingResponseDto getBooking(@PathVariable String id,@AuthenticationPrincipal User currentUser) throws AccessDeniedException {
+    public BookingResponseDto getBooking(@PathVariable String id, @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
 
-        return bookingBusiness.getBookingById(id,currentUser);
+        return bookingBusiness.getBookingById(id, currentUser);
     }
 
     @DeleteMapping("/bookings/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBooking(@PathVariable String id,@AuthenticationPrincipal User currentUser) throws AccessDeniedException {
-        bookingBusiness.deleteBooking(id,currentUser);
+    public void deleteBooking(@PathVariable String id, @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
+        bookingBusiness.deleteBooking(id, currentUser);
     }
 
     @GetMapping("/bookings/owner/me")
@@ -101,7 +93,7 @@ public class   BookingController {
     public ResponseEntity<byte[]> downloadReceipt(@PathVariable String id, @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
 
         // 1. Récupérer la réservation
-        BookingResponseDto booking = bookingBusiness.getBookingById(id,currentUser);
+        BookingResponseDto booking = bookingBusiness.getBookingById(id, currentUser);
 
         // 2. Générer le PDF
         byte[] pdfContent = pdfService.generateBookingReceipt(booking);
@@ -112,8 +104,6 @@ public class   BookingController {
         // "attachment" force le téléchargement, "inline" l'affiche dans le navigateur
         headers.setContentDispositionFormData("attachment", "recu_" + id + ".pdf");
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(pdfContent);
+        return ResponseEntity.ok().headers(headers).body(pdfContent);
     }
 }
