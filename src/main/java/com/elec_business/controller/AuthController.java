@@ -124,7 +124,7 @@ public class AuthController {
                     authService.createRefreshTokenCookie(refreshToken);
 
             LoginResponseDTO responseDto =
-                    new LoginResponseDTO(jwt, userMapper.toUserDto(user));
+                    new LoginResponseDTO( userMapper.toUserDto(user));
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
