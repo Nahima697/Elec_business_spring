@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/api/login",
                                 "/api/register",
                                 "/api/refresh-token",
-                                "/api/reset-password/**"
+                                "/api/reset-password/**",
+                                "/api/users/**"
                         )
                 )
 
