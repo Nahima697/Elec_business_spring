@@ -170,7 +170,7 @@ public class AuthController {
             ResponseCookie refreshCookie = authService.createRefreshTokenCookie(tokens.getRefreshToken());
             ResponseCookie accessCookie  = authService.createAccessTokenCookie(tokens.getJwt());
 
-            return ResponseEntity.noContent()
+            return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                     .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                     .build();
