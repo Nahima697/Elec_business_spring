@@ -122,17 +122,22 @@ public class AuthController {
             ResponseCookie refreshCookie =
                     authService.createRefreshTokenCookie(refreshToken);
 
+            ResponseCookie accessCookie =
+                    authService.createAccessTokenCookie(jwt);
+
             LoginResponseDTO responseDto =
-                    new LoginResponseDTO( userMapper.toUserDto(user));
+                    new LoginResponseDTO(userMapper.toUserDto(user));
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                     .body(responseDto);
 
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
 
     // ---------------- CURRENT USER ----------------
 
