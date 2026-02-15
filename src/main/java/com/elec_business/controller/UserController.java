@@ -39,14 +39,12 @@ public class UserController {
     }
 
     @PostMapping("/{id}/roles/owner")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> addOwnerRole(@PathVariable String id) {
         userRoleBusiness.addRoleOwner(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/roles/renter")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> addRenterRole(@PathVariable String id) {
         userRoleBusiness.addRoleRenter(id);
         return ResponseEntity.ok().build();
