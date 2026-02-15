@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
         return ResponseCookie.from("access_token", jwt)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Strict")
+                .sameSite("None")
                 .path("/")
                 .maxAge(15 * 60)
                 .build();
@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
         return ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Strict")
+                .sameSite("None")
                 .path("/")
                 .maxAge(30L * 24 * 60 * 60)
                 .build();

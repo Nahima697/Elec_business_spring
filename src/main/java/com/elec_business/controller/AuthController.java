@@ -98,7 +98,6 @@ public class AuthController {
                         )
                 );
 
-        // Toujours OK pour éviter enumeration
         return ResponseEntity.ok(
                 "If the account exists, a verification email has been sent."
         );
