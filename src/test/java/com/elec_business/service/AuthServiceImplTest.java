@@ -118,7 +118,7 @@ class AuthServiceImplTest {
         assertEquals("token-999", cookie.getValue());
         assertTrue(cookie.isHttpOnly());
         assertTrue(cookie.isSecure());
-        assertEquals("Strict", cookie.getSameSite());
+        assertEquals("None", cookie.getSameSite());
     }
 
     // ================================
