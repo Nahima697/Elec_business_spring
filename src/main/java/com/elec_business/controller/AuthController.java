@@ -158,7 +158,7 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<Void> refreshToken(
-            @CookieValue(name = "refresh-token", required = false) String token
+            @CookieValue(name = "refresh_token", required = false) String token
     ) {
         if (token == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Missing refresh token");
