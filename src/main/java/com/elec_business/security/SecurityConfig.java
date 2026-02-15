@@ -108,13 +108,17 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
+        // IMPORTANT: Capacitor utilise souvent capacitor://localhost (ou ionic://localhost)
+        config.setAllowedOriginPatterns(List.of(
+                "https://elecbusiness.netlify.app",
                 "http://localhost:8100",
                 "http://localhost:4200",
-                "https://elecbusiness.netlify.app"
+                "http://localhost",
+                "https://localhost",
+                "capacitor://localhost",
+                "ionic://localhost"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -122,11 +126,9 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-
         return source;
     }
+
 }
